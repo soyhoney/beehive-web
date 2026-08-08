@@ -24,11 +24,34 @@ export interface ContactInfo {
   phone: string;
 }
 
+/** 시트·RAW_JSON에 남는 첨부파일 정보. 파일 본문은 담지 않습니다. */
 export interface AttachedFile {
   questionId: string;
   fileName: string;
   size: number;
   type: string;
+}
+
+/**
+ * 실제로 전송되는 파일. base64로 인코딩해 보냅니다.
+ *
+ * RAW_JSON이 시트 셀 한도(5만 자)를 넘지 않도록 Submission과는 분리해서
+ * payload 최상위에 따로 실어 보냅니다.
+ */
+export interface FileUpload extends AttachedFile {
+  /** base64 문자열 (data URL 접두사 없음) */
+  data: string;
+}
+
+/** 파일 1개당 최대 크기 */
+export const MAX_FILE_BYTES = 8 * 1024 * 1024;
+/** 전체 첨부 합계 최대 크기 — base64는 약 33% 커지므로 여유를 둡니다. */
+export const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)}KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 }
 
 export interface Submission {
@@ -222,6 +245,7 @@ export interface SubmitResult {
 export async function submitQuote(
   submission: Submission,
   endpoint: string,
+  uploads: FileUpload[] = [],
 ): Promise<SubmitResult> {
   if (!endpoint) {
     return {
@@ -243,6 +267,8 @@ export async function submitQuote(
         common: toCommonRow(submission),
         detail: toDetailRow(submission),
         raw: submission,
+        // 파일 본문은 RAW_JSON에 섞이지 않도록 최상위에 따로 싣습니다.
+        files: uploads,
       }),
     });
 

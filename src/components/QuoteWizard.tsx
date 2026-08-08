@@ -15,14 +15,32 @@ import {
 } from "@/lib/quote-flow";
 import { calculateEstimate, formatKRW, type Answer, type Answers } from "@/lib/pricing";
 import {
+  MAX_FILE_BYTES,
+  MAX_TOTAL_BYTES,
   SCHEMA_VERSION,
+  formatBytes,
   submitQuote,
   type AttachedFile,
   type ContactInfo,
+  type FileUpload,
   type Submission,
 } from "@/lib/submission";
 
 const ENDPOINT = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
+
+/**
+ * 파일을 base64 문자열로 읽는다.
+ * 큰 파일에서 String.fromCharCode 인자 개수 한도를 넘지 않도록 청크로 나눠 처리한다.
+ */
+async function toBase64(file: File): Promise<string> {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const CHUNK = 0x8000;
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(binary);
+}
 
 /** 단계 구성: 카테고리 선택 → 문항들 → 연락처 → 완료 */
 type Stage = { kind: "category" } | { kind: "question"; index: number } | { kind: "contact" } | { kind: "done" };
@@ -131,19 +149,65 @@ export default function QuoteWizard({
     /\S+@\S+\.\S+/.test(contact.email) &&
     agreed;
 
+  /** 첨부 용량을 확인하고 통과하면 상태에 담는다. */
+  function acceptFiles(questionId: string, list: File[]) {
+    const oversized = list.find((f) => f.size > MAX_FILE_BYTES);
+    if (oversized) {
+      setError(
+        `‘${oversized.name}’ 파일이 너무 큽니다. 파일 하나당 ${formatBytes(MAX_FILE_BYTES)}까지 첨부할 수 있습니다.`,
+      );
+      return;
+    }
+
+    const others = Object.entries(files)
+      .filter(([id]) => id !== questionId)
+      .flatMap(([, l]) => l);
+    const total = [...others, ...list].reduce((sum, f) => sum + f.size, 0);
+
+    if (total > MAX_TOTAL_BYTES) {
+      setError(
+        `첨부파일 합계가 ${formatBytes(MAX_TOTAL_BYTES)}를 넘습니다. 용량을 줄이거나 메일로 따로 보내주세요.`,
+      );
+      return;
+    }
+
+    setError("");
+    setFiles((prev) => ({ ...prev, [questionId]: list }));
+  }
+
   async function handleSubmit() {
     if (!category || !estimate || !contactValid) return;
     setSending(true);
     setError("");
 
-    const attached: AttachedFile[] = Object.entries(files).flatMap(([questionId, list]) =>
-      list.map((file) => ({
-        questionId,
-        fileName: file.name,
-        size: file.size,
-        type: file.type,
-      })),
+    const entries = Object.entries(files).flatMap(([questionId, list]) =>
+      list.map((file) => ({ questionId, file })),
     );
+
+    // 시트·RAW_JSON에는 메타데이터만, 파일 본문은 따로 실어 보냅니다.
+    const attached: AttachedFile[] = entries.map(({ questionId, file }) => ({
+      questionId,
+      fileName: file.name,
+      size: file.size,
+      type: file.type,
+    }));
+
+    let uploads: FileUpload[];
+    try {
+      uploads = await Promise.all(
+        entries.map(async ({ questionId, file }) => ({
+          questionId,
+          fileName: file.name,
+          size: file.size,
+          type: file.type,
+          data: await toBase64(file),
+        })),
+      );
+    } catch {
+      setSending(false);
+      setError("첨부파일을 읽지 못했습니다. 파일을 다시 선택해 주세요.");
+      return;
+    }
 
     const now = new Date().toISOString();
     const submission: Submission = {
@@ -162,7 +226,7 @@ export default function QuoteWizard({
       files: attached,
     };
 
-    const result = await submitQuote(submission, ENDPOINT);
+    const result = await submitQuote(submission, ENDPOINT, uploads);
     setSending(false);
 
     if (result.ok) {
@@ -202,9 +266,7 @@ export default function QuoteWizard({
           answer={answers[flow[stage.index].id]}
           files={files[flow[stage.index].id] ?? []}
           onChange={(patch) => updateAnswer(flow[stage.index].id, patch)}
-          onFiles={(list) =>
-            setFiles((prev) => ({ ...prev, [flow[stage.index].id]: list }))
-          }
+          onFiles={(list) => acceptFiles(flow[stage.index].id, list)}
         />
       )}
 

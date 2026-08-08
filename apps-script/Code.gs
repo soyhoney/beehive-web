@@ -30,6 +30,8 @@ const NOTIFY_TO = "info@beehivecorp.co.kr";
 const SENDER_NAME = "비하이브코퍼레이션";
 /** 모든 문의가 모이는 탭 이름 */
 const ALL_SHEET = "전체";
+/** 첨부파일이 저장될 구글 드라이브 폴더 이름 (없으면 자동 생성) */
+const DRIVE_FOLDER = "비하이브 견적문의 첨부파일";
 // ====================================================================
 
 /** 데이터를 쌓을 스프레드시트를 연다. */
@@ -61,6 +63,28 @@ function doPost(e) {
     common["접수번호"] = refNo;
     detail["접수번호"] = refNo;
 
+    // 첨부파일을 드라이브에 저장하고, 시트에는 파일명 대신 링크를 남긴다.
+    const saved = saveFiles_(refNo, payload.files);
+    if (saved.length) {
+      common["첨부파일"] = linkList_(saved);
+
+      // 상세 탭의 "<문항> — 첨부" 컬럼에는 파일명이 들어 있다.
+      // 그 파일명에 해당하는 링크로 바꿔준다.
+      Object.keys(detail).forEach(function (key) {
+        if (key.indexOf("— 첨부") === -1) return;
+        const names = String(detail[key] || "")
+          .split(",")
+          .map(function (n) {
+            return n.trim();
+          })
+          .filter(Boolean);
+        const matched = saved.filter(function (f) {
+          return names.indexOf(f.name) !== -1;
+        });
+        if (matched.length) detail[key] = linkList_(matched);
+      });
+    }
+
     // 1) 전체 탭
     appendRow_(book, ALL_SHEET, common, ["RAW_JSON"]);
     // 2) 구분별 탭
@@ -68,7 +92,7 @@ function doPost(e) {
 
     // 메일 발송이 실패해도 접수 자체는 성공으로 처리한다.
     try {
-      notifyStaff_(refNo, common, detail, book.getUrl());
+      notifyStaff_(refNo, common, detail, book.getUrl(), saved);
       confirmToCustomer_(refNo, common, payload.raw || {});
     } catch (mailError) {
       console.error("메일 발송 실패: " + mailError);
@@ -92,6 +116,53 @@ function json_(object) {
   return ContentService.createTextOutput(JSON.stringify(object)).setMimeType(
     ContentService.MimeType.JSON,
   );
+}
+
+/**
+ * 첨부파일을 드라이브에 저장한다.
+ *
+ * DRIVE_FOLDER 아래에 접수번호로 하위 폴더를 만들어 넣습니다.
+ * 반환값에는 시트에 남길 링크와, 메일에 첨부할 Blob이 함께 담깁니다.
+ */
+function saveFiles_(refNo, files) {
+  if (!files || !files.length) return [];
+
+  const parents = DriveApp.getFoldersByName(DRIVE_FOLDER);
+  const root = parents.hasNext() ? parents.next() : DriveApp.createFolder(DRIVE_FOLDER);
+  const folder = root.createFolder(refNo);
+
+  const saved = [];
+  files.forEach(function (f) {
+    if (!f || !f.data) return;
+    try {
+      const blob = Utilities.newBlob(
+        Utilities.base64Decode(f.data),
+        f.type || "application/octet-stream",
+        f.fileName,
+      );
+      const created = folder.createFile(blob);
+      saved.push({
+        name: f.fileName,
+        url: created.getUrl(),
+        questionId: f.questionId || "",
+        blob: blob,
+      });
+    } catch (err) {
+      // 파일 하나가 실패해도 접수 자체는 계속 진행한다.
+      console.error("첨부 저장 실패(" + f.fileName + "): " + err);
+    }
+  });
+
+  return saved;
+}
+
+/** 저장된 파일들을 "이름 링크" 여러 줄로 만든다. */
+function linkList_(saved) {
+  return saved
+    .map(function (f) {
+      return f.name + " " + f.url;
+    })
+    .join("\n");
 }
 
 /** 시트 탭 이름으로 쓸 수 없는 문자를 정리한다. */
@@ -169,14 +240,14 @@ function nextRefNo_(book) {
   return prefix + Utilities.formatString("%04d", count + 1);
 }
 
-/** 내부 담당자 알림 */
-function notifyStaff_(refNo, common, detail, sheetUrl) {
+/** 내부 담당자 알림. 첨부파일이 있으면 메일에도 함께 붙인다. */
+function notifyStaff_(refNo, common, detail, sheetUrl, saved) {
   const lines = [];
   Object.keys(detail).forEach(function (key) {
     if (detail[key]) lines.push(key + ": " + detail[key]);
   });
 
-  MailApp.sendEmail({
+  const options = {
     to: NOTIFY_TO,
     subject:
       "[견적문의] " + refNo + " · " + (common["업체·기관명"] || "") + " · " + (common["구분"] || ""),
@@ -191,7 +262,23 @@ function notifyStaff_(refNo, common, detail, sheetUrl) {
       "── 상세 ──\n" +
       lines.join("\n") +
       "\n\n시트에서 확인: " + sheetUrl,
-  });
+  };
+
+  // 메일 첨부는 총 25MB까지만 가능하므로, 넘으면 드라이브 링크로만 안내한다.
+  if (saved && saved.length) {
+    let total = 0;
+    const blobs = [];
+    saved.forEach(function (f) {
+      const size = f.blob.getBytes().length;
+      if (total + size <= 20 * 1024 * 1024) {
+        blobs.push(f.blob);
+        total += size;
+      }
+    });
+    if (blobs.length) options.attachments = blobs;
+  }
+
+  MailApp.sendEmail(options);
 }
 
 /** 고객 접수 확인 메일 */
