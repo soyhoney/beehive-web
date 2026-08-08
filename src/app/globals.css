@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
+/*
+ * 색상은 :root의 원시 변수로 선언하고, @theme inline 은 그 변수를 참조만 합니다.
+ * @theme 블록 자체를 미디어 쿼리 안에 넣으면 Tailwind 4에서는 동작하지 않습니다.
+ * (다크값이 라이트 모드에도 적용되어 글자가 안 보이게 됩니다)
+ */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* 로고의 육각형 골드톤에서 뽑은 브랜드 컬러 */
+  --brand: #edc04f;
+  --brand-strong: #d6a52f;
+  /* 선택된 항목의 배경 — 본문 글자색이 그대로 읽혀야 합니다 */
+  --brand-soft: #fdf5e0;
+  --brand-border: #e0ad33;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    /* 다크에서는 골드를 밝게, 배경 틴트는 어둡게 뒤집습니다 */
+    --brand: #edc04f;
+    --brand-strong: #f0cd71;
+    --brand-soft: #2e2513;
+    --brand-border: #b98d22;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-border: var(--brand-border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* 웹폰트를 받지 않고 OS 기본 한글 글꼴을 씁니다. 로딩이 빠르고 외부 CDN에 의존하지 않습니다. */
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
+    "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
 }
