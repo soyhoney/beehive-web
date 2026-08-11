@@ -63,13 +63,14 @@ function doPost(e) {
     common["접수번호"] = refNo;
     detail["접수번호"] = refNo;
 
-    // 첨부파일을 드라이브에 저장하고, 시트에는 파일명 대신 링크를 남긴다.
-    const saved = saveFiles_(refNo, payload.files);
+    // 첨부파일: 메일에 붙일 Blob을 먼저 만들고, 드라이브 보관은 되면 하고 안 되면 건너뛴다.
+    const blobs = toBlobs_(payload.files);
+    const saved = saveToDrive_(refNo, blobs);
+
+    // 드라이브에 보관됐을 때만 시트의 파일명을 링크로 바꿔준다.
     if (saved.length) {
       common["첨부파일"] = linkList_(saved);
 
-      // 상세 탭의 "<문항> — 첨부" 컬럼에는 파일명이 들어 있다.
-      // 그 파일명에 해당하는 링크로 바꿔준다.
       Object.keys(detail).forEach(function (key) {
         if (key.indexOf("— 첨부") === -1) return;
         const names = String(detail[key] || "")
@@ -92,7 +93,7 @@ function doPost(e) {
 
     // 메일 발송이 실패해도 접수 자체는 성공으로 처리한다.
     try {
-      notifyStaff_(refNo, common, detail, book.getUrl(), saved);
+      notifyStaff_(refNo, common, detail, book.getUrl(), blobs);
       confirmToCustomer_(refNo, common, payload.raw || {});
     } catch (mailError) {
       console.error("메일 발송 실패: " + mailError);
@@ -101,7 +102,13 @@ function doPost(e) {
     return json_({ ok: true, refNo: refNo });
   } catch (error) {
     console.error(error);
-    return json_({ ok: false, error: "접수 처리 중 오류가 발생했습니다." });
+    // error는 고객 화면에 그대로 노출되므로 일반 문구를 유지하고,
+    // 원인 파악용 메시지는 detail 에 따로 담는다. (웹사이트는 detail을 읽지 않는다)
+    return json_({
+      ok: false,
+      error: "접수 처리 중 오류가 발생했습니다.",
+      detail: String((error && error.message) || error),
+    });
   } finally {
     lock.releaseLock();
   }
@@ -118,42 +125,49 @@ function json_(object) {
   );
 }
 
-/**
- * 첨부파일을 드라이브에 저장한다.
- *
- * DRIVE_FOLDER 아래에 접수번호로 하위 폴더를 만들어 넣습니다.
- * 반환값에는 시트에 남길 링크와, 메일에 첨부할 Blob이 함께 담깁니다.
- */
-function saveFiles_(refNo, files) {
-  if (!files || !files.length) return [];
-
-  const parents = DriveApp.getFoldersByName(DRIVE_FOLDER);
-  const root = parents.hasNext() ? parents.next() : DriveApp.createFolder(DRIVE_FOLDER);
-  const folder = root.createFolder(refNo);
-
-  const saved = [];
-  files.forEach(function (f) {
+/** 전송받은 base64 파일들을 메일에 첨부할 수 있는 Blob으로 바꾼다. */
+function toBlobs_(files) {
+  const blobs = [];
+  (files || []).forEach(function (f) {
     if (!f || !f.data) return;
     try {
-      const blob = Utilities.newBlob(
-        Utilities.base64Decode(f.data),
-        f.type || "application/octet-stream",
-        f.fileName,
+      blobs.push(
+        Utilities.newBlob(
+          Utilities.base64Decode(f.data),
+          f.type || "application/octet-stream",
+          f.fileName,
+        ),
       );
-      const created = folder.createFile(blob);
-      saved.push({
-        name: f.fileName,
-        url: created.getUrl(),
-        questionId: f.questionId || "",
-        blob: blob,
-      });
     } catch (err) {
-      // 파일 하나가 실패해도 접수 자체는 계속 진행한다.
-      console.error("첨부 저장 실패(" + f.fileName + "): " + err);
+      console.error("첨부 변환 실패(" + f.fileName + "): " + err);
     }
   });
+  return blobs;
+}
 
-  return saved;
+/**
+ * 첨부파일을 드라이브에 보관한다. (DRIVE_FOLDER 아래 접수번호 폴더)
+ *
+ * 드라이브 권한이 없으면 저장을 건너뛰고 빈 배열을 돌려준다.
+ * 이 경우에도 접수는 정상 처리되고 파일은 담당자 메일에 첨부되므로 업무엔 지장이 없다.
+ * 나중에 드라이브 권한을 승인하면 코드 수정 없이 자동으로 저장이 시작된다.
+ */
+function saveToDrive_(refNo, blobs) {
+  if (!blobs.length) return [];
+
+  try {
+    const parents = DriveApp.getFoldersByName(DRIVE_FOLDER);
+    const root = parents.hasNext() ? parents.next() : DriveApp.createFolder(DRIVE_FOLDER);
+    const folder = root.createFolder(refNo);
+
+    return blobs.map(function (blob) {
+      const created = folder.createFile(blob);
+      return { name: blob.getName(), url: created.getUrl() };
+    });
+  } catch (err) {
+    console.error("드라이브 저장 건너뜀(권한 미승인 등): " + err);
+    return [];
+  }
 }
 
 /** 저장된 파일들을 "이름 링크" 여러 줄로 만든다. */
@@ -241,7 +255,7 @@ function nextRefNo_(book) {
 }
 
 /** 내부 담당자 알림. 첨부파일이 있으면 메일에도 함께 붙인다. */
-function notifyStaff_(refNo, common, detail, sheetUrl, saved) {
+function notifyStaff_(refNo, common, detail, sheetUrl, blobs) {
   const lines = [];
   Object.keys(detail).forEach(function (key) {
     if (detail[key]) lines.push(key + ": " + detail[key]);
@@ -264,18 +278,18 @@ function notifyStaff_(refNo, common, detail, sheetUrl, saved) {
       "\n\n시트에서 확인: " + sheetUrl,
   };
 
-  // 메일 첨부는 총 25MB까지만 가능하므로, 넘으면 드라이브 링크로만 안내한다.
-  if (saved && saved.length) {
+  // 메일 첨부는 총 25MB까지만 가능하므로 20MB 선에서 끊는다.
+  if (blobs && blobs.length) {
     let total = 0;
-    const blobs = [];
-    saved.forEach(function (f) {
-      const size = f.blob.getBytes().length;
+    const picked = [];
+    blobs.forEach(function (blob) {
+      const size = blob.getBytes().length;
       if (total + size <= 20 * 1024 * 1024) {
-        blobs.push(f.blob);
+        picked.push(blob);
         total += size;
       }
     });
-    if (blobs.length) options.attachments = blobs;
+    if (picked.length) options.attachments = picked;
   }
 
   MailApp.sendEmail(options);

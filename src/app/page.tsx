@@ -1,20 +1,25 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/quote-flow";
-import {
-  ACHIEVEMENTS,
-  CASE_STUDIES,
-  CLIENTS,
-  COMPANY,
-  HIGHLIGHTS,
-  MILESTONES,
-  PRINCIPLES,
-  PROCESS,
-  REPRESENTATIVE,
-  WORK_SCOPE,
-} from "@/lib/content";
+import { getContent, SHARED } from "@/lib/content";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
 
 export default function Home() {
+  // 한국어가 기본입니다. 영문 사이트는 en.ts 번역 후 EN_ENABLED로 켭니다.
+  const {
+    company: COMPANY,
+    ui: UI,
+    highlights: HIGHLIGHTS,
+    achievements: ACHIEVEMENTS,
+    representative: REPRESENTATIVE,
+    milestones: MILESTONES,
+    workScope: WORK_SCOPE,
+    principles: PRINCIPLES,
+    process: PROCESS,
+    caseStudies: CASE_STUDIES,
+  } = getContent(DEFAULT_LOCALE);
+  const CLIENTS = SHARED.clients;
+
   return (
     <>
       <TopBar />
@@ -27,9 +32,9 @@ export default function Home() {
             {COMPANY.serviceLine}
           </p>
           <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight sm:text-5xl sm:leading-[1.15]">
-            언어와 경계를 넘어
+            {UI.heroHeadline[0]}
             <br />
-            소통과 실행을 이끕니다.
+            {UI.heroHeadline[1]}
           </h1>
           {/* 어떤 건으로 견적을 받을 수 있는지 구체적으로 */}
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
@@ -44,13 +49,13 @@ export default function Home() {
               href="/quote/"
               className="rounded-lg bg-brand px-6 py-3.5 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
             >
-              견적 신청하기
+              {UI.ctaQuote}
             </Link>
             <a
               href="#services"
               className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
             >
-              서비스 살펴보기
+              {UI.ctaExplore}
             </a>
           </div>
 
@@ -72,9 +77,9 @@ export default function Home() {
 
         {/* ── 클라이언트 ───────────────────────────────────────── */}
         <section className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">주요 클라이언트</h2>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
           <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-            100+ 누적 클라이언트 · 800+ 수행 프로젝트
+            {UI.sectionClientsSub}
           </p>
 
           {/*
@@ -117,10 +122,10 @@ export default function Home() {
         >
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              어떤 도움이 필요하신가요?
+              {UI.sectionServices}
             </h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              유형을 선택하시면 필요한 내용만 여쭤봅니다. 1~2분이면 견적 문의가 완료됩니다.
+              {UI.sectionServicesSub}
             </p>
 
             {/* 전환이 목적인 구간이라 사진 없이 텍스트 카드로 유지합니다. */}
@@ -137,7 +142,7 @@ export default function Home() {
                     {category.desc}
                   </p>
                   <span className="mt-5 text-sm font-semibold text-brand-strong transition group-hover:translate-x-0.5">
-                    견적 신청하기 →
+                    {UI.cardCta}
                   </span>
                 </Link>
               ))}
@@ -149,8 +154,8 @@ export default function Home() {
         <section id="scope" className="py-20">
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              전문 분야{" "}
-              <span className="ml-1 text-base font-normal text-neutral-500">Work Scope</span>
+              {UI.sectionScope}{" "}
+              <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionScopeEn}</span>
             </h2>
             <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
               {WORK_SCOPE.map((item) => (
@@ -168,7 +173,7 @@ export default function Home() {
         {/* ── 작업 방식 ────────────────────────────────────────── */}
         <section id="how" className="mx-auto max-w-5xl px-6 py-20">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            작업 방식 <span className="ml-1 text-base font-normal text-neutral-500">How We Do</span>
+            {UI.sectionHow} <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionHowEn}</span>
           </h2>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
@@ -205,8 +210,8 @@ export default function Home() {
         >
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              대표 사례{" "}
-              <span className="ml-1 text-base font-normal text-neutral-500">Case Study</span>
+              {UI.sectionCases}{" "}
+              <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionCasesEn}</span>
             </h2>
 
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
@@ -261,7 +266,7 @@ export default function Home() {
         <section id="about" className="mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">대표 소개</h2>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
               <p className="mt-6 text-lg font-semibold">
                 {REPRESENTATIVE.name}
                 <span className="ml-2 text-sm font-normal text-neutral-500">
@@ -287,9 +292,9 @@ export default function Home() {
 
             <div>
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                업력{" "}
+                {UI.sectionMilestones}{" "}
                 <span className="ml-1 text-base font-normal text-neutral-500">
-                  When We Started
+                  {UI.sectionMilestonesEn}
                 </span>
               </h2>
               <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
@@ -312,10 +317,10 @@ export default function Home() {
         <section className="border-t border-neutral-200 py-24 text-center dark:border-neutral-800">
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              프로젝트를 준비 중이신가요?
+              {UI.finalCtaTitle}
             </h2>
             <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-              간단한 문항 몇 가지만 답해주시면, 영업일 기준 1~2일 내에 견적을 보내드립니다.
+              {UI.finalCtaSub}
             </p>
             <Link
               href="/quote/"
@@ -335,7 +340,8 @@ export default function Home() {
           </p>
           <p className="mt-3">{COMPANY.address}</p>
           <p className="mt-1">
-            대표이사 {REPRESENTATIVE.name} · 사업자등록번호 {COMPANY.businessNumber}
+            {UI.ceoLabel} {REPRESENTATIVE.name} · {UI.businessNumberLabel}{" "}
+            {COMPANY.businessNumber}
           </p>
           <p className="mt-1">
             TEL. {COMPANY.tel} · E-mail.{" "}
@@ -343,10 +349,12 @@ export default function Home() {
               {COMPANY.email}
             </a>
           </p>
-          <p className="mt-3 max-w-3xl">사업영역 · {COMPANY.businessAreas}</p>
+          <p className="mt-3 max-w-3xl">
+            {UI.businessAreasLabel} · {COMPANY.businessAreas}
+          </p>
           <div className="mt-5">
             <Link href="/privacy/" className="underline underline-offset-2">
-              개인정보처리방침
+              {UI.privacyLink}
             </Link>
           </div>
           <p className="mt-5">

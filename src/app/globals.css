@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* 자체 호스팅 Pretendard (동적 서브셋 92조각 — 필요한 구간만 내려받힙니다) */
+@import url("/fonts/pretendard.css");
 
 /*
  * 색상은 :root의 원시 변수로 선언하고, @theme inline 은 그 변수를 참조만 합니다.
@@ -43,10 +45,10 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* 웹폰트를 받지 않고 OS 기본 한글 글꼴을 씁니다. 로딩이 빠르고 외부 CDN에 의존하지 않습니다. */
+  /* Pretendard가 로드되기 전에는 OS 기본 글꼴로 먼저 보여줍니다 (font-display: swap) */
   font-family:
-    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
-    "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
 }
