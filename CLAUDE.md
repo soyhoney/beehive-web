@@ -12,6 +12,7 @@
 | [docs/OPERATIONS.md](./docs/OPERATIONS.md) | 배포 · Apps Script · 도메인 |
 | [docs/LEGACY-SITE.md](./docs/LEGACY-SITE.md) | 기존 사이트 점검 결과 |
 | [docs/TODO.md](./docs/TODO.md) | 남은 작업 |
+| [docs/WORKLOG.md](./docs/WORKLOG.md) | 작업 대화 원문 (과정 · 시행착오 포함) |
 
 ## 손대기 전에 알아둘 것
 
