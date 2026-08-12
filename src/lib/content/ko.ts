@@ -10,14 +10,14 @@ export const ko: SiteContent = {
     name: "주식회사 비하이브코퍼레이션",
     nameEn: "Beehive Corp",
     tagline: "No one achieves anything alone.",
-    serviceLine: "통역 · 번역 · 출장 수행 · 국제행사 운영",
+    serviceLine: "수행·출장 · 프로젝트 · 통역 · 번역 · 교육",
     heroSub:
-      "동시 · 순차 통역부터 문서 · 도록 번역, 국빈 수행 출장, 정부 · 공공기관 사무국 운영까지. 필요한 서비스를 고르시면 1~2분 만에 견적 문의가 완료됩니다.",
+      "통역·번역, 국제회의 기획·운영, 온라인·대면 행사 어레인지, 문서화와 시청각 테크니컬 서포트, 영어 교육 및 트레이닝까지 — 필요한 서비스를 선택하시면 바로 견적 문의가 완료됩니다.",
     philosophy:
-      "벌들의 일사불란한 움직임이 벌집을 만들 듯, 비하이브는 서로 다른 언어와 시차, 이해관계 속에서 하나의 목표를 향한 소통을 설계합니다.",
+      "혼자서 모든 것을 해낼 수 없습니다. 벌들의 일사불란한 움직임이 벌집을 만들듯, 비하이브코퍼레이션은 서로 다른 언어·시차·문화·이해관계 속에서 하나의 목표를 향한 소통을 설계합니다.",
     address: "서울시 영등포구 국제금융로2길 17, 629호 (07327)",
     tel: "010-6854-2019",
-    email: "info@beehivecorp.co.kr",
+    email: "service@beehivecorp.co.kr",
     businessNumber: "430-86-03070",
     businessAreas:
       "데이터베이스 및 온라인 정보제공업, 번역 및 통역 서비스업, 국제회의 기획 및 대행업, 외국어 교육업, 여행사업",
@@ -25,13 +25,14 @@ export const ko: SiteContent = {
   },
 
   ui: {
+    navAbout: "회사소개",
     navServices: "서비스",
-    navScope: "전문 분야",
-    navCases: "대표 사례",
-    navAbout: "회사 소개",
+    navNews: "소식",
     ctaQuote: "견적 신청하기",
     ctaExplore: "서비스 살펴보기",
-    heroHeadline: ["언어와 경계를 넘어", "소통과 실행을 이끕니다."],
+    ctaCompanyProfile: "회사소개서 다운로드",
+    ctaAndroidApp: "안드로이드 앱 다운로드",
+    heroHeadline: ["언어와 문화의 경계를 넘어", "소통과 실행을 이끌어 냅니다."],
     sectionClients: "주요 클라이언트",
     sectionClientsSub: "100+ 누적 클라이언트 · 800+ 수행 프로젝트",
     sectionServices: "어떤 도움이 필요하신가요?",
@@ -46,6 +47,7 @@ export const ko: SiteContent = {
     sectionAbout: "대표 소개",
     sectionMilestones: "업력",
     sectionMilestonesEn: "When We Started",
+    sectionSocial: "우리의 이야기, 들어보실래요?",
     finalCtaTitle: "프로젝트를 준비 중이신가요?",
     finalCtaSub:
       "간단한 문항 몇 가지만 답해주시면, 영업일 기준 1~2일 내에 견적을 보내드립니다.",
@@ -100,6 +102,11 @@ export const ko: SiteContent = {
       year: "2021",
       title: "식약처 ICCR 국제협의체 운영사무국 수주",
       desc: "식품의약품안전처 · 대한화장품협회 — 현재까지 6년 연속 운영",
+    },
+    {
+      year: "2023–2025",
+      title: "US FDA 인허가 대행사 Registrar Corp 한국사무소 대표 역임",
+      desc: "미국 FDA 인허가 컨설팅 한국 시장 대응, 국내 식품·의약품·화장품 기업의 미국 진출 자문",
     },
     {
       year: "2024",
@@ -157,6 +164,24 @@ export const ko: SiteContent = {
     "과업 수행",
     "결과 보고",
     "정산 · 세금계산서 발행",
+  ],
+
+  socials: [
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/beehivecorp2024/",
+      desc: "구인·구직·협업을 희망하신다면, 팔로우하고 소식을 받아보세요.",
+    },
+    {
+      name: "네이버 블로그",
+      url: "https://blog.naver.com/beehivecorp",
+      desc: "다양한 클라이언트의 성공 사례가 담긴 생생한 현장을 읽고 싶다면, 블로그를 구독해 주세요.",
+    },
+    {
+      name: "카카오톡 채널",
+      url: "https://pf.kakao.com/_TxhuiX",
+      desc: "현재 진행 중인 업무가 있으신가요? 카카오톡 친구추가로 신속한 팔로우업이 가능합니다.",
+    },
   ],
 
   caseStudies: [

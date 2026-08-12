@@ -3,6 +3,7 @@ import { CATEGORIES } from "@/lib/quote-flow";
 import { getContent, SHARED } from "@/lib/content";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
+import Reveal from "@/components/Reveal";
 
 export default function Home() {
   // 한국어가 기본입니다. 영문 사이트는 en.ts 번역 후 EN_ENABLED로 켭니다.
@@ -13,10 +14,10 @@ export default function Home() {
     achievements: ACHIEVEMENTS,
     representative: REPRESENTATIVE,
     milestones: MILESTONES,
-    workScope: WORK_SCOPE,
     principles: PRINCIPLES,
     process: PROCESS,
     caseStudies: CASE_STUDIES,
+    socials: SOCIALS,
   } = getContent(DEFAULT_LOCALE);
   const CLIENTS = SHARED.clients;
 
@@ -57,6 +58,22 @@ export default function Home() {
             >
               {UI.ctaExplore}
             </a>
+            <a
+              href="/downloads/beehive-company-profile-2026-07.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+            >
+              {UI.ctaCompanyProfile}
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+            >
+              {UI.ctaAndroidApp}
+            </a>
           </div>
 
           {/* 핵심 성과 */}
@@ -76,43 +93,49 @@ export default function Home() {
         </section>
 
         {/* ── 클라이언트 ───────────────────────────────────────── */}
-        <section className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
-          <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-            {UI.sectionClientsSub}
-          </p>
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <Reveal>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
+            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+              {UI.sectionClientsSub}
+            </p>
+          </Reveal>
 
           {/*
             로고는 원본이 흰 배경 JPEG이라 항상 흰 타일 위에 올립니다.
             다크 모드에서도 로고 색이 뭉개지지 않습니다.
           */}
-          <ul className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {CLIENTS.map((client) => (
-              <li
-                key={client.name}
-                title={client.name}
-                className="flex items-center justify-center rounded-lg bg-white p-3 ring-1 ring-neutral-200 dark:ring-neutral-800"
-              >
-                <img
-                  src={client.logo}
-                  alt={client.name}
-                  loading="lazy"
-                  width={300}
-                  height={100}
-                  className="h-10 w-auto max-w-full object-contain"
-                />
-              </li>
-            ))}
-          </ul>
+          <Reveal delay={100}>
+            <ul className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+              {CLIENTS.map((client) => (
+                <li
+                  key={client.name}
+                  title={client.name}
+                  className="flex items-center justify-center rounded-lg bg-white p-3 ring-1 ring-neutral-200 dark:ring-neutral-800"
+                >
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    loading="lazy"
+                    width={300}
+                    height={100}
+                    className="h-10 w-auto max-w-full object-contain"
+                  />
+                </li>
+              ))}
+            </ul>
+          </Reveal>
 
-          <ul className="mt-10 grid gap-3 sm:grid-cols-2">
-            {ACHIEVEMENTS.map((item) => (
-              <li key={item} className="flex gap-2.5 text-sm text-neutral-600 dark:text-neutral-400">
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <Reveal delay={200}>
+            <ul className="mt-10 grid gap-3 sm:grid-cols-2">
+              {ACHIEVEMENTS.map((item) => (
+                <li key={item} className="flex gap-2.5 text-sm text-neutral-600 dark:text-neutral-400">
+                  <span className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </section>
 
         {/* ── 서비스 카드 → 견적 전환 ──────────────────────────── */}
@@ -129,6 +152,7 @@ export default function Home() {
             </p>
 
             {/* 전환이 목적인 구간이라 사진 없이 텍스트 카드로 유지합니다. */}
+            <Reveal delay={100}>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {CATEGORIES.map((category) => (
                 <Link
@@ -147,26 +171,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* ── Work Scope ───────────────────────────────────────── */}
-        <section id="scope" className="py-20">
-          <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              {UI.sectionScope}{" "}
-              <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionScopeEn}</span>
-            </h2>
-            <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-              {WORK_SCOPE.map((item) => (
-                <div key={item.title}>
-                  <h3 className="text-base font-semibold">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -208,7 +213,7 @@ export default function Home() {
           id="cases"
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
-          <div className="mx-auto max-w-5xl px-6">
+          <div className="mx-auto max-w-7xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionCases}{" "}
               <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionCasesEn}</span>
@@ -309,6 +314,117 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 소식 (네이버 블로그 · SNS) ────────────────────────── */}
+        <section
+          id="news"
+          className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
+        >
+          <div className="mx-auto max-w-5xl px-6">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
+            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+              공지사항 · 대표 경력 · 프로젝트 소식은 네이버 블로그에서 확인하실 수 있습니다.
+            </p>
+
+            {/*
+              블로그 갤러리 (임시 레이아웃).
+              언니 블로그에 콘텐츠가 채워지면 네이버 RSS 또는 수동 큐레이션으로 실제 글을 연결합니다.
+              현재는 어떤 형태로 노출될지 보여주는 목업입니다.
+            */}
+            <div className="mt-10">
+              <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                공지사항
+                <span className="ml-2 text-xs font-normal text-neutral-400">(예시 — 실제 블로그 글로 교체 예정)</span>
+              </h3>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {[
+                  { title: "2026년 하반기 프로젝트 접수 안내", date: "2026.08.01" },
+                  { title: "여름 휴가 일정 공지 (8/12~8/16)", date: "2026.07.28" },
+                ].map((post) => (
+                  <a
+                    key={post.title}
+                    href="https://blog.naver.com/beehivecorp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex gap-4 rounded-xl border border-neutral-200 bg-white p-4 transition hover:border-brand hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+                  >
+                    <div className="aspect-square w-20 shrink-0 rounded-lg bg-gradient-to-br from-brand-soft to-brand/40" />
+                    <div className="flex flex-col justify-center">
+                      <p className="text-sm font-semibold group-hover:text-brand-strong">{post.title}</p>
+                      <p className="mt-1 text-xs text-neutral-500">{post.date}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                프로젝트 소식
+                <span className="ml-2 text-xs font-normal text-neutral-400">(예시 — 실제 블로그 글로 교체 예정)</span>
+              </h3>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { title: "ICCR 16회기 사무국 운영 후기", date: "2026.07.15" },
+                  { title: "스페인 교육부 장관 사절단 수행통역", date: "2026.06.22" },
+                  { title: "그라운드시소 전시 도록 번역 완료", date: "2026.05.10" },
+                  { title: "화랑미술제 개막식 5년 연속 통역", date: "2026.03.05" },
+                ].map((post) => (
+                  <a
+                    key={post.title}
+                    href="https://blog.naver.com/beehivecorp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition hover:border-brand hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+                  >
+                    <div className="aspect-[16/10] bg-gradient-to-br from-brand-soft to-brand/40" />
+                    <div className="p-4">
+                      <p className="text-sm font-semibold group-hover:text-brand-strong">{post.title}</p>
+                      <p className="mt-1 text-xs text-neutral-500">{post.date}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <a
+                href="https://blog.naver.com/beehivecorp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block rounded-lg border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
+              >
+                네이버 블로그 바로가기 →
+              </a>
+            </div>
+
+            {/* 우리의 이야기, 들어보실래요? — Instagram / Blog / KakaoTalk */}
+            <div className="mt-16 border-t border-neutral-200 pt-14 dark:border-neutral-800">
+              <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
+                {UI.sectionSocial}
+              </h3>
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                {SOCIALS.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+                  >
+                    <h4 className="text-base font-semibold">{social.name}</h4>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      {social.desc}
+                    </p>
+                    <span className="mt-5 text-sm font-semibold text-brand-strong transition group-hover:translate-x-0.5">
+                      바로가기 →
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </section>

@@ -1,6 +1,8 @@
 @import "tailwindcss";
-/* 자체 호스팅 Pretendard (동적 서브셋 92조각 — 필요한 구간만 내려받힙니다) */
-@import url("/fonts/pretendard.css");
+/*
+ * Pretendard(자체 호스팅, 동적 서브셋)는 app/layout.tsx의 <head> 에서 <link>로 로드합니다.
+ * Next.js 16(Turbopack)이 CSS 내 서버 절대경로 @import 를 지원하지 않기 때문입니다.
+ */
 
 /*
  * 색상은 :root의 원시 변수로 선언하고, @theme inline 은 그 변수를 참조만 합니다.

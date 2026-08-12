@@ -62,14 +62,21 @@ export interface Client {
   logo: string;
 }
 
+export interface Social {
+  name: string;
+  url: string;
+  desc: string;
+}
+
 /** 화면에 반복해서 쓰이는 짧은 문구들 */
 export interface UiStrings {
-  navServices: string;
-  navScope: string;
-  navCases: string;
   navAbout: string;
+  navServices: string;
+  navNews: string;
   ctaQuote: string;
   ctaExplore: string;
+  ctaCompanyProfile: string;
+  ctaAndroidApp: string;
   heroHeadline: readonly string[];
   sectionClients: string;
   sectionClientsSub: string;
@@ -84,6 +91,7 @@ export interface UiStrings {
   sectionAbout: string;
   sectionMilestones: string;
   sectionMilestonesEn: string;
+  sectionSocial: string;
   finalCtaTitle: string;
   finalCtaSub: string;
   cardCta: string;
@@ -104,6 +112,7 @@ export interface SiteContent {
   principles: readonly TitleDesc[];
   process: readonly string[];
   caseStudies: readonly CaseStudy[];
+  socials: readonly Social[];
 }
 
 /**

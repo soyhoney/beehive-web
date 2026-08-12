@@ -7,15 +7,14 @@ export default function TopBar() {
   const UI = getContent(DEFAULT_LOCALE).ui;
 
   const nav = [
-    { href: "/#services", label: UI.navServices },
-    { href: "/#scope", label: UI.navScope },
-    { href: "/#cases", label: UI.navCases },
     { href: "/#about", label: UI.navAbout },
+    { href: "/#services", label: UI.navServices },
+    { href: "/#news", label: UI.navNews },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/85 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/85">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-6">
+      <div className="mx-auto flex h-20 max-w-5xl items-center justify-between gap-4 px-6">
         <Link href="/" aria-label="비하이브코퍼레이션 홈">
           <Logo />
         </Link>

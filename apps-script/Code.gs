@@ -25,13 +25,17 @@
 const SHEET_ID = "1TevGPb4W2UBF19FJL5StSA_4JNi_MasBTzD-hoOSZ-A";
 
 /** 접수 알림을 받을 내부 담당자 주소. 쉼표로 여러 명 지정 가능. */
-const NOTIFY_TO = "info@beehivecorp.co.kr";
+const NOTIFY_TO = "service@beehivecorp.co.kr";
 /** 고객에게 보내는 메일의 발신자 표시 이름 */
 const SENDER_NAME = "비하이브코퍼레이션";
 /** 모든 문의가 모이는 탭 이름 */
 const ALL_SHEET = "전체";
-/** 첨부파일이 저장될 구글 드라이브 폴더 이름 (없으면 자동 생성) */
-const DRIVE_FOLDER = "비하이브 견적문의 첨부파일";
+/**
+ * 첨부파일이 저장될 구글 드라이브 폴더 ID.
+ * 폴더 URL의 /folders/ 뒤 문자열입니다.
+ *   https://drive.google.com/drive/folders/<이 부분>
+ */
+const DRIVE_FOLDER_ID = "1aTOswvZYbZMxVwfdexIvHXa2DESnkcHd";
 // ====================================================================
 
 /** 데이터를 쌓을 스프레드시트를 연다. */
@@ -146,7 +150,7 @@ function toBlobs_(files) {
 }
 
 /**
- * 첨부파일을 드라이브에 보관한다. (DRIVE_FOLDER 아래 접수번호 폴더)
+ * 첨부파일을 드라이브에 보관한다. (DRIVE_FOLDER_ID 아래 접수번호 폴더)
  *
  * 드라이브 권한이 없으면 저장을 건너뛰고 빈 배열을 돌려준다.
  * 이 경우에도 접수는 정상 처리되고 파일은 담당자 메일에 첨부되므로 업무엔 지장이 없다.
@@ -156,8 +160,7 @@ function saveToDrive_(refNo, blobs) {
   if (!blobs.length) return [];
 
   try {
-    const parents = DriveApp.getFoldersByName(DRIVE_FOLDER);
-    const root = parents.hasNext() ? parents.next() : DriveApp.createFolder(DRIVE_FOLDER);
+    const root = DriveApp.getFolderById(DRIVE_FOLDER_ID);
     const folder = root.createFolder(refNo);
 
     return blobs.map(function (blob) {
@@ -322,7 +325,7 @@ function confirmToCustomer_(refNo, common, raw) {
     "주식회사 비하이브코퍼레이션\n" +
     "서울시 영등포구 국제금융로2길 17, 629호 (07327)\n" +
     "TEL. 010-6854-2019\n" +
-    "E-mail. info@beehivecorp.co.kr\n";
+    "E-mail. service@beehivecorp.co.kr\n";
 
   MailApp.sendEmail({
     to: common["이메일"],

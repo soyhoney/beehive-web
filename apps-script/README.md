@@ -34,7 +34,7 @@
 4. 파일 맨 위 설정을 확인합니다.
 
    ```js
-   const NOTIFY_TO = "info@beehivecorp.co.kr";  // 접수 알림 받을 주소
+   const NOTIFY_TO = "service@beehivecorp.co.kr";  // 접수 알림 받을 주소
    ```
 
 5. 저장합니다. (⌘S)

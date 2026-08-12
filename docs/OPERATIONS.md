@@ -74,7 +74,7 @@ NEXT_PUBLIC_QUOTE_ENDPOINT=https://script.google.com/macros/s/.../exec
 |---|---|
 | `SHEET_ID` | 데이터를 쌓을 시트 |
 | `NOTIFY_TO` | 접수 알림 받을 주소 |
-| `DRIVE_FOLDER` | 첨부파일 보관 폴더명 |
+| `DRIVE_FOLDER_ID` | 첨부파일 보관 폴더 ID (드라이브 URL의 `/folders/` 뒤 문자열) |
 
 ## 시트 구조
 
