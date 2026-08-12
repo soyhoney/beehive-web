@@ -68,6 +68,17 @@ export interface Social {
   desc: string;
 }
 
+export interface Testimonial {
+  /** 성함 */
+  name: string;
+  /** 직함 (예: 팀장 / 큐레이터 / PD) */
+  title: string;
+  /** 소속 (예: OO기관 / OO스튜디오) */
+  affiliation: string;
+  /** 리뷰 본문. 200자 내외 권장 */
+  review: string;
+}
+
 /** 화면에 반복해서 쓰이는 짧은 문구들 */
 export interface UiStrings {
   navAbout: string;
@@ -92,6 +103,9 @@ export interface UiStrings {
   sectionMilestones: string;
   sectionMilestonesEn: string;
   sectionSocial: string;
+  sectionTestimonials: string;
+  sectionTestimonialsSub: string;
+  testimonialsFormCta: string;
   finalCtaTitle: string;
   finalCtaSub: string;
   cardCta: string;
@@ -113,6 +127,7 @@ export interface SiteContent {
   process: readonly string[];
   caseStudies: readonly CaseStudy[];
   socials: readonly Social[];
+  testimonials: readonly Testimonial[];
 }
 
 /**
@@ -122,4 +137,6 @@ export interface SiteContent {
 export interface SharedAssets {
   clients: readonly Client[];
   categoryPhotos: Record<string, { src: string; alt: string }>;
+  /** 후기 수집용 Google Form URL. 없으면 CTA 자체가 숨겨집니다. */
+  testimonialFormUrl?: string;
 }

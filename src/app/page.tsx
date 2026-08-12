@@ -4,6 +4,7 @@ import { getContent, SHARED } from "@/lib/content";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
 import Reveal from "@/components/Reveal";
+import TestimonialsMarquee from "@/components/TestimonialsMarquee";
 import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
 
 /** 소셜 카드에 매핑할 브랜드 아이콘. socials 배열의 name과 매칭됩니다. */
@@ -26,8 +27,10 @@ export default function Home() {
     process: PROCESS,
     caseStudies: CASE_STUDIES,
     socials: SOCIALS,
+    testimonials: TESTIMONIALS,
   } = getContent(DEFAULT_LOCALE);
   const CLIENTS = SHARED.clients;
+  const TESTIMONIAL_FORM_URL = SHARED.testimonialFormUrl;
 
   return (
     <>
@@ -150,6 +153,39 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+          </Reveal>
+
+          {/*
+            고객 후기 캐러셀 — 로고월 바로 아래, 성과 리스트 위.
+            "이 회사들 담당했다 → 담당자들이 이렇게 말한다 → 구체적 성과"로 이어지는 흐름입니다.
+            현재는 dummy 5건이고, 실제 후기가 수집되면 ko.ts의 testimonials 배열을 교체합니다.
+          */}
+          <Reveal delay={150}>
+            <div className="mt-14 border-t border-neutral-200 pt-10 dark:border-neutral-800">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
+                    {UI.sectionTestimonials}
+                  </h3>
+                  <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                    {UI.sectionTestimonialsSub}
+                  </p>
+                </div>
+                {TESTIMONIAL_FORM_URL && (
+                  <a
+                    href={TESTIMONIAL_FORM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-4 py-2 text-xs font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
+                  >
+                    {UI.testimonialsFormCta} →
+                  </a>
+                )}
+              </div>
+              <div className="mt-6">
+                <TestimonialsMarquee items={TESTIMONIALS} />
+              </div>
+            </div>
           </Reveal>
 
           <Reveal delay={200}>

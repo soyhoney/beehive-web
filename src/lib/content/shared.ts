@@ -69,4 +69,10 @@ const clients: SharedAssets["clients"] = [
   { name: "KMA", logo: "/clients/kma.jpg" },
 ];
 
-export const SHARED: SharedAssets = { clients, categoryPhotos };
+/*
+ * 후기 수집용 Google Form URL.
+ * 언니가 폼을 만들면 여기에 URL을 채웁니다. 비어 있으면 화면에서 CTA 자체가 숨겨집니다.
+ */
+const testimonialFormUrl = "";
+
+export const SHARED: SharedAssets = { clients, categoryPhotos, testimonialFormUrl };

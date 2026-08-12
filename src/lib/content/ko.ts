@@ -48,6 +48,10 @@ export const ko: SiteContent = {
     sectionMilestones: "업력",
     sectionMilestonesEn: "When We Started",
     sectionSocial: "우리의 이야기, 들어보실래요?",
+    sectionTestimonials: "고객 후기",
+    sectionTestimonialsSub:
+      "함께 일해주신 담당자분들이 남겨주신 이야기입니다.",
+    testimonialsFormCta: "후기 남기기",
     finalCtaTitle: "프로젝트를 준비 중이신가요?",
     finalCtaSub:
       "간단한 문항 몇 가지만 답해주시면, 영업일 기준 1~2일 내에 견적을 보내드립니다.",
@@ -234,6 +238,48 @@ export const ko: SiteContent = {
         "내레이션 대본 · 출품 피칭 스크립트 · 카탈로그 번역",
         "EIDF 서울산업진흥원 다큐멘터리 부문 최우수상 · 2023 전주국제영화제 출품작",
       ],
+    },
+  ],
+
+  /*
+   * 임시 dummy 후기 — 실제 후기가 수집되면 이 배열을 교체합니다.
+   * 소속·직함·성함·리뷰 4개 필드로 통일. 리뷰는 200자 내외.
+   */
+  testimonials: [
+    {
+      name: "김OO",
+      title: "사무국장",
+      affiliation: "정부기관 A",
+      review:
+        "회기 운영부터 회의록 번역까지 매끄럽게 이어졌습니다. 담당자가 자주 바뀌는 조직이라 인수인계가 늘 부담이었는데, 비하이브 팀 덕분에 프로세스 자체가 안정됐어요.",
+    },
+    {
+      name: "이OO",
+      title: "PD",
+      affiliation: "글로벌 브랜드 캠페인",
+      review:
+        "촬영 현장은 대본 밖 상황이 늘 생기는데, 통역이 흐름을 끊지 않고 오히려 만들어 주셨습니다. 해외 아트디렉터와 한국 제작팀 사이에서 리듬을 조율해 주신 게 결정적이었어요.",
+    },
+    {
+      name: "박OO",
+      title: "큐레이터",
+      affiliation: "미술관·전시 기획",
+      review:
+        "도록 번역이 단순히 정확한 게 아니라, 작가의 톤을 그대로 옮겨 주셨어요. 사전 리서치와 전문가 검수를 함께 진행해 주신 덕분에 오픈 일정을 지킬 수 있었습니다.",
+    },
+    {
+      name: "정OO",
+      title: "팀장",
+      affiliation: "제약·바이오 기업",
+      review:
+        "GMP 감사 통역은 용어 하나가 결과를 바꾸는 자리인데, 사전 브리핑부터 감사 종료까지 흔들림 없이 이끌어 주셨습니다. 다음 감사도 같이 갈 예정입니다.",
+    },
+    {
+      name: "최OO",
+      title: "대표",
+      affiliation: "스타트업 IR",
+      review:
+        "해외 투자자 대상 IR 자료 번역과 발표 코칭을 함께 받았습니다. 표현 하나하나가 어색하지 않으면서 우리 색깔을 잃지 않아서, 미팅에서 자신감이 붙었어요.",
     },
   ],
 };
