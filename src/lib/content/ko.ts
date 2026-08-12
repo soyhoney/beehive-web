@@ -20,7 +20,7 @@ export const ko: SiteContent = {
     email: "service@beehivecorp.co.kr",
     businessNumber: "430-86-03070",
     businessAreas:
-      "데이터베이스 및 온라인 정보제공업, 번역 및 통역 서비스업, 국제회의 기획 및 대행업, 외국어 교육업, 여행사업",
+      "데이터베이스 및 온라인 정보제공업, 번역 및 통역 서비스업, 국제회의 기획 및 대행업, 외국어 교육업, 여행업",
     since: 2016,
   },
 

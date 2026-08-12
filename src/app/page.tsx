@@ -97,6 +97,7 @@ export default function Home() {
       <TopBar />
 
       <main>
+
         {/* ── 히어로 ───────────────────────────────────────────── */}
         <section className="mx-auto max-w-5xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20">
           {/* 무슨 회사인지부터 밝힙니다. 처음 온 사람은 감성 카피보다 이게 먼저입니다. */}
@@ -185,6 +186,7 @@ export default function Home() {
           </dl>
         </section>
 
+
         {/* ── 클라이언트 ───────────────────────────────────────── */}
         <section className="mx-auto max-w-7xl px-6 py-20">
           <Reveal>
@@ -219,39 +221,6 @@ export default function Home() {
             </ul>
           </Reveal>
 
-          {/*
-            고객 후기 캐러셀 — 로고월 바로 아래, 성과 리스트 위.
-            "이 회사들 담당했다 → 담당자들이 이렇게 말한다 → 구체적 성과"로 이어지는 흐름입니다.
-            현재는 dummy 5건이고, 실제 후기가 수집되면 ko.ts의 testimonials 배열을 교체합니다.
-          */}
-          <Reveal delay={150}>
-            <div className="mt-14 border-t border-neutral-200 pt-10 dark:border-neutral-800">
-              <div className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
-                    {UI.sectionTestimonials}
-                  </h3>
-                  <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                    {UI.sectionTestimonialsSub}
-                  </p>
-                </div>
-                {TESTIMONIAL_FORM_URL && (
-                  <a
-                    href={TESTIMONIAL_FORM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-4 py-2 text-xs font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
-                  >
-                    {UI.testimonialsFormCta} →
-                  </a>
-                )}
-              </div>
-              <div className="mt-6">
-                <TestimonialsMarquee items={TESTIMONIALS} />
-              </div>
-            </div>
-          </Reveal>
-
           <Reveal delay={200}>
             <ul className="mt-10 grid gap-3 sm:grid-cols-2">
               {ACHIEVEMENTS.map((item) => (
@@ -263,6 +232,7 @@ export default function Home() {
             </ul>
           </Reveal>
         </section>
+
 
         {/* ── 서비스 카드 → 견적 전환 ──────────────────────────── */}
         <section
@@ -301,43 +271,63 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── 작업 방식 ────────────────────────────────────────── */}
-        <section id="how" className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {UI.sectionHow} <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionHowEn}</span>
-          </h2>
 
-          <div className="mt-10 grid gap-8 sm:grid-cols-3">
-            {PRINCIPLES.map((item) => (
-              <div key={item.title}>
-                <h3 className="text-base font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
+        {/* ── 대표 소개 · 연혁 ─────────────────────────────────── */}
+        <section id="about" className="mx-auto max-w-5xl px-6 py-20">
+          <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
+              <p className="mt-6 text-lg font-semibold">
+                {REPRESENTATIVE.name}
+                <span className="ml-2 text-sm font-normal text-neutral-500">
+                  {REPRESENTATIVE.title} · {REPRESENTATIVE.nameEn}
+                </span>
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                {REPRESENTATIVE.intro}
+              </p>
+
+              <ul className="mt-6 space-y-2.5">
+                {REPRESENTATIVE.career.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-2.5 text-sm text-neutral-600 dark:text-neutral-400"
+                  >
+                    <span className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                {UI.sectionMilestones}{" "}
+                <span className="ml-1 text-base font-normal text-neutral-500">
+                  {UI.sectionMilestonesEn}
+                </span>
+              </h2>
+              <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
+                {MILESTONES.map((milestone) => (
+                  <li key={milestone.year} className="relative">
+                    <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
+                    <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
+                    <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
+                    <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      {milestone.desc}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
-
-          {/* 진행 단계 */}
-          <ol className="mt-14 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {PROCESS.map((step, index) => (
-              <li
-                key={step}
-                className="rounded-xl border border-neutral-200 px-4 py-4 dark:border-neutral-800"
-              >
-                <div className="text-xs font-semibold text-brand-strong">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-                <div className="mt-1.5 text-sm font-medium">{step}</div>
-              </li>
-            ))}
-          </ol>
         </section>
+
 
         {/* ── 대표 사례 ────────────────────────────────────────── */}
         <section
           id="cases"
-          className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
+          className="py-20"
         >
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -393,56 +383,78 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── 대표 소개 · 연혁 ─────────────────────────────────── */}
-        <section id="about" className="mx-auto max-w-5xl px-6 py-20">
-          <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
-              <p className="mt-6 text-lg font-semibold">
-                {REPRESENTATIVE.name}
-                <span className="ml-2 text-sm font-normal text-neutral-500">
-                  {REPRESENTATIVE.title} · {REPRESENTATIVE.nameEn}
-                </span>
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                {REPRESENTATIVE.intro}
-              </p>
 
-              <ul className="mt-6 space-y-2.5">
-                {REPRESENTATIVE.career.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-2.5 text-sm text-neutral-600 dark:text-neutral-400"
-                  >
-                    <span className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+        {/* ── 고객 후기 ────────────────────────────────────────── */}
+        <section className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="mx-auto max-w-5xl px-6">
+        {/*
+          고객 후기 캐러셀 — 로고월 바로 아래, 성과 리스트 위.
+          "이 회사들 담당했다 → 담당자들이 이렇게 말한다 → 구체적 성과"로 이어지는 흐름입니다.
+          현재는 dummy 5건이고, 실제 후기가 수집되면 ko.ts의 testimonials 배열을 교체합니다.
+        */}
+        <Reveal delay={150}>
+          <div className="mt-14 border-t border-neutral-200 pt-10 dark:border-neutral-800">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
+                  {UI.sectionTestimonials}
+                </h3>
+                <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  {UI.sectionTestimonialsSub}
+                </p>
+              </div>
+              {TESTIMONIAL_FORM_URL && (
+                <a
+                  href={TESTIMONIAL_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-4 py-2 text-xs font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
+                >
+                  {UI.testimonialsFormCta} →
+                </a>
+              )}
             </div>
-
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                {UI.sectionMilestones}{" "}
-                <span className="ml-1 text-base font-normal text-neutral-500">
-                  {UI.sectionMilestonesEn}
-                </span>
-              </h2>
-              <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
-                {MILESTONES.map((milestone) => (
-                  <li key={milestone.year} className="relative">
-                    <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
-                    <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
-                    <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
-                    <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                      {milestone.desc}
-                    </div>
-                  </li>
-                ))}
-              </ol>
+            <div className="mt-6">
+              <TestimonialsMarquee items={TESTIMONIALS} />
             </div>
           </div>
+        </Reveal>
+          </div>
         </section>
+
+        {/* ── 작업 방식 ────────────────────────────────────────── */}
+        <section id="how" className="mx-auto max-w-5xl px-6 py-20">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {UI.sectionHow} <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionHowEn}</span>
+          </h2>
+
+          <div className="mt-10 grid gap-8 sm:grid-cols-3">
+            {PRINCIPLES.map((item) => (
+              <div key={item.title}>
+                <h3 className="text-base font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* 진행 단계 */}
+          <ol className="mt-14 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {PROCESS.map((step, index) => (
+              <li
+                key={step}
+                className="rounded-xl border border-neutral-200 px-4 py-4 dark:border-neutral-800"
+              >
+                <div className="text-xs font-semibold text-brand-strong">
+                  {String(index + 1).padStart(2, "0")}
+                </div>
+                <div className="mt-1.5 text-sm font-medium">{step}</div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
 
         {/* ── 소식 (네이버 블로그 · SNS) ────────────────────────── */}
         <section
@@ -522,6 +534,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
 
         {/* ── 마무리 CTA ───────────────────────────────────────── */}
         <section className="border-t border-neutral-200 py-24 text-center dark:border-neutral-800">
