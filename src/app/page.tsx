@@ -5,7 +5,67 @@ import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
 import Reveal from "@/components/Reveal";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
+import NoticesBoard from "@/components/NoticesBoard";
+import BlogPosts from "@/components/BlogPosts";
+import type { Notice } from "@/lib/notices";
+import type { Post } from "@/lib/posts";
 import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
+
+/**
+ * 시트가 아직 비어 있거나 엔드포인트가 미설정일 때 화면이 비어 보이지 않도록 두는 fallback.
+ * 언니가 시트에 한 줄이라도 넣으면 자동으로 이 배열은 사용되지 않습니다.
+ */
+const NOTICE_FALLBACK: readonly Notice[] = [
+  {
+    id: "sample-1",
+    pinned: true,
+    title: "웹사이트 개설을 완료하였습니다.",
+    body: "비하이브코퍼레이션 웹사이트를 오픈했습니다. 문의는 service@beehivecorp.co.kr 로 편하게 남겨 주세요.",
+    link: "",
+    image: "",
+    date: "2026-08-12",
+  },
+  {
+    id: "sample-2",
+    pinned: false,
+    title: "여름 휴가 일정 안내 (8/12~8/16)",
+    body: "휴가 기간 동안 문의 응답이 지연될 수 있습니다. 급한 건은 담당자 개별 연락 부탁드립니다.",
+    link: "",
+    image: "",
+    date: "2026-07-28",
+  },
+];
+
+/**
+ * 시트가 비어 있을 때 자리를 지키는 소식 fallback.
+ * 언니가 posts 시트에 한 줄이라도 넣으면 자동으로 교체됩니다.
+ */
+const POST_FALLBACK: readonly Post[] = [
+  {
+    id: "sample-1",
+    title: "ICCR 16회기 사무국 운영 후기",
+    link: "https://blog.naver.com/beehivecorp",
+    date: "2026-07-15",
+  },
+  {
+    id: "sample-2",
+    title: "스페인 교육부 장관 사절단 수행통역",
+    link: "https://blog.naver.com/beehivecorp",
+    date: "2026-06-22",
+  },
+  {
+    id: "sample-3",
+    title: "그라운드시소 전시 도록 번역 완료",
+    link: "https://blog.naver.com/beehivecorp",
+    date: "2026-05-10",
+  },
+  {
+    id: "sample-4",
+    title: "화랑미술제 개막식 5년 연속 통역",
+    link: "https://blog.naver.com/beehivecorp",
+    date: "2026-03-05",
+  },
+];
 
 /** 소셜 카드에 매핑할 브랜드 아이콘. socials 배열의 name과 매칭됩니다. */
 const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -72,13 +132,16 @@ export default function Home() {
             </a>
           </div>
 
-          {/* 2차 CTA — 다운로드는 작게 묶어 위계를 낮춥니다. */}
+          {/*
+            2차 CTA — 두 다운로드를 Google Play 뱃지 높이(h-11)에 맞춘 pill로 통일해
+            시각 무게를 맞춥니다.
+          */}
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <a
               href="/downloads/beehive-company-profile-2026-07.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-neutral-600 underline-offset-4 transition hover:text-brand-strong hover:underline dark:text-neutral-400"
+              className="inline-flex h-11 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-700 transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -95,6 +158,7 @@ export default function Home() {
               aria-label={UI.ctaAndroidApp}
               className="inline-block transition hover:opacity-80"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/badges/google-play.png"
                 alt="Get it on Google Play"
@@ -388,68 +452,31 @@ export default function Home() {
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              공지사항과 대표 경력은 네이버 블로그에서 확인하실 수 있습니다.
+              공지사항은 구글 시트에서, 소식은 네이버 블로그에서 관리됩니다.
             </p>
 
             {/*
-              블로그 갤러리 (임시 레이아웃).
-              언니 블로그에 콘텐츠가 채워지면 네이버 RSS 또는 수동 큐레이션으로 실제 글을 연결합니다.
-              현재는 어떤 형태로 노출될지 보여주는 목업입니다.
+              공지사항: 언니가 시트에 한 줄 추가하면 여기에 카드가 뜹니다.
+              시트 스키마와 반영 흐름은 docs/CONTENT-SHEETS.md 참고.
+              엔드포인트가 응답하지 않을 때는 fallback 카드로 자리를 지킵니다.
             */}
             <div className="mt-10">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 공지사항
-                <span className="ml-2 text-xs font-normal text-neutral-400">(예시 — 실제 블로그 글로 교체 예정)</span>
               </h3>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {[
-                  { title: "2026년 하반기 프로젝트 접수 안내", date: "2026.08.01" },
-                  { title: "여름 휴가 일정 공지 (8/12~8/16)", date: "2026.07.28" },
-                ].map((post) => (
-                  <a
-                    key={post.title}
-                    href="https://blog.naver.com/beehivecorp"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex gap-4 rounded-xl border border-neutral-200 bg-white p-4 transition hover:border-brand hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
-                  >
-                    <div className="aspect-square w-20 shrink-0 rounded-lg bg-gradient-to-br from-brand-soft to-brand/40" />
-                    <div className="flex flex-col justify-center">
-                      <p className="text-sm font-semibold group-hover:text-brand-strong">{post.title}</p>
-                      <p className="mt-1 text-xs text-neutral-500">{post.date}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
+              <NoticesBoard fallback={NOTICE_FALLBACK} />
             </div>
 
-            <div className="mt-10">
+            {/*
+              소식: 언니가 시트(posts 탭)에서 관리.
+              행에는 "소식" 뱃지가 상시 붙고, 블로그 URL이 있으면 클릭 시 새 탭으로 이동합니다.
+            */}
+            <div className="mt-14">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                대표 경력
-                <span className="ml-2 text-xs font-normal text-neutral-400">(예시 — 실제 블로그 글로 교체 예정)</span>
+                소식
+                <span className="ml-2 text-xs font-normal text-neutral-400">(네이버 블로그)</span>
               </h3>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                  { title: "ICCR 16회기 사무국 운영 후기", date: "2026.07.15" },
-                  { title: "스페인 교육부 장관 사절단 수행통역", date: "2026.06.22" },
-                  { title: "그라운드시소 전시 도록 번역 완료", date: "2026.05.10" },
-                  { title: "화랑미술제 개막식 5년 연속 통역", date: "2026.03.05" },
-                ].map((post) => (
-                  <a
-                    key={post.title}
-                    href="https://blog.naver.com/beehivecorp"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition hover:border-brand hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
-                  >
-                    <div className="aspect-[16/10] bg-gradient-to-br from-brand-soft to-brand/40" />
-                    <div className="p-4">
-                      <p className="text-sm font-semibold group-hover:text-brand-strong">{post.title}</p>
-                      <p className="mt-1 text-xs text-neutral-500">{post.date}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
+              <BlogPosts fallback={POST_FALLBACK} />
             </div>
 
             <div className="mt-8">

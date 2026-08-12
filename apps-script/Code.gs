@@ -31,6 +31,16 @@ const SENDER_NAME = "비하이브코퍼레이션";
 /** 모든 문의가 모이는 탭 이름 */
 const ALL_SHEET = "전체";
 /**
+ * 언니가 사이트에 노출할 콘텐츠를 관리하는 탭들.
+ * 스키마는 docs/CONTENT-SHEETS.md 참고.
+ *
+ *   notices — 공지사항. A 번호 · B 공지(체크박스, 체크 시 "공지" 뱃지 · 미체크 시 "안내" 뱃지)
+ *                       · C 제목 · D 본문 · E 링크 · F 이미지URL(미사용) · G 등록일
+ *   posts   — 소식(블로그). A 번호 · B 제목 · C 블로그URL · D 등록일
+ */
+const NOTICES_SHEET = "notices";
+const POSTS_SHEET = "posts";
+/**
  * 첨부파일이 저장될 구글 드라이브 폴더 ID.
  * 폴더 URL의 /folders/ 뒤 문자열입니다.
  *   https://drive.google.com/drive/folders/<이 부분>
@@ -118,8 +128,16 @@ function doPost(e) {
   }
 }
 
-/** 브라우저에서 주소를 열었을 때 동작 확인용 */
-function doGet() {
+/**
+ * GET 엔드포인트.
+ * - `?type=notices` : 공지사항 목록
+ * - `?type=posts`   : 소식(블로그) 목록
+ * - 그 외           : 동작 확인용 상태 응답
+ */
+function doGet(e) {
+  const params = (e && e.parameter) || {};
+  if (params.type === "notices") return json_(listNotices_());
+  if (params.type === "posts") return json_(listPosts_());
   return json_({ ok: true, service: "beehive-quote-intake" });
 }
 
@@ -127,6 +145,83 @@ function json_(object) {
   return ContentService.createTextOutput(JSON.stringify(object)).setMimeType(
     ContentService.MimeType.JSON,
   );
+}
+
+/**
+ * 공지사항 목록을 읽어 배열로 돌려준다.
+ * 제목이 비어 있는 행은 무시하며, 공지(B열 체크박스) 행이 위로 오도록 정렬한다.
+ */
+function listNotices_() {
+  const book = book_();
+  const sheet = book.getSheetByName(NOTICES_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
+
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+  const items = rows
+    .filter(function (row) {
+      return String(row[2] || "").trim().length > 0;
+    })
+    .map(function (row) {
+      return {
+        id: String(row[0] || "").trim(),
+        pinned: row[1] === true || String(row[1]).toLowerCase() === "true",
+        title: String(row[2] || "").trim(),
+        body: String(row[3] || "").trim(),
+        link: String(row[4] || "").trim(),
+        image: String(row[5] || "").trim(),
+        date: formatNoticeDate_(row[6]),
+      };
+    });
+
+  // 최신 등록일 우선, 공지는 다시 위로.
+  items.sort(function (a, b) {
+    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+  });
+  items.sort(function (a, b) {
+    if (a.pinned === b.pinned) return 0;
+    return a.pinned ? -1 : 1;
+  });
+
+  return { ok: true, items: items };
+}
+
+function formatNoticeDate_(value) {
+  if (!value) return "";
+  if (value instanceof Date) {
+    return Utilities.formatDate(value, "Asia/Seoul", "yyyy-MM-dd");
+  }
+  return String(value).trim();
+}
+
+/**
+ * 소식(블로그) 목록.
+ * 제목이 비어 있는 행은 무시하며 등록일 최신순으로 정렬한다.
+ * 컬럼: A 번호 · B 제목 · C 블로그URL · D 등록일 (이미지는 사용하지 않음)
+ */
+function listPosts_() {
+  const book = book_();
+  const sheet = book.getSheetByName(POSTS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
+
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
+  const items = rows
+    .filter(function (row) {
+      return String(row[1] || "").trim().length > 0;
+    })
+    .map(function (row) {
+      return {
+        id: String(row[0] || "").trim(),
+        title: String(row[1] || "").trim(),
+        link: String(row[2] || "").trim(),
+        date: formatNoticeDate_(row[3]),
+      };
+    });
+
+  items.sort(function (a, b) {
+    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+  });
+
+  return { ok: true, items: items };
 }
 
 /** 전송받은 base64 파일들을 메일에 첨부할 수 있는 Blob으로 바꾼다. */
