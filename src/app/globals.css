@@ -13,12 +13,12 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* 로고의 육각형 골드톤에서 뽑은 브랜드 컬러 */
-  --brand: #edc04f;
-  --brand-strong: #d6a52f;
+  /* 로고 육각형에서 직접 샘플링한 브랜드 컬러 (2026-08-12 언니 요청 반영) */
+  --brand: #fab943;
+  --brand-strong: #e39818;
   /* 선택된 항목의 배경 — 본문 글자색이 그대로 읽혀야 합니다 */
-  --brand-soft: #fdf5e0;
-  --brand-border: #e0ad33;
+  --brand-soft: #fef4dc;
+  --brand-border: #d68e26;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,10 +27,10 @@
     --foreground: #ededed;
 
     /* 다크에서는 골드를 밝게, 배경 틴트는 어둡게 뒤집습니다 */
-    --brand: #edc04f;
-    --brand-strong: #f0cd71;
-    --brand-soft: #2e2513;
-    --brand-border: #b98d22;
+    --brand: #fab943;
+    --brand-strong: #fdca6a;
+    --brand-soft: #33240d;
+    --brand-border: #b47c1c;
   }
 }
 

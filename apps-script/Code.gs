@@ -22,7 +22,7 @@
  *
  * 빈 문자열로 두면 이 스크립트가 붙어 있는 시트에 쌓습니다.
  */
-const SHEET_ID = "1TevGPb4W2UBF19FJL5StSA_4JNi_MasBTzD-hoOSZ-A";
+const SHEET_ID = "1YPBa-A5qQlGe3L3NvXv0ONZzpuWLMhz6BuFm7Tjar3k";
 
 /** 접수 알림을 받을 내부 담당자 주소. 쉼표로 여러 명 지정 가능. */
 const NOTIFY_TO = "service@beehivecorp.co.kr";

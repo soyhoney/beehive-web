@@ -4,6 +4,14 @@ import { getContent, SHARED } from "@/lib/content";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
 import Reveal from "@/components/Reveal";
+import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
+
+/** 소셜 카드에 매핑할 브랜드 아이콘. socials 배열의 name과 매칭됩니다. */
+const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Instagram: InstagramIcon,
+  "네이버 블로그": NaverIcon,
+  "카카오톡 채널": KakaoIcon,
+};
 
 export default function Home() {
   // 한국어가 기본입니다. 영문 사이트는 en.ts 번역 후 EN_ENABLED로 켭니다.
@@ -45,6 +53,7 @@ export default function Home() {
             {COMPANY.philosophy}
           </p>
 
+          {/* 1차 CTA — 견적 전환이 목적이므로 두 버튼만 크게 남깁니다. */}
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/quote/"
@@ -58,21 +67,38 @@ export default function Home() {
             >
               {UI.ctaExplore}
             </a>
+          </div>
+
+          {/* 2차 CTA — 다운로드는 작게 묶어 위계를 낮춥니다. */}
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             <a
               href="/downloads/beehive-company-profile-2026-07.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+              className="inline-flex items-center gap-1.5 text-sm text-neutral-600 underline-offset-4 transition hover:text-brand-strong hover:underline dark:text-neutral-400"
             >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <polyline points="9 15 12 18 15 15" />
+              </svg>
               {UI.ctaCompanyProfile}
             </a>
             <a
               href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+              aria-label={UI.ctaAndroidApp}
+              className="inline-block transition hover:opacity-80"
             >
-              {UI.ctaAndroidApp}
+              <img
+                src="/badges/google-play.png"
+                alt="Get it on Google Play"
+                width={155}
+                height={46}
+                className="h-11 w-auto"
+              />
             </a>
           </div>
 
@@ -326,7 +352,7 @@ export default function Home() {
           <div className="mx-auto max-w-5xl px-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              공지사항 · 대표 경력 · 프로젝트 소식은 네이버 블로그에서 확인하실 수 있습니다.
+              공지사항과 대표 경력은 네이버 블로그에서 확인하실 수 있습니다.
             </p>
 
             {/*
@@ -363,7 +389,7 @@ export default function Home() {
 
             <div className="mt-10">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                프로젝트 소식
+                대표 경력
                 <span className="ml-2 text-xs font-normal text-neutral-400">(예시 — 실제 블로그 글로 교체 예정)</span>
               </h3>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -395,8 +421,9 @@ export default function Home() {
                 href="https://blog.naver.com/beehivecorp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block rounded-lg border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
+                className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
               >
+                <NaverIcon className="h-5 w-5" />
                 네이버 블로그 바로가기 →
               </a>
             </div>
@@ -407,23 +434,27 @@ export default function Home() {
                 {UI.sectionSocial}
               </h3>
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {SOCIALS.map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
-                  >
-                    <h4 className="text-base font-semibold">{social.name}</h4>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                      {social.desc}
-                    </p>
-                    <span className="mt-5 text-sm font-semibold text-brand-strong transition group-hover:translate-x-0.5">
-                      바로가기 →
-                    </span>
-                  </a>
-                ))}
+                {SOCIALS.map((social) => {
+                  const Icon = SOCIAL_ICONS[social.name];
+                  return (
+                    <a
+                      key={social.name}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+                    >
+                      {Icon && <Icon className="h-10 w-10" />}
+                      <h4 className="mt-4 text-base font-semibold">{social.name}</h4>
+                      <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                        {social.desc}
+                      </p>
+                      <span className="mt-5 text-sm font-semibold text-brand-strong transition group-hover:translate-x-0.5">
+                        바로가기 →
+                      </span>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>

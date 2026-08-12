@@ -493,6 +493,9 @@ function QuestionView({ question, answer, files, onChange, onFiles }: QuestionVi
             />
             파일 첨부
           </label>
+          <p className="mt-2 text-xs text-neutral-500">
+            파일당 최대 {formatBytes(MAX_FILE_BYTES)} · 합계 {formatBytes(MAX_TOTAL_BYTES)}까지
+          </p>
           {files.length > 0 && (
             <ul className="mt-3 space-y-1 text-xs text-neutral-500">
               {files.map((file) => (

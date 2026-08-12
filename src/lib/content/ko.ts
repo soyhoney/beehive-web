@@ -35,7 +35,7 @@ export const ko: SiteContent = {
     heroHeadline: ["언어와 문화의 경계를 넘어", "소통과 실행을 이끌어 냅니다."],
     sectionClients: "주요 클라이언트",
     sectionClientsSub: "100+ 누적 클라이언트 · 800+ 수행 프로젝트",
-    sectionServices: "어떤 도움이 필요하신가요?",
+    sectionServices: "우리가 더 깊이 고민하기에, 고객은 더 멀리 나아갑니다.",
     sectionServicesSub:
       "유형을 선택하시면 필요한 내용만 여쭤봅니다. 1~2분이면 견적 문의가 완료됩니다.",
     sectionScope: "전문 분야",
