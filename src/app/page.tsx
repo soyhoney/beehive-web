@@ -161,7 +161,7 @@ export default function Home() {
 
 
         {/* ── 클라이언트 ───────────────────────────────────────── */}
-        <section className="mx-auto max-w-7xl px-6 py-20">
+        <section className="mx-auto max-w-5xl px-6 py-20">
           <Reveal>
             <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
@@ -172,9 +172,10 @@ export default function Home() {
           {/*
             로고는 원본이 흰 배경 JPEG이라 항상 흰 타일 위에 올립니다.
             다크 모드에서도 로고 색이 뭉개지지 않습니다.
+            컨테이너를 max-w-5xl 로 낮춘 뒤 xl:grid-cols-6 은 타일이 좁아져 로고가 작게 보여 제거.
           */}
           <Reveal delay={100}>
-            <ul className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+            <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {CLIENTS.map((client) => (
                 <li
                   key={client.name}
