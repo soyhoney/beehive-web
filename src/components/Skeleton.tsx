@@ -59,15 +59,20 @@ export function SkeletonCards({
           key={i}
           className="w-[300px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 sm:w-[360px] dark:border-neutral-800 dark:bg-neutral-900"
         >
-          <div className="h-4 w-8 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
-          <div className="mt-4 space-y-2">
+          {/* 인용부호 자리 */}
+          <div className="h-5 w-7 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+          <div className="mt-5 space-y-2">
             <div className="h-3.5 w-full animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
             <div className="h-3.5 w-11/12 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
             <div className="h-3.5 w-4/5 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
           </div>
-          <div className="mt-5 border-t border-neutral-100 pt-4 dark:border-neutral-800">
-            <div className="h-3 w-24 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
-            <div className="mt-2 h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+          {/* 이니셜 원 + 이름·소속 두 줄 */}
+          <div className="mt-5 flex items-center gap-2.5 border-t border-neutral-100 pt-4 dark:border-neutral-800">
+            <div className="size-8 shrink-0 animate-pulse rounded-full bg-neutral-200 dark:bg-neutral-800" />
+            <div className="flex-1">
+              <div className="h-3 w-24 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+              <div className="mt-2 h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+            </div>
           </div>
         </div>
       ))}

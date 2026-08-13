@@ -57,42 +57,59 @@ export default function TestimonialsMarquee({ lang = "ko" }: { lang?: "ko" | "en
   return (
     <div className="group relative overflow-hidden">
       {/* 양쪽 페이드 마스크 — 카드가 잘리는 대신 부드럽게 사라지도록 */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white to-transparent sm:w-24 dark:from-neutral-950" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white to-transparent sm:w-24 dark:from-neutral-950" />
+      {/*
+        페이드는 섹션 배경색과 같아야 합니다. 섹션이 bg-neutral-50 인데 여기가
+        from-white 였어서, 양끝에 흰 김이 서린 것처럼 미세하게 어긋나 있었습니다.
+        (다크 모드는 섹션이 neutral-950 이라 원래부터 맞았습니다)
+      */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-neutral-50 to-transparent sm:w-24 dark:from-neutral-950" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-neutral-50 to-transparent sm:w-24 dark:from-neutral-950" />
 
       <ul
         className="marquee-track flex w-max gap-4 group-hover:[animation-play-state:paused]"
         style={{ animation: `marquee ${duration} linear infinite` }}
       >
-        {doubled.map((t, i) => {
-          // 후기 언어를 자동 감지해 배지로 표시. 한글 코드포인트 유무로 판단.
-          const isKorean = /[\uac00-\ud7a3]/.test(t.review);
-          const langBadge = isKorean ? "KR" : "EN";
-          return (
-            <li
-              key={`${t.id || t.name}-${i}`}
-              className="w-[300px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:w-[360px] dark:border-neutral-800 dark:bg-neutral-900"
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <span
-                  className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold text-neutral-500 ring-1 ring-neutral-200 dark:text-neutral-400 dark:ring-neutral-700"
-                  title={isKorean ? "Original in Korean" : "Original in English"}
-                >
-                  {langBadge}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
-                &ldquo;{t.review}&rdquo;
-              </p>
-              <div className="mt-5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
-                <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+        {doubled.map((t, i) => (
+          <li
+            key={`${t.id || t.name}-${i}`}
+            className="w-[300px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:w-[360px] dark:border-neutral-800 dark:bg-neutral-900"
+          >
+            {/*
+              KR / EN 뱃지를 뺐습니다. 방문자에게 후기 원문의 언어는 알 필요가 없는
+              정보인데, 카드에서 가장 먼저 눈에 들어오는 자리를 차지하고 있었습니다.
+
+              대신 브랜드색 인용부호를 둡니다. 이게 후기라는 걸 즉시 알리고 흰 카드에
+              색을 한 점 넣어 줍니다. 본문을 감싸던 따옴표는 겹치므로 함께 없앴습니다.
+            */}
+            <div aria-hidden="true" className="h-6 font-serif text-[44px] leading-[0.8] text-brand">
+              &ldquo;
+            </div>
+
+            <p className="mt-3.5 text-sm leading-[1.75] text-neutral-700 dark:text-neutral-300">
+              {t.review}
+            </p>
+
+            {/*
+              이름 이니셜 원 — 카드마다 글자가 달라지므로 색을 칠하지 않고도 카드가
+              서로 구분됩니다. 후기가 단조로워 보이는 원인은 색이 없어서가 아니라
+              카드들이 서로 똑같아서였습니다.
+            */}
+            <div className="mt-5 flex items-center gap-2.5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
+              <span
+                aria-hidden="true"
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-soft text-[13px] font-bold text-brand-strong"
+              >
+                {t.name?.trim().charAt(0) || "\u00b7"}
+              </span>
+              <span>
+                <span className="block font-semibold text-neutral-700 dark:text-neutral-300">
                   {t.name} <span className="font-normal text-neutral-500">{t.title}</span>
-                </p>
-                <p className="mt-1">{t.affiliation}</p>
-              </div>
-            </li>
-          );
-        })}
+                </span>
+                <span className="mt-0.5 block">{t.affiliation}</span>
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );
