@@ -108,10 +108,21 @@ export default function HomePage({ locale }: { locale: Locale }) {
             <br />
             {UI.heroHeadline[1]}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
+          {/*
+            히어로 서브 문단: 한국어는 word-break:keep-all(globals.css)로 단어 중간은 안 깨지지만
+            "영어 교육 및 트레이닝" · "언어·시차·문화·이해관계" 같은 구간에서 브레이크가 어색.
+            text-wrap:pretty 로 브라우저가 마지막 줄 균형을 자동으로 맞추게 합니다.
+          */}
+          <p
+            className="mt-6 max-w-2xl text-base leading-relaxed text-neutral-700 dark:text-neutral-300"
+            style={{ textWrap: "pretty" }}
+          >
             {COMPANY.heroSub}
           </p>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500">
+          <p
+            className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500"
+            style={{ textWrap: "pretty" }}
+          >
             {COMPANY.philosophy}
           </p>
 
