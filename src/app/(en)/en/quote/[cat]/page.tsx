@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import TopBar from "@/components/TopBar";
 import QuoteWizard from "@/components/QuoteWizard";
 import { CATEGORIES, getCategory } from "@/lib/quote-flow-en";
+import { alternatesFor } from "@/lib/metadata";
 
 /** 홈 화면(EN) 서비스 카드에서 바로 들어오는 경로 (/en/quote/A/ ~ /en/quote/F/) */
 export function generateStaticParams() {
@@ -25,6 +26,7 @@ export async function generateMetadata({
     description: category
       ? `${category.title} — ${category.desc}. Answer a few short questions and we'll reply within 1–2 business days.`
       : undefined,
+    alternates: alternatesFor(`/quote/${cat}/`, "en"),
   };
 }
 

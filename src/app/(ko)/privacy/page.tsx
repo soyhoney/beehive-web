@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import TopBar from "@/components/TopBar";
 import { getContent } from "@/lib/content";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
+import { alternatesFor } from "@/lib/metadata";
 
 const COMPANY = getContent(DEFAULT_LOCALE).company;
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
+  // 영문판이 아직 없으므로 hreflang 없이 canonical 만 붙입니다.
+  alternates: alternatesFor("/privacy/", "ko", { hasEn: false }),
 };
 
 /**
