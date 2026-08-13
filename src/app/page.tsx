@@ -426,19 +426,45 @@ export default function Home() {
             ))}
           </div>
 
-          {/* 진행 단계 */}
-          <ol className="mt-14 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {PROCESS.map((step, index) => (
-              <li
-                key={step}
-                className="rounded-xl border border-neutral-200 px-4 py-4 dark:border-neutral-800"
-              >
-                <div className="text-xs font-semibold text-brand-strong">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-                <div className="mt-1.5 text-sm font-medium">{step}</div>
-              </li>
-            ))}
+          {/*
+            진행 단계 — 타임라인 스타일.
+            데스크톱: 가로 라인 위에 번호 원, 라벨은 원 아래.
+            모바일: 세로 타임라인 (원 왼쪽, 라벨 오른쪽).
+            원과 원 사이 연결선은 각 li 안 span 두 개로 처리 (모바일/데스크톱 각각).
+          */}
+          <ol className="mt-14 sm:grid sm:grid-cols-6 sm:gap-4">
+            {PROCESS.map((step, index) => {
+              const isLast = index === PROCESS.length - 1;
+              return (
+                <li
+                  key={step}
+                  className={`relative flex items-start gap-4 sm:flex-col sm:items-center sm:gap-0 sm:text-center ${
+                    !isLast ? "pb-8 sm:pb-0" : ""
+                  }`}
+                >
+                  {!isLast && (
+                    <>
+                      {/* 모바일: 원 아래로 이어지는 세로 라인 */}
+                      <span
+                        aria-hidden
+                        className="absolute top-10 bottom-0 left-[19px] w-px bg-brand-border/50 sm:hidden dark:bg-brand-border/60"
+                      />
+                      {/* 데스크톱: 원 오른쪽에서 다음 원까지 이어지는 가로 라인 */}
+                      <span
+                        aria-hidden
+                        className="absolute top-5 left-[calc(50%+24px)] hidden h-px w-[calc(100%+1rem-48px)] bg-brand-border/50 sm:block dark:bg-brand-border/60"
+                      />
+                    </>
+                  )}
+                  <div className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-serif text-sm font-bold text-neutral-900 shadow-sm">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                  <div className="pt-2 text-sm font-medium sm:mt-4 sm:pt-0 sm:text-xs sm:leading-snug">
+                    {step}
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </section>
 
