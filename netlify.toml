@@ -1,0 +1,26 @@
+# Netlify 빌드·배포 설정.
+#
+# 이 저장소는 next.config.ts 에서 `output: "export"` 를 사용하는
+# 완전 정적 사이트입니다. 서버리스 함수·이미지 최적화 서버 없이 out/ 만 배포합니다.
+#
+# GitHub 저장소와 연결한 뒤에는 main 브랜치에 push하면 아래 설정으로
+# 자동 빌드·배포됩니다.
+
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  # Next.js 16 요구 사항
+  NODE_VERSION = "20"
+
+# 정적 자산은 immutable 캐싱으로 오래 두어도 안전합니다.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
