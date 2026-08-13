@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import LocaleToggle from "@/components/LocaleToggle";
+import MobileMenu from "@/components/MobileMenu";
 import { getContent } from "@/lib/content";
 import { DEFAULT_LOCALE, EN_ENABLED, type Locale } from "@/lib/i18n";
 
@@ -37,43 +39,39 @@ export default function TopBar({ locale }: { locale?: Locale } = {}) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/*
+            언어 토글은 md 이상에서만 상단바에 둡니다.
+            좁은 화면에서는 자리가 없어 MobileMenu 안으로 들어갑니다 —
+            그 자리를 메뉴에 내주는 이유는 MobileMenu.tsx 주석 참고.
+          */}
+          {/*
+            숨김은 래퍼에 걸어야 합니다. LocaleToggle 자체에 hidden 을 덧붙이면
+            기본 클래스의 inline-flex 와 같은 display 유틸리티끼리 충돌하고,
+            어느 쪽이 이기는지는 클래스 나열 순서가 아니라 Tailwind 가 생성한
+            CSS 순서로 결정됩니다. (실제로 inline-flex 가 이겨 안 숨겨졌습니다)
+          */}
           {EN_ENABLED && (
-            <div
-              role="group"
-              aria-label="Language toggle"
-              className="inline-flex overflow-hidden rounded-full border border-neutral-300 bg-white text-xs font-bold dark:border-neutral-700 dark:bg-neutral-900"
-            >
-              <Link
-                href="/"
-                aria-current={!isEn ? "page" : undefined}
-                className={
-                  !isEn
-                    ? "bg-neutral-900 px-3.5 py-1.5 text-white dark:bg-white dark:text-neutral-900"
-                    : "px-3.5 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
-                }
-              >
-                KO
-              </Link>
-              <Link
-                href="/en/"
-                aria-current={isEn ? "page" : undefined}
-                className={
-                  isEn
-                    ? "bg-neutral-900 px-3.5 py-1.5 text-white dark:bg-white dark:text-neutral-900"
-                    : "px-3.5 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
-                }
-              >
-                EN
-              </Link>
+            <div className="hidden md:block">
+              <LocaleToggle isEn={isEn} />
             </div>
           )}
+
           <Link
             href={quoteHref}
             className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-neutral-900 transition hover:bg-brand-strong"
           >
             {UI.ctaQuote}
           </Link>
+
+          <MobileMenu
+            nav={nav}
+            isEn={isEn}
+            enEnabled={EN_ENABLED}
+            openLabel={UI.menuOpen}
+            closeLabel={UI.menuClose}
+            languageLabel={UI.menuLanguage}
+          />
         </div>
       </div>
     </header>

@@ -46,7 +46,12 @@ export default function HomePage({ locale }: { locale: Locale }) {
           <p className="text-sm font-semibold tracking-wide text-brand-strong">
             {COMPANY.serviceLine}
           </p>
-          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-[-0.04em] sm:text-5xl sm:leading-[1.15]">
+          {/*
+            자간 -0.02em. 원래 -0.04em 이었는데 그 값은 헤드라인이 명조였을 때 잡은 것이고,
+            Pretendard 로 바꾼 뒤에는 글자들이 서로 붙어 읽기 불편했습니다.
+            한글은 글립이 전각이라 라틴보다 자간을 덜 조여야 합니다.
+          */}
+          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-[-0.02em] sm:text-5xl sm:leading-[1.15]">
             {UI.heroHeadline[0]}
             <br />
             {UI.heroHeadline[1]}
@@ -57,13 +62,21 @@ export default function HomePage({ locale }: { locale: Locale }) {
             text-wrap:pretty 로 브라우저가 마지막 줄 균형을 자동으로 맞추게 합니다.
           */}
           <p
-            className="mt-6 max-w-2xl text-base leading-relaxed text-neutral-700 dark:text-neutral-300"
+            className="mt-6 max-w-2xl text-base leading-[1.75] text-neutral-700 dark:text-neutral-300"
             style={{ textWrap: "pretty" }}
           >
             {COMPANY.heroSub}
           </p>
+          {/*
+            브랜드 문장은 서브 문단보다 폭을 좁게(34rem) 둡니다.
+
+            둘 다 같은 폭이면 회색 문단 두 개가 한 덩어리로 뭉쳐서, 어디서 끊기고
+            무엇이 더 중요한지 한눈에 안 보입니다. 폭을 줄여 계단 모양을 만들면
+            글자 크기·색만으로 부족했던 위계가 형태로 드러납니다.
+            자간이 아니라 이 부분이 "글이 많아 보이는" 느낌을 줄이는 장치입니다.
+          */}
           <p
-            className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500"
+            className="mt-3 max-w-[34rem] text-sm leading-[1.7] text-neutral-500"
             style={{ textWrap: "pretty" }}
           >
             {COMPANY.philosophy}

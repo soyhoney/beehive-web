@@ -116,6 +116,10 @@ export interface UiStrings {
   navAbout: string;
   navServices: string;
   navNews: string;
+  /** 모바일 메뉴 버튼 aria-label (열기 / 닫기) 과 언어 구획 제목 */
+  menuOpen: string;
+  menuClose: string;
+  menuLanguage: string;
   ctaQuote: string;
   ctaExplore: string;
   ctaCompanyProfile: string;
