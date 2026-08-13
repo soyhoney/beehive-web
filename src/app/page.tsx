@@ -161,7 +161,7 @@ export default function Home() {
 
 
         {/* ── 클라이언트 ───────────────────────────────────────── */}
-        <section className="mx-auto max-w-7xl px-6 py-20">
+        <section className="mx-auto max-w-5xl px-6 py-20">
           <Reveal>
             <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
@@ -213,7 +213,7 @@ export default function Home() {
           id="services"
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
-          <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-5xl px-6">
             <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionServices}
             </h2>
