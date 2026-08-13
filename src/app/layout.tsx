@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description:
     "단순한 언어의 통역 및 번역을 넘어 자유로운 소통과 성공적인 의사결정을 추구하는 프로젝트 전문 업체입니다.",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
     apple: "/apple-touch-icon.png",
   },
   openGraph: {

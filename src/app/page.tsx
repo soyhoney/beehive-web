@@ -346,10 +346,7 @@ export default function Home() {
 
             <div>
               <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-                {UI.sectionMilestones}{" "}
-                <span className="ml-1 text-base font-normal text-neutral-500">
-                  {UI.sectionMilestonesEn}
-                </span>
+                {UI.sectionMilestones}
               </h2>
               <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
                 {MILESTONES.map((milestone) => (
@@ -413,7 +410,7 @@ export default function Home() {
         {/* ── 작업 방식 ────────────────────────────────────────── */}
         <section id="how" className="mx-auto max-w-5xl px-6 py-20">
           <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-            {UI.sectionHow} <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionHowEn}</span>
+            {UI.sectionHow}
           </h2>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
