@@ -80,8 +80,9 @@ export default function QuoteWizard({
   const progress = stage.kind === "category" ? 0 : ((currentStep + 1) / totalSteps) * 100;
 
   const estimate = useMemo(
-    () => (category ? calculateEstimate(category.id as CategoryId, answers) : null),
-    [category, answers],
+    () =>
+      category ? calculateEstimate(category.id as CategoryId, answers, locale) : null,
+    [category, answers, locale],
   );
 
   function updateAnswer(id: string, patch: Partial<Answer>) {
@@ -288,7 +289,9 @@ export default function QuoteWizard({
         />
       )}
 
-      {stage.kind === "done" && <DoneView refNo={refNo} estimate={estimate} S={S} />}
+      {stage.kind === "done" && (
+        <DoneView refNo={refNo} estimate={estimate} S={S} locale={locale} />
+      )}
 
       {error && (
         <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
@@ -807,10 +810,12 @@ function DoneView({
   refNo,
   estimate,
   S,
+  locale,
 }: {
   refNo: string;
   estimate: ReturnType<typeof calculateEstimate> | null;
   S: WizardStrings;
+  locale: Locale;
 }) {
   return (
     <div className="py-6 text-center">
@@ -836,22 +841,22 @@ function DoneView({
                     <span className="mt-0.5 block text-xs text-neutral-500">{line.detail}</span>
                   )}
                 </span>
-                <span className="shrink-0 tabular-nums">{formatKRW(line.amount)}</span>
+                <span className="shrink-0 tabular-nums">{formatKRW(line.amount, locale)}</span>
               </li>
             ))}
           </ul>
           <div className="mt-4 space-y-1 border-t border-neutral-200 pt-4 text-sm dark:border-neutral-800">
             <div className="flex justify-between text-neutral-500">
               <span>{S.estimateSubtotal}</span>
-              <span className="tabular-nums">{formatKRW(estimate.subtotal)}</span>
+              <span className="tabular-nums">{formatKRW(estimate.subtotal, locale)}</span>
             </div>
             <div className="flex justify-between text-neutral-500">
               <span>{S.estimateVat}</span>
-              <span className="tabular-nums">{formatKRW(estimate.vat)}</span>
+              <span className="tabular-nums">{formatKRW(estimate.vat, locale)}</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span>{S.estimateTotal}</span>
-              <span className="tabular-nums">{formatKRW(estimate.total)}</span>
+              <span className="tabular-nums">{formatKRW(estimate.total, locale)}</span>
             </div>
           </div>
         </div>

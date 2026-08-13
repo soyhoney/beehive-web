@@ -18,6 +18,7 @@
  */
 
 import type { CategoryId } from "./quote-flow";
+import type { Locale } from "./i18n";
 
 export const VAT_RATE = 0.1;
 
@@ -65,13 +66,22 @@ export const RATES = {
     /** 미정 */
     unknown: 1,
   },
-  /** 진행 방식 계수 — 오프라인은 이동 비용 반영 */
+  /**
+   * 진행 방식 계수 — 오프라인은 이동 비용 반영.
+   *
+   * 키를 한글("온라인")로 두면 화면에 표시할 라벨과 계수 조회 키가 같아져서,
+   * 영문 화면을 만드는 순간 계수 조회가 조용히 실패합니다(undefined → 1).
+   * 그래서 조회 키는 언어와 무관한 값으로 두고 라벨은 따로 번역합니다.
+   */
   lessonMode: {
-    온라인: 1,
-    오프라인: 1.1,
-    혼합: 1.05,
-  } as Record<string, number>,
+    online: 1,
+    offline: 1.1,
+    hybrid: 1.05,
+  } as Record<LessonMode, number>,
 } as const;
+
+/** 수업 진행 방식. 계수 조회와 라벨 번역의 공통 키입니다. */
+export type LessonMode = "online" | "offline" | "hybrid";
 
 export interface QuoteLine {
   label: string;
@@ -90,99 +100,173 @@ export interface QuoteEstimate {
   note: string;
 }
 
-const AUTO_NOTE =
-  "선택하신 조건으로 산출한 1회차 기준 예상 금액입니다. 정식 견적이 아니며, 담당자 확인 후 확정 견적서를 보내드립니다.";
+/**
+ * 견적 결과에 실려 고객 화면에 그대로 노출되는 문구들.
+ *
+ * 이 문자열들이 한국어로 하드코딩되어 있어서 /en/ 완료 화면의 제목과 안내는
+ * 영어인데 가운데 안내 문단만 한국어로 나갔습니다. 어떤 문구를 쓸지는 금액을
+ * 자동 산출할 수 있는지 판단하는 분기와 붙어 있으므로, 분기와 같은 파일에 둡니다.
+ *
+ * ※ manualDefault 에서 "자동 산출 대상이 아니다" 는 사실은 뺐습니다.
+ *   우리 쪽 처리 방식일 뿐이고, 문의가 반려된 것처럼 읽힐 수 있습니다.
+ *   고객이 알아야 하는 건 "접수됐고 언제 견적을 받는지" 뿐입니다.
+ */
+const STRINGS = {
+  ko: {
+    autoDefault:
+      "선택하신 조건으로 산출한 1회차 기준 예상 금액입니다. 정식 견적이 아니며, 담당자 확인 후 확정 견적서를 보내드립니다.",
+    manualDefault:
+      "접수가 완료되었습니다. 담당자가 확인 후 영업일 기준 1~2일 내에 정식 견적서를 보내드립니다.",
+    customLesson:
+      "커스텀 서비스는 요구사항에 따라 구성이 달라져 자동 산출하지 않습니다. 담당자가 확인 후 별도로 견적을 보내드립니다.",
+    corpTraining:
+      "기업·기관 교육은 커리큘럼과 기간을 확인한 뒤 견적을 드립니다. 담당자가 곧 연락드리겠습니다.",
+    publicProject:
+      "공공기관 프로젝트는 과업 범위와 기간에 따라 견적이 결정됩니다. 담당자가 확인 후 제안서와 함께 연락드리겠습니다.",
+    lessonOnline: "화상 영어 수업",
+    lessonPrivate: "대면 개인 수업",
+    lessonGroup: "대면 단체 수업",
+    minutes: (n: number) => `${n}분`,
+    perSession: (base: string, unit: string) => `${base} (${unit} 1회 기준)`,
+    baseRate: (mode: string, factor: string) => `기본 단가 · ${mode} 계수 ${factor}`,
+    modeOnline: "온라인",
+    modeOffline: "오프라인",
+    modeHybrid: "혼합",
+    longTermDiscount: "장기 등록 할인",
+    longTermDetail: (percent: number) => `3개월 이상 · ${percent}% 할인`,
+  },
+  en: {
+    autoDefault:
+      "This is an estimate for a single session based on the options you selected. It is not a formal quote — our team will review your inquiry and send a confirmed quote.",
+    manualDefault:
+      "Your inquiry has been received. Our team will review it and send a formal quote within 1–2 business days.",
+    customLesson:
+      "Custom programs vary by requirement, so we do not estimate them automatically. Our team will review your inquiry and send a separate quote.",
+    corpTraining:
+      "For corporate and institutional training, we prepare a quote after reviewing the curriculum and schedule. Our team will contact you shortly.",
+    publicProject:
+      "For public sector projects, the quote depends on the scope of work and schedule. Our team will review your inquiry and follow up with a proposal.",
+    lessonOnline: "Online English lesson",
+    lessonPrivate: "In-person private lesson",
+    lessonGroup: "In-person group lesson",
+    minutes: (n: number) => `${n} min`,
+    perSession: (base: string, unit: string) => `${base} (per ${unit} session)`,
+    baseRate: (mode: string, factor: string) => `Base rate · ${mode} factor ${factor}`,
+    modeOnline: "Online",
+    modeOffline: "In person",
+    modeHybrid: "Hybrid",
+    longTermDiscount: "Long-term enrollment discount",
+    longTermDetail: (percent: number) => `3 months or more · ${percent}% off`,
+  },
+} as const satisfies Record<Locale, unknown>;
 
-const MANUAL_NOTE =
-  "접수가 완료되었습니다. 보내주신 내용은 조건에 따라 금액 편차가 커서 자동 산출 대상이 아닙니다. 담당자가 확인 후 영업일 기준 1~2일 내에 정식 견적서를 보내드립니다.";
+type PricingStrings = (typeof STRINGS)[Locale];
 
-function manual(note = MANUAL_NOTE): QuoteEstimate {
+/*
+ * note 를 string 으로 명시합니다. STRINGS 가 as const 라서 기본값에서 타입을
+ * 추론하게 두면 파라미터가 그 문구 리터럴로 좁혀져, 다른 안내 문구를 넘길 때
+ * 타입 에러가 납니다.
+ */
+function manual(T: PricingStrings, note: string = T.manualDefault): QuoteEstimate {
   return { auto: false, lines: [], subtotal: 0, vat: 0, total: 0, note };
 }
 
-function finalize(lines: QuoteLine[], note = AUTO_NOTE): QuoteEstimate {
+function finalize(
+  T: PricingStrings,
+  lines: QuoteLine[],
+  note: string = T.autoDefault,
+): QuoteEstimate {
   const subtotal = Math.round(lines.reduce((sum, l) => sum + l.amount, 0));
   const vat = Math.round(subtotal * VAT_RATE);
   return { auto: true, lines, subtotal, vat, total: subtotal + vat, note };
 }
 
 /** 교육(E) 개인·그룹 수업 갈래의 예상 금액 */
-function estimateLesson(answers: Answers): QuoteEstimate {
+function estimateLesson(answers: Answers, T: PricingStrings): QuoteEstimate {
   const lessonIdx = answers["lesson"]?.idx;
 
   const base =
     lessonIdx === 0
-      ? { amount: RATES.lesson.online, label: "화상 영어 수업", unit: "50분" }
+      ? { amount: RATES.lesson.online, label: T.lessonOnline, unit: T.minutes(50) }
       : lessonIdx === 1
-        ? { amount: RATES.lesson.privateOffline, label: "대면 개인 수업", unit: "100분" }
+        ? { amount: RATES.lesson.privateOffline, label: T.lessonPrivate, unit: T.minutes(100) }
         : lessonIdx === 2
-          ? { amount: RATES.lesson.groupOffline, label: "대면 단체 수업", unit: "100분" }
+          ? { amount: RATES.lesson.groupOffline, label: T.lessonGroup, unit: T.minutes(100) }
           : null;
 
   // "커스텀 서비스 — 별도 문의" 또는 미선택
-  if (!base) {
-    return manual(
-      "커스텀 서비스는 요구사항에 따라 구성이 달라져 자동 산출하지 않습니다. 담당자가 확인 후 별도로 견적을 보내드립니다.",
-    );
-  }
+  if (!base) return manual(T, T.customLesson);
 
   const periodIdx = answers["period"]?.idx;
   const periodFactor =
     periodIdx === 1 ? RATES.lessonPeriod.long : RATES.lessonPeriod.short;
 
   const modeIdx = answers["mode"]?.idx;
-  const modeLabel = modeIdx === 0 ? "온라인" : modeIdx === 1 ? "오프라인" : "혼합";
-  const modeFactor = RATES.lessonMode[modeLabel] ?? 1;
+  // 계수는 언어와 무관한 키로 찾고, 화면에 쓸 라벨만 번역합니다.
+  const modeKey: LessonMode =
+    modeIdx === 0 ? "online" : modeIdx === 1 ? "offline" : "hybrid";
+  const modeLabel =
+    modeKey === "online"
+      ? T.modeOnline
+      : modeKey === "offline"
+        ? T.modeOffline
+        : T.modeHybrid;
+  const modeFactor = RATES.lessonMode[modeKey] ?? 1;
 
   const lines: QuoteLine[] = [
     {
-      label: `${base.label} (${base.unit} 1회 기준)`,
-      detail: `기본 단가 · ${modeLabel} 계수 ${modeFactor.toFixed(2)}`,
+      label: T.perSession(base.label, base.unit),
+      detail: T.baseRate(modeLabel, modeFactor.toFixed(2)),
       amount: base.amount * modeFactor,
     },
   ];
 
   if (periodFactor < 1) {
     lines.push({
-      label: "장기 등록 할인",
-      detail: `3개월 이상 · ${Math.round((1 - periodFactor) * 100)}% 할인`,
+      label: T.longTermDiscount,
+      detail: T.longTermDetail(Math.round((1 - periodFactor) * 100)),
       amount: -(base.amount * modeFactor * (1 - periodFactor)),
     });
   }
 
-  return finalize(lines);
+  return finalize(T, lines);
 }
 
 /**
  * 카테고리와 답변으로 예상 견적을 산출한다.
  * 자동 산출이 불가능한 카테고리는 auto: false 로 반환한다.
+ *
+ * locale 은 결과에 담기는 안내 문구·항목 라벨의 언어를 결정합니다.
+ * 금액 계산 자체는 언어와 무관합니다.
  */
 export function calculateEstimate(
   categoryId: CategoryId,
   answers: Answers,
+  locale: Locale = "ko",
 ): QuoteEstimate {
+  const T = STRINGS[locale];
+
   // 교육 중 "개인·그룹 영어 수업"(etype idx 0)만 자동 산출 대상
   if (categoryId === "E" && answers["etype"]?.idx === 0) {
-    return estimateLesson(answers);
+    return estimateLesson(answers, T);
   }
 
-  if (categoryId === "E") {
-    return manual(
-      "기업·기관 교육은 커리큘럼과 기간을 확인한 뒤 견적을 드립니다. 담당자가 곧 연락드리겠습니다.",
-    );
-  }
+  if (categoryId === "E") return manual(T, T.corpTraining);
+  if (categoryId === "B") return manual(T, T.publicProject);
 
-  if (categoryId === "B") {
-    return manual(
-      "공공기관 프로젝트는 과업 범위와 기간에 따라 견적이 결정됩니다. 담당자가 확인 후 제안서와 함께 연락드리겠습니다.",
-    );
-  }
-
-  return manual();
+  return manual(T);
 }
 
-export function formatKRW(amount: number): string {
+/**
+ * 금액 표기.
+ *
+ * 통화는 항상 원화입니다. 다만 영문 화면에서 "원" 을 쓰면 읽을 수 없으므로
+ * 국제 통화 코드 KRW 를 앞에 붙입니다. 해외 고객이 금액 단위를 오해하는 것을
+ * 막는 쪽이 중요합니다.
+ */
+export function formatKRW(amount: number, locale: Locale = "ko"): string {
   const rounded = Math.round(amount);
   const sign = rounded < 0 ? "-" : "";
-  return `${sign}${Math.abs(rounded).toLocaleString("ko-KR")}원`;
+  const digits = Math.abs(rounded).toLocaleString("ko-KR");
+  return locale === "en" ? `${sign}KRW ${digits}` : `${sign}${digits}원`;
 }
