@@ -43,19 +43,17 @@
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
   --color-brand-border: var(--brand-border);
-
-  /*
-   * 헤드라인용 세리프 스택.
-   * OS별로 이미 설치된 명조·세리프 글꼴을 우선 사용해 추가 로딩 없이 톤을 격상합니다.
-   * (외부 CDN을 쓰지 않는 원칙 — docs/DECISIONS.md "폰트를 자체 호스팅한다" 참고)
-   *   macOS/iOS: AppleMyungjo · Apple SD Gothic Neo 등 시스템 명조
-   *   Windows: Nanum Myeongjo → Batang
-   *   fallback: Georgia, serif
-   */
-  --font-serif:
-    "Nanum Myeongjo", "본명조", "AppleMyungjo", "궁서", "Batang",
-    "Times New Roman", Georgia, serif;
 }
+
+/*
+ * 글꼴은 Pretendard 하나로 통일합니다.
+ *
+ * 한때 헤드라인·섹션 제목·성과 숫자에 시스템 명조(font-serif)를 썼습니다.
+ * OS에 이미 설치된 글꼴만 쓰므로 추가 로딩은 없었지만, 실제로 깔린 명조가
+ * OS마다 달라(macOS AppleMyungjo · Windows 나눔명조/바탕) 같은 화면이
+ * 기기별로 다르게 보였습니다. 통번역 회사 사이트에서 글자 인상이 흔들리는 건
+ * 손해라고 판단해 자체 호스팅하는 Pretendard 한 벌로 정리했습니다.
+ */
 
 body {
   background: var(--background);

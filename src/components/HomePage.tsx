@@ -103,7 +103,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           <p className="text-sm font-semibold tracking-wide text-brand-strong">
             {COMPANY.serviceLine}
           </p>
-          <h1 className="mt-4 font-serif text-3xl leading-tight font-bold tracking-[-0.04em] sm:text-5xl sm:leading-[1.15]">
+          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-[-0.04em] sm:text-5xl sm:leading-[1.15]">
             {UI.heroHeadline[0]}
             <br />
             {UI.heroHeadline[1]}
@@ -152,7 +152,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-neutral-200 pt-10 sm:grid-cols-4 dark:border-neutral-800">
             {HIGHLIGHTS.map((item) => (
               <div key={item.label}>
-                <dd className="font-serif text-3xl font-bold tracking-tight tabular-nums sm:text-4xl">{item.value}</dd>
+                <dd className="text-3xl font-bold tracking-tight tabular-nums sm:text-4xl">{item.value}</dd>
                 <dt className="mt-1.5 text-xs leading-relaxed text-neutral-500">
                   {item.label}
                   {"note" in item && item.note && (
@@ -167,7 +167,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         {/* ── 클라이언트 ───────────────────────────────────────── */}
         <section className="mx-auto max-w-5xl px-6 py-20">
           <Reveal>
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               {UI.sectionClientsSub}
             </p>
@@ -212,7 +212,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionServices}
             </h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
@@ -288,7 +288,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         <section id="about" className="mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
             <Reveal>
-              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
               <p className="mt-6 text-lg font-semibold">
                 {REPRESENTATIVE.name}
                 <span className="ml-2 text-sm font-normal text-neutral-500">
@@ -333,7 +333,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
             </Reveal>
 
             <Reveal delay={100}>
-              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {UI.sectionMilestones}
               </h2>
               <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
@@ -388,7 +388,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         {/* ── 작업 방식 ────────────────────────────────────────── */}
         <section id="how" className="mx-auto max-w-5xl px-6 py-20">
           <Reveal>
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionHow}
             </h2>
           </Reveal>
@@ -429,7 +429,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
                       />
                     </>
                   )}
-                  <div className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-serif text-sm font-bold text-neutral-900 shadow-sm">
+                  <div className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-neutral-900 shadow-sm">
                     {String(index + 1).padStart(2, "0")}
                   </div>
                   <div className="pt-2 text-sm font-medium sm:mt-4 sm:pt-0 sm:text-xs sm:leading-snug">
@@ -449,7 +449,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         >
           <div className="mx-auto max-w-5xl px-6">
             <Reveal>
-              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {UI.sectionNews}
               </h2>
               <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
@@ -510,7 +510,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         <section className="border-t border-neutral-200 py-24 text-center dark:border-neutral-800">
           <div className="mx-auto max-w-5xl px-6">
             <Reveal>
-              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {UI.finalCtaTitle}
               </h2>
               <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
