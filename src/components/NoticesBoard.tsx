@@ -56,7 +56,6 @@ export default function NoticesBoard({ fallback }: { fallback: readonly Notice[]
 
 function NoticeRow({ notice }: { notice: Notice }) {
   const hasBody = notice.body.length > 0;
-  const hasLink = notice.link.length > 0;
 
   return (
     <li>
@@ -66,7 +65,7 @@ function NoticeRow({ notice }: { notice: Notice }) {
             hasBody ? "hover:bg-neutral-50 dark:hover:bg-neutral-800/50" : ""
           }`}
         >
-          <KindBadge kind={notice.pinned ? "공지" : "안내"} />
+          <KindBadge kind={notice.kind} />
           <p className="flex-1 truncate text-sm font-semibold group-open:whitespace-normal">
             {notice.title}
           </p>
@@ -92,18 +91,6 @@ function NoticeRow({ notice }: { notice: Notice }) {
         {hasBody && (
           <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-4 text-sm leading-relaxed whitespace-pre-line text-neutral-700 sm:px-6 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
             {notice.body}
-            {hasLink && (
-              <div className="mt-3">
-                <a
-                  href={notice.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-semibold text-brand-strong underline-offset-2 hover:underline"
-                >
-                  자세히 보기 →
-                </a>
-              </div>
-            )}
           </div>
         )}
       </details>

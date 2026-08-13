@@ -7,15 +7,11 @@
 
 export interface Notice {
   id: string;
-  /** 목록 상단에 오렌지 "공지" 뱃지가 붙는지 */
-  pinned: boolean;
+  /** 뱃지 라벨 — "공지" (오렌지) 또는 "안내" (회색). 시트에서 언니가 직접 선택. */
+  kind: "공지" | "안내";
   title: string;
   /** 카드에 인라인으로 보여줄 짧은 요약 */
   body: string;
-  /** 있으면 카드가 링크로 동작 */
-  link: string;
-  /** 카드 상단 대표 이미지. 비어 있으면 그라디언트 플레이스홀더 */
-  image: string;
   /** yyyy-MM-dd */
   date: string;
 }

@@ -18,20 +18,16 @@ import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
 const NOTICE_FALLBACK: readonly Notice[] = [
   {
     id: "sample-1",
-    pinned: true,
+    kind: "공지",
     title: "웹사이트 개설을 완료하였습니다.",
     body: "비하이브코퍼레이션 웹사이트를 오픈했습니다. 문의는 service@beehivecorp.co.kr 로 편하게 남겨 주세요.",
-    link: "",
-    image: "",
     date: "2026-08-12",
   },
   {
     id: "sample-2",
-    pinned: false,
+    kind: "안내",
     title: "여름 휴가 일정 안내 (8/12~8/16)",
     body: "휴가 기간 동안 문의 응답이 지연될 수 있습니다. 급한 건은 담당자 개별 연락 부탁드립니다.",
-    link: "",
-    image: "",
     date: "2026-07-28",
   },
 ];
@@ -104,7 +100,11 @@ export default function Home() {
           <p className="text-sm font-semibold tracking-wide text-brand-strong">
             {COMPANY.serviceLine}
           </p>
-          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight sm:text-5xl sm:leading-[1.15]">
+          {/*
+            헤드라인은 국문 세리프(명조 계열)로 격상 — 로펌·컨설팅 톤.
+            font-serif 폰트 스택은 globals.css `@theme` 의 --font-serif 참조.
+          */}
+          <h1 className="mt-4 font-serif text-3xl leading-tight font-bold tracking-tight sm:text-5xl sm:leading-[1.15]">
             {UI.heroHeadline[0]}
             <br />
             {UI.heroHeadline[1]}
@@ -117,7 +117,10 @@ export default function Home() {
             {COMPANY.philosophy}
           </p>
 
-          {/* 1차 CTA — 견적 전환이 목적이므로 두 버튼만 크게 남깁니다. */}
+          {/*
+            히어로 CTA — 견적 전환이 최우선. 아이덴티티 두 축(문의·회사소개서)만 남깁니다.
+            "서비스 살펴보기"는 스크롤로 자연스럽게 도달, Google Play 앱은 About 하단으로 이동.
+          */}
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/quote/"
@@ -126,23 +129,10 @@ export default function Home() {
               {UI.ctaQuote}
             </Link>
             <a
-              href="#services"
-              className="rounded-lg border border-neutral-300 px-6 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
-            >
-              {UI.ctaExplore}
-            </a>
-          </div>
-
-          {/*
-            2차 CTA — 두 다운로드를 Google Play 뱃지 높이(h-11)에 맞춘 pill로 통일해
-            시각 무게를 맞춥니다.
-          */}
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <a
               href="/downloads/beehive-company-profile-2026-07.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-11 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-700 transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
+              className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-6 py-3.5 text-sm font-semibold text-neutral-700 transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -152,29 +142,13 @@ export default function Home() {
               </svg>
               {UI.ctaCompanyProfile}
             </a>
-            <a
-              href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={UI.ctaAndroidApp}
-              className="inline-block transition hover:opacity-80"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/badges/google-play.png"
-                alt="Get it on Google Play"
-                width={155}
-                height={46}
-                className="h-11 w-auto"
-              />
-            </a>
           </div>
 
           {/* 핵심 성과 */}
           <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-neutral-200 pt-10 sm:grid-cols-4 dark:border-neutral-800">
             {HIGHLIGHTS.map((item) => (
               <div key={item.label}>
-                <dd className="text-2xl font-bold tracking-tight sm:text-3xl">{item.value}</dd>
+                <dd className="font-serif text-3xl font-bold tracking-tight tabular-nums sm:text-4xl">{item.value}</dd>
                 <dt className="mt-1.5 text-xs leading-relaxed text-neutral-500">
                   {item.label}
                   {"note" in item && item.note && (
@@ -190,7 +164,7 @@ export default function Home() {
         {/* ── 클라이언트 ───────────────────────────────────────── */}
         <section className="mx-auto max-w-7xl px-6 py-20">
           <Reveal>
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionClients}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               {UI.sectionClientsSub}
             </p>
@@ -240,7 +214,7 @@ export default function Home() {
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionServices}
             </h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
@@ -276,7 +250,7 @@ export default function Home() {
         <section id="about" className="mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
+              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
               <p className="mt-6 text-lg font-semibold">
                 {REPRESENTATIVE.name}
                 <span className="ml-2 text-sm font-normal text-neutral-500">
@@ -298,10 +272,34 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
+              {/*
+                Google Play 앱 뱃지 — 히어로에서 이동. "이 회사를 앱으로도 볼 수 있어요"
+                흐름으로 대표 소개 다음에 자연스럽게 위치합니다.
+              */}
+              <div className="mt-8 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+                <p className="text-xs text-neutral-500">모바일 앱으로도 만나보세요</p>
+                <a
+                  href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={UI.ctaAndroidApp}
+                  className="mt-3 inline-block transition hover:opacity-80"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/badges/google-play.png"
+                    alt="Get it on Google Play"
+                    width={155}
+                    height={46}
+                    className="h-11 w-auto"
+                  />
+                </a>
+              </div>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
                 {UI.sectionMilestones}{" "}
                 <span className="ml-1 text-base font-normal text-neutral-500">
                   {UI.sectionMilestonesEn}
@@ -330,7 +328,7 @@ export default function Home() {
           className="py-20"
         >
           <div className="mx-auto max-w-7xl px-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionCases}{" "}
               <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionCasesEn}</span>
             </h2>
@@ -415,7 +413,7 @@ export default function Home() {
               )}
             </div>
             <div className="mt-6">
-              <TestimonialsMarquee items={TESTIMONIALS} />
+              <TestimonialsMarquee fallback={TESTIMONIALS} />
             </div>
           </div>
         </Reveal>
@@ -424,7 +422,7 @@ export default function Home() {
 
         {/* ── 작업 방식 ────────────────────────────────────────── */}
         <section id="how" className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
             {UI.sectionHow} <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionHowEn}</span>
           </h2>
 
@@ -462,7 +460,7 @@ export default function Home() {
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               공지사항은 구글 시트에서, 소식은 네이버 블로그에서 관리됩니다.
             </p>
@@ -489,18 +487,6 @@ export default function Home() {
                 <span className="ml-2 text-xs font-normal text-neutral-400">(네이버 블로그)</span>
               </h3>
               <BlogPosts fallback={POST_FALLBACK} />
-            </div>
-
-            <div className="mt-8">
-              <a
-                href="https://blog.naver.com/beehivecorp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:bg-neutral-900"
-              >
-                <NaverIcon className="h-5 w-5" />
-                네이버 블로그 바로가기 →
-              </a>
             </div>
 
             {/* 우리의 이야기, 들어보실래요? — Instagram / Blog / KakaoTalk */}
@@ -539,7 +525,7 @@ export default function Home() {
         {/* ── 마무리 CTA ───────────────────────────────────────── */}
         <section className="border-t border-neutral-200 py-24 text-center dark:border-neutral-800">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.finalCtaTitle}
             </h2>
             <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">

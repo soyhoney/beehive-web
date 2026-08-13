@@ -69,6 +69,8 @@ export interface Social {
 }
 
 export interface Testimonial {
+  /** 시트에서 온 경우 채워짐. dummy fallback은 비어 있어도 됩니다. */
+  id?: string;
   /** 성함 */
   name: string;
   /** 직함 (예: 팀장 / 큐레이터 / PD) */
@@ -77,6 +79,8 @@ export interface Testimonial {
   affiliation: string;
   /** 리뷰 본문. 200자 내외 권장 */
   review: string;
+  /** yyyy-MM-dd. 있으면 최신순 정렬에 사용됩니다. */
+  date?: string;
 }
 
 /** 화면에 반복해서 쓰이는 짧은 문구들 */

@@ -11,7 +11,8 @@
  */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  /* 잉크는 순검정이 아니라 딥네이비 — 신뢰감 있는 B2B 톤 (김·장·지평 계열) */
+  --foreground: #0b1b3a;
 
   /* 로고 육각형에서 직접 샘플링한 브랜드 컬러 (2026-08-12 언니 요청 반영) */
   --brand: #fab943;
@@ -42,6 +43,18 @@
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
   --color-brand-border: var(--brand-border);
+
+  /*
+   * 헤드라인용 세리프 스택.
+   * OS별로 이미 설치된 명조·세리프 글꼴을 우선 사용해 추가 로딩 없이 톤을 격상합니다.
+   * (외부 CDN을 쓰지 않는 원칙 — docs/DECISIONS.md "폰트를 자체 호스팅한다" 참고)
+   *   macOS/iOS: AppleMyungjo · Apple SD Gothic Neo 등 시스템 명조
+   *   Windows: Nanum Myeongjo → Batang
+   *   fallback: Georgia, serif
+   */
+  --font-serif:
+    "Nanum Myeongjo", "본명조", "AppleMyungjo", "궁서", "Batang",
+    "Times New Roman", Georgia, serif;
 }
 
 body {

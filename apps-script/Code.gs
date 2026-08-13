@@ -34,12 +34,18 @@ const ALL_SHEET = "전체";
  * 언니가 사이트에 노출할 콘텐츠를 관리하는 탭들.
  * 스키마는 docs/CONTENT-SHEETS.md 참고.
  *
- *   notices — 공지사항. A 번호 · B 공지(체크박스, 체크 시 "공지" 뱃지 · 미체크 시 "안내" 뱃지)
- *                       · C 제목 · D 본문 · E 링크 · F 이미지URL(미사용) · G 등록일
- *   posts   — 소식(블로그). A 번호 · B 제목 · C 블로그URL · D 등록일
+ *   notices      — 공지사항. A 번호 · B 뱃지("공지"/"안내") · C 제목 · D 본문 · E 등록일
+ *   posts        — 소식(블로그). A 번호 · B 제목 · C 블로그URL · D 등록일
+ *   testimonials — 고객 후기. A 번호 · B 공개(체크박스) · C 성함 · D 직함 · E 소속 · F 후기 · G 등록일
  */
 const NOTICES_SHEET = "notices";
 const POSTS_SHEET = "posts";
+/**
+ * 고객 후기 탭.
+ *   A 번호 · B 공개(체크박스) · C 성함 · D 직함 · E 소속 · F 후기 · G 등록일
+ * 공개 체크가 켜진 행만 사이트에 노출됩니다.
+ */
+const TESTIMONIALS_SHEET = "testimonials";
 /**
  * 첨부파일이 저장될 구글 드라이브 폴더 ID.
  * 폴더 URL의 /folders/ 뒤 문자열입니다.
@@ -138,7 +144,71 @@ function doGet(e) {
   const params = (e && e.parameter) || {};
   if (params.type === "notices") return json_(listNotices_());
   if (params.type === "posts") return json_(listPosts_());
+  if (params.type === "testimonials") return json_(listTestimonials_());
   return json_({ ok: true, service: "beehive-quote-intake" });
+}
+
+/**
+ * 콘텐츠 탭(notices · posts · testimonials) 초기 셋업.
+ * Apps Script 편집기에서 이 함수를 한 번 실행하면 세 개의 탭이 자동으로 만들어지고,
+ * 드롭다운 · 체크박스 · 헤더 · 서식이 적용됩니다. 이미 존재하는 탭은 건드리지 않습니다.
+ */
+function setupContentSheets() {
+  const book = book_();
+
+  setupSheet_(book, NOTICES_SHEET, {
+    headers: ["번호", "뱃지", "제목", "본문", "등록일"],
+    // B열: "공지" / "안내" 드롭다운. 언니가 직접 텍스트로 골라 넣습니다.
+    dropdownColumns: { 2: ["공지", "안내"] },
+    columnWidths: { 2: 80, 3: 320, 4: 480, 5: 110 },
+  });
+
+  setupSheet_(book, POSTS_SHEET, {
+    headers: ["번호", "제목", "블로그URL", "등록일"],
+    columnWidths: { 2: 320, 3: 400, 4: 110 },
+  });
+
+  setupSheet_(book, TESTIMONIALS_SHEET, {
+    headers: ["번호", "공개", "성함", "직함", "소속", "후기", "등록일"],
+    checkboxColumns: [2], // B열: 공개 여부
+    columnWidths: { 3: 110, 4: 140, 5: 180, 6: 480, 7: 110 },
+  });
+}
+
+/**
+ * 시트 한 개를 원하는 헤더/체크박스/드롭다운/컬럼폭으로 세팅한다.
+ * 이미 있으면 건드리지 않고, 없을 때만 새로 만든다.
+ */
+function setupSheet_(book, name, config) {
+  const existing = book.getSheetByName(name);
+  if (existing && existing.getLastRow() > 0) return; // 이미 사용 중이면 손대지 않음
+
+  const sheet = existing || book.insertSheet(name);
+
+  sheet
+    .getRange(1, 1, 1, config.headers.length)
+    .setValues([config.headers])
+    .setFontWeight("bold")
+    .setBackground("#f1f3f4");
+  sheet.setFrozenRows(1);
+
+  (config.checkboxColumns || []).forEach(function (col) {
+    sheet.getRange(2, col, 999, 1).insertCheckboxes();
+  });
+
+  // 드롭다운 데이터 유효성: 정해진 값 중에서만 고를 수 있도록 강제
+  Object.keys(config.dropdownColumns || {}).forEach(function (col) {
+    const options = config.dropdownColumns[col];
+    const rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(options, true)
+      .setAllowInvalid(false)
+      .build();
+    sheet.getRange(2, Number(col), 999, 1).setDataValidation(rule);
+  });
+
+  Object.keys(config.columnWidths || {}).forEach(function (col) {
+    sheet.setColumnWidth(Number(col), config.columnWidths[col]);
+  });
 }
 
 function json_(object) {
@@ -149,14 +219,17 @@ function json_(object) {
 
 /**
  * 공지사항 목록을 읽어 배열로 돌려준다.
- * 제목이 비어 있는 행은 무시하며, 공지(B열 체크박스) 행이 위로 오도록 정렬한다.
+ * 제목이 비어 있는 행은 무시하며, "공지" 뱃지 행이 위로 오도록 정렬한다.
+ *
+ * B열은 언니가 "공지" 또는 "안내" 텍스트를 직접 입력합니다.
+ * 하위호환으로 체크박스(TRUE=공지 / FALSE=안내)도 여전히 인식합니다.
  */
 function listNotices_() {
   const book = book_();
   const sheet = book.getSheetByName(NOTICES_SHEET);
   if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
 
-  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 5).getValues();
   const items = rows
     .filter(function (row) {
       return String(row[2] || "").trim().length > 0;
@@ -164,22 +237,70 @@ function listNotices_() {
     .map(function (row) {
       return {
         id: String(row[0] || "").trim(),
-        pinned: row[1] === true || String(row[1]).toLowerCase() === "true",
+        kind: normalizeKind_(row[1]),
         title: String(row[2] || "").trim(),
         body: String(row[3] || "").trim(),
-        link: String(row[4] || "").trim(),
-        image: String(row[5] || "").trim(),
-        date: formatNoticeDate_(row[6]),
+        date: formatNoticeDate_(row[4]),
       };
     });
 
-  // 최신 등록일 우선, 공지는 다시 위로.
+  // 최신 등록일 우선, "공지"는 다시 위로.
   items.sort(function (a, b) {
     return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
   });
   items.sort(function (a, b) {
-    if (a.pinned === b.pinned) return 0;
-    return a.pinned ? -1 : 1;
+    const pa = a.kind === "공지" ? 0 : 1;
+    const pb = b.kind === "공지" ? 0 : 1;
+    return pa - pb;
+  });
+
+  return { ok: true, items: items };
+}
+
+/**
+ * B열 값을 뱃지 라벨로 정규화한다.
+ * - "공지" / "안내" 텍스트는 그대로
+ * - 체크박스 TRUE는 "공지", FALSE·빈 값은 "안내"
+ */
+function normalizeKind_(value) {
+  if (value === true) return "공지";
+  if (value === false) return "안내";
+  const text = String(value || "").trim();
+  if (text === "공지") return "공지";
+  if (text === "안내") return "안내";
+  return "안내";
+}
+
+/**
+ * 고객 후기 목록.
+ * 공개 체크박스(B열)가 켜진 행만 노출한다. 후기 본문(F열)이 비어 있으면 무시.
+ * 등록일(G열) 최신순으로 정렬.
+ */
+function listTestimonials_() {
+  const book = book_();
+  const sheet = book.getSheetByName(TESTIMONIALS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
+
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+  const items = rows
+    .filter(function (row) {
+      const published = row[1] === true || String(row[1]).toLowerCase() === "true";
+      const hasReview = String(row[5] || "").trim().length > 0;
+      return published && hasReview;
+    })
+    .map(function (row) {
+      return {
+        id: String(row[0] || "").trim(),
+        name: String(row[2] || "").trim(),
+        title: String(row[3] || "").trim(),
+        affiliation: String(row[4] || "").trim(),
+        review: String(row[5] || "").trim(),
+        date: formatNoticeDate_(row[6]),
+      };
+    });
+
+  items.sort(function (a, b) {
+    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
   });
 
   return { ok: true, items: items };
