@@ -1,12 +1,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import { getContent } from "@/lib/content";
-import {
-  DEFAULT_LOCALE,
-  EN_ENABLED,
-  LOCALE_LABEL,
-  type Locale,
-} from "@/lib/i18n";
+import { DEFAULT_LOCALE, EN_ENABLED, type Locale } from "@/lib/i18n";
 
 export default function TopBar({ locale }: { locale?: Locale } = {}) {
   const currentLocale: Locale = locale ?? DEFAULT_LOCALE;
@@ -14,10 +9,8 @@ export default function TopBar({ locale }: { locale?: Locale } = {}) {
 
   const isEn = currentLocale === "en";
   const homeHref = isEn ? "/en/" : "/";
-  const quoteHref = "/quote/"; // 견적 폼은 1차엔 KR만 제작
+  const quoteHref = isEn ? "/en/quote/" : "/quote/";
   const anchorPrefix = isEn ? "/en/" : "/";
-  const otherLocale: Locale = isEn ? "ko" : "en";
-  const otherHref = isEn ? "/" : "/en/";
 
   const nav = [
     { href: `${anchorPrefix}#about`, label: UI.navAbout },
@@ -46,15 +39,34 @@ export default function TopBar({ locale }: { locale?: Locale } = {}) {
 
         <div className="flex items-center gap-3">
           {EN_ENABLED && (
-            <Link
-              href={otherHref}
-              aria-label={`Switch to ${LOCALE_LABEL[otherLocale]}`}
-              className="hidden items-center gap-1 rounded-md border border-neutral-300 px-2.5 py-1.5 text-xs font-semibold text-neutral-600 transition hover:border-brand hover:text-brand-strong sm:inline-flex dark:border-neutral-700 dark:text-neutral-400"
+            <div
+              role="group"
+              aria-label="Language toggle"
+              className="inline-flex overflow-hidden rounded-full border border-neutral-300 bg-white text-xs font-bold dark:border-neutral-700 dark:bg-neutral-900"
             >
-              <span className="text-neutral-400">{LOCALE_LABEL[currentLocale]}</span>
-              <span aria-hidden>›</span>
-              <span>{LOCALE_LABEL[otherLocale]}</span>
-            </Link>
+              <Link
+                href="/"
+                aria-current={!isEn ? "page" : undefined}
+                className={
+                  !isEn
+                    ? "bg-neutral-900 px-3.5 py-1.5 text-white dark:bg-white dark:text-neutral-900"
+                    : "px-3.5 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                }
+              >
+                KO
+              </Link>
+              <Link
+                href="/en/"
+                aria-current={isEn ? "page" : undefined}
+                className={
+                  isEn
+                    ? "bg-neutral-900 px-3.5 py-1.5 text-white dark:bg-white dark:text-neutral-900"
+                    : "px-3.5 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                }
+              >
+                EN
+              </Link>
+            </div>
           )}
           <Link
             href={quoteHref}
