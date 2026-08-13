@@ -18,7 +18,7 @@ export async function generateMetadata({
   const { cat } = await params;
   const category = getCategory(cat);
   return {
-    title: category ? `${category.title} 견적 신청` : "견적 신청",
+    title: category ? `${category.title} 견적 문의` : "견적 문의",
     description: category
       ? `${category.title} — ${category.desc}. 간단한 문항만 답하시면 영업일 기준 1~2일 내 회신드립니다.`
       : undefined,

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/quote-flow";
 import { getContent, SHARED } from "@/lib/content";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
@@ -81,9 +80,9 @@ export default function Home() {
     milestones: MILESTONES,
     principles: PRINCIPLES,
     process: PROCESS,
-    caseStudies: CASE_STUDIES,
     socials: SOCIALS,
     testimonials: TESTIMONIALS,
+    serviceCards: SERVICE_CARDS,
   } = getContent(DEFAULT_LOCALE);
   const CLIENTS = SHARED.clients;
   const TESTIMONIAL_FORM_URL = SHARED.testimonialFormUrl;
@@ -221,25 +220,71 @@ export default function Home() {
               {UI.sectionServicesSub}
             </p>
 
-            {/* 전환이 목적인 구간이라 사진 없이 텍스트 카드로 유지합니다. */}
+            {/*
+              언니 제안서(2026-08-12)의 통합 카드 구조:
+                사진(16:9) → 카테고리명 → 볼드 헤드카피 → 본문 → 견적 요청 버튼
+              카드 전체가 링크가 아니라 하단 버튼만 CTA로 두어 정보 스캔이 편해집니다.
+            */}
             <Reveal delay={100}>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {CATEGORIES.map((category) => (
-                <Link
-                  key={category.id}
-                  // 카드를 누르면 유형 선택 단계를 건너뛰고 첫 문항부터 시작합니다.
-                  href={`/quote/${category.id}/`}
-                  className="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
-                >
-                  <h3 className="text-base font-semibold">{category.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {category.desc}
-                  </p>
-                  <span className="mt-5 text-sm font-semibold text-brand-strong transition group-hover:translate-x-0.5">
-                    {UI.cardCta}
-                  </span>
-                </Link>
-              ))}
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {SERVICE_CARDS.map((card) => {
+                const photo = SHARED.categoryPhotos[card.id];
+                return (
+                  <article
+                    key={card.id}
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+                  >
+                    {photo && (
+                      <div className="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={photo.src}
+                          alt={photo.alt}
+                          loading="lazy"
+                          className="size-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                          style={
+                            photo.objectPosition
+                              ? { objectPosition: photo.objectPosition }
+                              : undefined
+                          }
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="text-lg font-bold tracking-tight">{card.title}</h3>
+                      <p className="mt-3 text-sm font-semibold leading-relaxed">
+                        {card.headline}
+                      </p>
+                      <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                        {card.body}
+                      </p>
+                      {card.cases && card.cases.length > 0 && (
+                        <div className="mt-5 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-brand-strong">
+                            대표 사례
+                          </p>
+                          <ul className="mt-2.5 space-y-2">
+                            {card.cases.map((c) => (
+                              <li key={c.title} className="text-xs leading-relaxed">
+                                <span className="font-semibold text-neutral-800 dark:text-neutral-200">
+                                  {c.title}
+                                </span>
+                                <span className="mt-0.5 block text-neutral-500">{c.meta}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      <Link
+                        href={`/quote/${card.id}/`}
+                        className="mt-6 inline-flex w-fit items-center gap-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
+                      >
+                        {UI.ctaQuote}
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
             </Reveal>
           </div>
@@ -322,67 +367,11 @@ export default function Home() {
         </section>
 
 
-        {/* ── 대표 사례 ────────────────────────────────────────── */}
-        <section
-          id="cases"
-          className="py-20"
-        >
-          <div className="mx-auto max-w-7xl px-6">
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-              {UI.sectionCases}{" "}
-              <span className="ml-1 text-base font-normal text-neutral-500">{UI.sectionCasesEn}</span>
-            </h2>
-
-            <div className="mt-10 grid gap-5 sm:grid-cols-2">
-              {CASE_STUDIES.map((study) => (
-                <article
-                  key={study.title}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"
-                >
-                  {study.photo && (
-                    <div className="aspect-[16/9] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-                      <img
-                        src={study.photo}
-                        alt={`${study.title} 자료`}
-                        loading="lazy"
-                        // 포스터처럼 세로로 긴 이미지는 잘라내지 않고 전체를 보여줍니다.
-                        className={`size-full ${
-                          "photoFit" in study && study.photoFit === "contain"
-                            ? "object-contain"
-                            : "object-cover"
-                        }`}
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex flex-1 flex-col p-7">
-                    <h3 className="text-lg leading-snug font-bold tracking-tight">
-                      {study.title}
-                    </h3>
-                    <p className="mt-2 text-xs font-medium text-neutral-500">
-                      {study.client} · {study.period}
-                    </p>
-
-                    <ul className="mt-5 space-y-3">
-                      {study.points.map((point) => (
-                        <li
-                          key={point}
-                          className="flex gap-3 text-[0.9375rem] leading-relaxed text-neutral-700 dark:text-neutral-300"
-                        >
-                          <span className="mt-[0.5rem] size-1.5 shrink-0 rounded-full bg-brand-strong" />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-
         {/* ── 고객 후기 ────────────────────────────────────────── */}
+        {/*
+          대표 사례 섹션은 제거하고, 각 서비스 카드 안에서 관련 사례를 노출하는 방식으로 변경.
+          (2026-08-13 언니 요청 반영)
+        */}
         <section className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950">
           <div className="mx-auto max-w-5xl px-6">
         {/*
@@ -391,7 +380,7 @@ export default function Home() {
           현재는 dummy 5건이고, 실제 후기가 수집되면 ko.ts의 testimonials 배열을 교체합니다.
         */}
         <Reveal delay={150}>
-          <div className="mt-14 border-t border-neutral-200 pt-10 dark:border-neutral-800">
+          <div>
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
@@ -535,32 +524,59 @@ export default function Home() {
               href="/quote/"
               className="mt-8 inline-block rounded-lg bg-brand px-8 py-4 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
             >
-              견적 신청하기
+              {UI.ctaQuote}
             </Link>
           </div>
         </section>
       </main>
 
-      {/* ── 푸터 ───────────────────────────────────────────────── */}
-      <footer className="border-t border-neutral-200 py-12 dark:border-neutral-800">
-        <div className="mx-auto max-w-5xl px-6 text-xs leading-relaxed text-neutral-500">
-          <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-            {COMPANY.name}
-          </p>
-          <p className="mt-3">{COMPANY.address}</p>
-          <p className="mt-1">
-            {UI.ceoLabel} {REPRESENTATIVE.name} · {UI.businessNumberLabel}{" "}
-            {COMPANY.businessNumber}
-          </p>
-          <p className="mt-1">
-            TEL. {COMPANY.tel} · E-mail.{" "}
-            <a href={`mailto:${COMPANY.email}`} className="underline underline-offset-2">
-              {COMPANY.email}
+      {/*
+        ── 푸터 ───────────────────────────────────────────────
+        브랜드 골드(bg-brand)를 배경으로 로고와 톤을 맞춥니다.
+        본문은 딥네이비(text-neutral-900) 로 가독성 유지. 앱 다운로드도 여기서 노출.
+      */}
+      <footer className="border-t border-brand-border/60 bg-brand py-12 dark:border-neutral-800 dark:bg-neutral-950">
+        <div className="mx-auto max-w-5xl px-6 text-xs leading-relaxed text-neutral-900 dark:text-neutral-400">
+          <div className="flex flex-wrap items-start justify-between gap-8">
+            <div>
+              <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                {COMPANY.name}
+              </p>
+              <p className="mt-3">{COMPANY.address}</p>
+              <p className="mt-1">
+                {UI.ceoLabel} {REPRESENTATIVE.name} · {UI.businessNumberLabel}{" "}
+                {COMPANY.businessNumber}
+              </p>
+              <p className="mt-1">
+                TEL. {COMPANY.tel} · E-mail.{" "}
+                <a href={`mailto:${COMPANY.email}`} className="underline underline-offset-2">
+                  {COMPANY.email}
+                </a>
+              </p>
+              <p className="mt-3 max-w-3xl">
+                {UI.businessAreasLabel} · {COMPANY.businessAreas}
+              </p>
+            </div>
+
+            {/* 앱 다운로드 — 언니 요청으로 푸터에도 노출 (About 하단과 중복 배치). */}
+            <a
+              href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={UI.ctaAndroidApp}
+              className="inline-block shrink-0 transition hover:opacity-80"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/badges/google-play.png"
+                alt="Get it on Google Play"
+                width={155}
+                height={46}
+                className="h-11 w-auto"
+              />
             </a>
-          </p>
-          <p className="mt-3 max-w-3xl">
-            {UI.businessAreasLabel} · {COMPANY.businessAreas}
-          </p>
+          </div>
+
           <div className="mt-5">
             <Link href="/privacy/" className="underline underline-offset-2">
               {UI.privacyLink}

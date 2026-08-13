@@ -62,6 +62,34 @@ export interface Client {
   logo: string;
 }
 
+/**
+ * 서비스 카드 콘텐츠. 언니가 제안서에 준 6개 카테고리 각각의 카드 문구.
+ * 사진은 SHARED.categoryPhotos 의 같은 id로 매핑됩니다.
+ */
+export interface ServiceCard {
+  /** 견적 폼 카테고리와 매칭되는 id (A~F). SHARED.categoryPhotos 및 CATEGORIES와 공유. */
+  id: string;
+  /** 카드 제목 — 카테고리 라벨. 예: "동행·수행 출장" */
+  title: string;
+  /** 헤드카피 — 카드에서 굵게 보여줄 한 줄. */
+  headline: string;
+  /** 본문 — 카드 하단 설명, 2~3줄 권장. */
+  body: string;
+  /**
+   * 이 서비스에 해당하는 대표 사례 — 카드 하단에 작게 노출됩니다.
+   * 별도 "대표 사례" 섹션 대신 각 서비스 카드 안에서 신뢰 시그널을 준다는 취지.
+   */
+  cases?: readonly ServiceCaseRef[];
+}
+
+/** 서비스 카드 안에서 짧게 노출되는 대표 사례 한 줄. */
+export interface ServiceCaseRef {
+  /** 사례 제목 (예: "ICCR 국제화장품규제조화협의체 운영사무국") */
+  title: string;
+  /** 클라이언트 · 기간 등 짧은 부가 정보 */
+  meta: string;
+}
+
 export interface Social {
   name: string;
   url: string;
@@ -132,6 +160,7 @@ export interface SiteContent {
   caseStudies: readonly CaseStudy[];
   socials: readonly Social[];
   testimonials: readonly Testimonial[];
+  serviceCards: readonly ServiceCard[];
 }
 
 /**
@@ -140,7 +169,18 @@ export interface SiteContent {
  */
 export interface SharedAssets {
   clients: readonly Client[];
-  categoryPhotos: Record<string, { src: string; alt: string }>;
+  categoryPhotos: Record<
+    string,
+    {
+      src: string;
+      alt: string;
+      /**
+       * object-cover 크롭 기준점. CSS `object-position` 값 그대로.
+       * 예: "center", "center 30%". 생략 시 브라우저 기본값(50% 50%).
+       */
+      objectPosition?: string;
+    }
+  >;
   /** 후기 수집용 Google Form URL. 없으면 CTA 자체가 숨겨집니다. */
   testimonialFormUrl?: string;
 }

@@ -14,8 +14,14 @@ const categoryPhotos: SharedAssets["categoryPhotos"] = {
   A: { src: "/photos/business-trip.jpg", alt: "호텔 연회장에서 진행된 국제회의 현장" },
   B: { src: "/photos/public-project.jpg", alt: "KIST에서 열린 스페인 마드리드 사절단 회의" },
   C: { src: "/photos/interpretation.jpg", alt: "미디어아트 전시 행사장 전경" },
-  D: { src: "/photos/translation.jpg", alt: "그라운드시소 〈우연히 웨스 앤더슨 2〉 전시 전경" },
+  D: {
+    src: "/photos/translation.jpg",
+    alt: "그라운드시소 〈우연히 웨스 앤더슨 2〉 전시 전경",
+    // 포스터 하단 눈밭 여백이 프레임에 몰려 보여 제목·트레커 라인을 중앙으로 올립니다.
+    objectPosition: "center 30%",
+  },
   E: { src: "/photos/training.jpg", alt: "대강당에서 진행된 교육 프로그램" },
+  F: { src: "/photos/other.jpg", alt: "촬영 현장에서 카메라 세팅을 준비하는 스태프" },
 };
 
 /**
