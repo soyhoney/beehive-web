@@ -7,8 +7,8 @@
 
 export interface Notice {
   id: string;
-  /** 뱃지 라벨 — "공지" (오렌지) 또는 "안내" (회색). 시트에서 언니가 직접 선택. */
-  kind: "공지" | "안내";
+  /** 뱃지 라벨 — 오렌지("공지"/"Notice") 또는 회색("안내"/"Info"). 시트에서 언니가 직접 선택. */
+  kind: "공지" | "안내" | "Notice" | "Info";
   title: string;
   /** 카드에 인라인으로 보여줄 짧은 요약 */
   body: string;

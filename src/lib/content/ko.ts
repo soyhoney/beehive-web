@@ -63,6 +63,11 @@ export const ko: SiteContent = {
     ceoLabel: "대표이사",
     businessNumberLabel: "사업자등록번호",
     businessAreasLabel: "사업영역",
+    labelFeaturedCase: "대표 사례",
+    labelAlsoMobile: "모바일 앱으로도 만나보세요",
+    labelNoticesSub: "공지사항",
+    labelUpdatesSub: "소식",
+    labelVisitLink: "바로가기 →",
   },
 
   highlights: [

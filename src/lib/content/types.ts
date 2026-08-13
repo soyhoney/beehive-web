@@ -147,6 +147,11 @@ export interface UiStrings {
   ceoLabel: string;
   businessNumberLabel: string;
   businessAreasLabel: string;
+  labelFeaturedCase: string;
+  labelAlsoMobile: string;
+  labelNoticesSub: string;
+  labelUpdatesSub: string;
+  labelVisitLink: string;
 }
 
 export interface SiteContent {

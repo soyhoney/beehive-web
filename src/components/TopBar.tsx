@@ -1,21 +1,34 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import { getContent } from "@/lib/content";
-import { DEFAULT_LOCALE } from "@/lib/i18n";
+import {
+  DEFAULT_LOCALE,
+  EN_ENABLED,
+  LOCALE_LABEL,
+  type Locale,
+} from "@/lib/i18n";
 
-export default function TopBar() {
-  const UI = getContent(DEFAULT_LOCALE).ui;
+export default function TopBar({ locale }: { locale?: Locale } = {}) {
+  const currentLocale: Locale = locale ?? DEFAULT_LOCALE;
+  const UI = getContent(currentLocale).ui;
+
+  const isEn = currentLocale === "en";
+  const homeHref = isEn ? "/en/" : "/";
+  const quoteHref = "/quote/"; // 견적 폼은 1차엔 KR만 제작
+  const anchorPrefix = isEn ? "/en/" : "/";
+  const otherLocale: Locale = isEn ? "ko" : "en";
+  const otherHref = isEn ? "/" : "/en/";
 
   const nav = [
-    { href: "/#about", label: UI.navAbout },
-    { href: "/#services", label: UI.navServices },
-    { href: "/#news", label: UI.navNews },
+    { href: `${anchorPrefix}#about`, label: UI.navAbout },
+    { href: `${anchorPrefix}#services`, label: UI.navServices },
+    { href: `${anchorPrefix}#news`, label: UI.navNews },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/85 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/85">
       <div className="mx-auto flex h-20 max-w-5xl items-center justify-between gap-4 px-6">
-        <Link href="/" aria-label="비하이브코퍼레이션 홈">
+        <Link href={homeHref} aria-label="Beehive Corporation">
           <Logo />
         </Link>
 
@@ -31,13 +44,25 @@ export default function TopBar() {
           ))}
         </nav>
 
-        {/* 전환 지점: 어느 화면에서든 항상 보이는 견적 신청 버튼 */}
-        <Link
-          href="/quote/"
-          className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-neutral-900 transition hover:bg-brand-strong"
-        >
-          {UI.ctaQuote}
-        </Link>
+        <div className="flex items-center gap-3">
+          {EN_ENABLED && (
+            <Link
+              href={otherHref}
+              aria-label={`Switch to ${LOCALE_LABEL[otherLocale]}`}
+              className="hidden items-center gap-1 rounded-md border border-neutral-300 px-2.5 py-1.5 text-xs font-semibold text-neutral-600 transition hover:border-brand hover:text-brand-strong sm:inline-flex dark:border-neutral-700 dark:text-neutral-400"
+            >
+              <span className="text-neutral-400">{LOCALE_LABEL[currentLocale]}</span>
+              <span aria-hidden>›</span>
+              <span>{LOCALE_LABEL[otherLocale]}</span>
+            </Link>
+          )}
+          <Link
+            href={quoteHref}
+            className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-neutral-900 transition hover:bg-brand-strong"
+          >
+            {UI.ctaQuote}
+          </Link>
+        </div>
       </div>
     </header>
   );

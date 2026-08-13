@@ -18,7 +18,7 @@ export const DEFAULT_LOCALE: Locale = "ko";
  * 한국어 사이트를 확정하고 영문 번역·검수가 끝나면 true로 바꾸세요.
  * (src/lib/content/en.ts 참고)
  */
-export const EN_ENABLED = false;
+export const EN_ENABLED = true;
 
 /** 실제로 페이지를 생성할 언어 목록 */
 export const ACTIVE_LOCALES: readonly Locale[] = EN_ENABLED ? LOCALES : ["ko"];
