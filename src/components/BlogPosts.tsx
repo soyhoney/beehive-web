@@ -3,36 +3,33 @@
 import { useEffect, useState } from "react";
 import { fetchPosts, type Post } from "@/lib/posts";
 import KindBadge from "@/components/KindBadge";
+import { SkeletonTable } from "@/components/Skeleton";
 
 /**
  * 소식(네이버 블로그) 표.
  *
  * 공지사항과 동일한 표 UI를 사용합니다.
  * 각 행에는 "소식" 뱃지가 상시 붙고, 블로그 URL이 있으면 행 클릭 시 새 탭으로 이동합니다.
- * dummy fallback을 함께 두어 엔드포인트가 비어 있을 때도 화면이 비지 않습니다.
+ *
+ * 불러오는 동안에는 스켈레톤을 보여줍니다 (이유는 Skeleton.tsx 주석 참고).
  */
-export default function BlogPosts({
-  fallback,
-  locale = "ko",
-}: {
-  fallback: readonly Post[];
-  locale?: "ko" | "en";
-}) {
+export default function BlogPosts({ locale = "ko" }: { locale?: "ko" | "en" }) {
   const endpoint = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
   const isEn = locale === "en";
 
-  const [items, setItems] = useState<readonly Post[]>(fallback);
-  const [state, setState] = useState<"idle" | "loading" | "error">("idle");
+  const [items, setItems] = useState<readonly Post[]>([]);
+  const [state, setState] = useState<"loading" | "ready" | "error">(
+    endpoint ? "loading" : "error",
+  );
 
   useEffect(() => {
     if (!endpoint) return;
     let cancelled = false;
-    setState("loading");
     fetchPosts(endpoint, locale)
       .then((list) => {
         if (cancelled) return;
-        if (list.length > 0) setItems(list);
-        setState("idle");
+        setItems(list);
+        setState("ready");
       })
       .catch(() => {
         if (cancelled) return;
@@ -42,6 +39,10 @@ export default function BlogPosts({
       cancelled = true;
     };
   }, [endpoint, locale]);
+
+  if (state === "loading") {
+    return <SkeletonTable label={isEn ? "Loading updates." : "소식을 불러오는 중입니다."} />;
+  }
 
   if (items.length === 0) {
     return (
@@ -56,11 +57,6 @@ export default function BlogPosts({
       {items.map((post) => (
         <PostRow key={post.id || post.title} post={post} kindLabel={isEn ? "Update" : "소식"} />
       ))}
-      {state === "loading" && (
-        <li className="sr-only" role="status">
-          {isEn ? "Loading updates." : "소식을 불러오는 중입니다."}
-        </li>
-      )}
     </ul>
   );
 }

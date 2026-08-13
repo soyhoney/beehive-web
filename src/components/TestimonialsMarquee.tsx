@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchTestimonials } from "@/lib/testimonials";
 import type { Testimonial } from "@/lib/content/types";
+import { SkeletonCards } from "@/components/Skeleton";
 
 /**
  * 고객 후기 무한 스크롤 캐러셀.
@@ -10,18 +11,15 @@ import type { Testimonial } from "@/lib/content/types";
  * 애니메이션 정의: src/app/globals.css @keyframes marquee.
  * hover 시 일시정지, prefers-reduced-motion에서는 미디어 쿼리로 정지 상태 유지.
  *
- * fallback은 시트가 비어 있을 때 자리를 지킵니다. 언니가 구글 폼으로 받은
- * 후기를 시트에서 "공개" 체크만 켜면 자동으로 이 배열이 교체됩니다.
+ * 언니가 구글 폼으로 받은 후기를 시트에서 "공개" 체크만 켜면 여기에 나옵니다.
+ * 불러오는 동안에는 스켈레톤을 보여줍니다 (이유는 Skeleton.tsx 주석 참고).
  */
-export default function TestimonialsMarquee({
-  fallback,
-  lang = "ko",
-}: {
-  fallback: readonly Testimonial[];
-  lang?: "ko" | "en";
-}) {
+export default function TestimonialsMarquee({ lang = "ko" }: { lang?: "ko" | "en" }) {
   const endpoint = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
-  const [items, setItems] = useState<readonly Testimonial[]>(fallback);
+  const [items, setItems] = useState<readonly Testimonial[]>([]);
+  const [state, setState] = useState<"loading" | "ready" | "error">(
+    endpoint ? "loading" : "error",
+  );
 
   useEffect(() => {
     if (!endpoint) return;
@@ -29,15 +27,23 @@ export default function TestimonialsMarquee({
     fetchTestimonials(endpoint, lang)
       .then((list) => {
         if (cancelled) return;
-        if (list.length > 0) setItems(list);
+        setItems(list);
+        setState("ready");
       })
       .catch(() => {
-        // 실패 시 fallback 유지
+        if (cancelled) return;
+        setState("error");
       });
     return () => {
       cancelled = true;
     };
   }, [endpoint, lang]);
+
+  if (state === "loading") {
+    return (
+      <SkeletonCards label={lang === "en" ? "Loading reviews." : "후기를 불러오는 중입니다."} />
+    );
+  }
 
   if (items.length === 0) return null;
 

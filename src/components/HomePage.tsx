@@ -6,62 +6,8 @@ import Reveal from "@/components/Reveal";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
 import NoticesBoard from "@/components/NoticesBoard";
 import BlogPosts from "@/components/BlogPosts";
-import type { Notice } from "@/lib/notices";
-import type { Post } from "@/lib/posts";
 import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
 
-/**
- * 시트 fallback — 로케일별로 문구가 달라야 하므로 로케일 안에서 선택합니다.
- */
-const NOTICE_FALLBACK_KO: readonly Notice[] = [
-  {
-    id: "sample-1",
-    kind: "공지",
-    title: "웹사이트 개설을 완료하였습니다.",
-    body: "비하이브코퍼레이션 웹사이트를 오픈했습니다. 문의는 service@beehivecorp.co.kr 로 편하게 남겨 주세요.",
-    date: "2026-08-12",
-  },
-  {
-    id: "sample-2",
-    kind: "안내",
-    title: "여름 휴가 일정 안내 (8/12~8/16)",
-    body: "휴가 기간 동안 문의 응답이 지연될 수 있습니다. 급한 건은 담당자 개별 연락 부탁드립니다.",
-    date: "2026-07-28",
-  },
-];
-
-const NOTICE_FALLBACK_EN: readonly Notice[] = [
-  {
-    id: "sample-1",
-    kind: "Notice",
-    title: "Website launched.",
-    body: "The Beehive Corporation website is now live. Please send inquiries to service@beehivecorp.co.kr.",
-    date: "2026-08-12",
-  },
-  {
-    id: "sample-2",
-    kind: "Info",
-    title: "Summer break schedule (8/12–8/16)",
-    body: "Responses may be delayed during the break. For urgent matters, please contact the responsible manager directly.",
-    date: "2026-07-28",
-  },
-];
-
-const POST_FALLBACK_KO: readonly Post[] = [
-  { id: "sample-1", title: "ICCR 16회기 사무국 운영 후기", link: "https://blog.naver.com/beehivecorp", date: "2026-07-15" },
-  { id: "sample-2", title: "스페인 교육부 장관 사절단 수행통역", link: "https://blog.naver.com/beehivecorp", date: "2026-06-22" },
-  { id: "sample-3", title: "그라운드시소 전시 도록 번역 완료", link: "https://blog.naver.com/beehivecorp", date: "2026-05-10" },
-  { id: "sample-4", title: "화랑미술제 개막식 5년 연속 통역", link: "https://blog.naver.com/beehivecorp", date: "2026-03-05" },
-];
-
-const POST_FALLBACK_EN: readonly Post[] = [
-  { id: "sample-1", title: "ICCR 16th session secretariat operations", link: "https://blog.naver.com/beehivecorp", date: "2026-07-15" },
-  { id: "sample-2", title: "Spanish Minister of Education delegation interpretation", link: "https://blog.naver.com/beehivecorp", date: "2026-06-22" },
-  { id: "sample-3", title: "Groundseesaw exhibition catalog translation completed", link: "https://blog.naver.com/beehivecorp", date: "2026-05-10" },
-  { id: "sample-4", title: "5th consecutive year of Galleries Art Fair opening interpretation", link: "https://blog.naver.com/beehivecorp", date: "2026-03-05" },
-];
-
-/** 소셜 카드에 매핑할 브랜드 아이콘. 한/영 이름 모두 매칭. */
 const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Instagram: InstagramIcon,
   "네이버 블로그": NaverIcon,
@@ -81,7 +27,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
     principles: PRINCIPLES,
     process: PROCESS,
     socials: SOCIALS,
-    testimonials: TESTIMONIALS,
     serviceCards: SERVICE_CARDS,
   } = getContent(locale);
   const CLIENTS = SHARED.clients;
@@ -90,8 +35,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const isEn = locale === "en";
   const quoteHref = isEn ? "/en/quote/" : "/quote/";
   const privacyHref = "/privacy/"; // 개인정보처리방침은 KR 원문만 유지 (법률 문서)
-  const NOTICE_FALLBACK = isEn ? NOTICE_FALLBACK_EN : NOTICE_FALLBACK_KO;
-  const POST_FALLBACK = isEn ? POST_FALLBACK_EN : POST_FALLBACK_KO;
 
   return (
     <>
@@ -310,26 +253,11 @@ export default function HomePage({ locale }: { locale: Locale }) {
                   </li>
                 ))}
               </ul>
-
-              <div className="mt-8 border-t border-neutral-200 pt-6 dark:border-neutral-800">
-                <p className="text-xs text-neutral-500">{UI.labelAlsoMobile}</p>
-                <a
-                  href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={UI.ctaAndroidApp}
-                  className="mt-3 inline-block transition hover:opacity-80"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/badges/google-play.png"
-                    alt="Get it on Google Play"
-                    width={155}
-                    height={46}
-                    className="h-11 w-auto"
-                  />
-                </a>
-              </div>
+              {/*
+                앱 다운로드 뱃지를 여기서 뺐습니다.
+                대표 소개는 "누가 하는가" 로 신뢰를 주는 자리인데, 검은 스토어 뱃지가
+                이력 아래에 붙으면 흐름이 끊깁니다. 앱 설치는 푸터에 남아 있습니다.
+              */}
             </Reveal>
 
             <Reveal delay={100}>
@@ -378,7 +306,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
               )}
             </div>
             <div className="mt-6">
-              <TestimonialsMarquee fallback={TESTIMONIALS} lang={locale} />
+              <TestimonialsMarquee lang={locale} />
             </div>
           </div>
         </Reveal>
@@ -462,14 +390,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 {UI.labelNoticesSub}
               </h3>
-              <NoticesBoard fallback={NOTICE_FALLBACK} locale={locale} />
+              <NoticesBoard locale={locale} />
             </div>
 
             <div className="mt-14">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 {UI.labelUpdatesSub}
               </h3>
-              <BlogPosts fallback={POST_FALLBACK} locale={locale} />
+              <BlogPosts locale={locale} />
             </div>
             </Reveal>
 
