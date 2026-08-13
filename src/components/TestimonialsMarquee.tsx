@@ -52,22 +52,35 @@ export default function TestimonialsMarquee({ fallback }: { fallback: readonly T
         className="marquee-track flex w-max gap-4 group-hover:[animation-play-state:paused]"
         style={{ animation: `marquee ${duration} linear infinite` }}
       >
-        {doubled.map((t, i) => (
-          <li
-            key={`${t.id || t.name}-${i}`}
-            className="w-[300px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:w-[360px] dark:border-neutral-800 dark:bg-neutral-900"
-          >
-            <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
-              &ldquo;{t.review}&rdquo;
-            </p>
-            <div className="mt-5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
-              <p className="font-semibold text-neutral-700 dark:text-neutral-300">
-                {t.name} <span className="font-normal text-neutral-500">{t.title}</span>
+        {doubled.map((t, i) => {
+          // 후기 언어를 자동 감지해 배지로 표시. 한글 코드포인트 유무로 판단.
+          const isKorean = /[\uac00-\ud7a3]/.test(t.review);
+          const langBadge = isKorean ? "KR" : "EN";
+          return (
+            <li
+              key={`${t.id || t.name}-${i}`}
+              className="w-[300px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:w-[360px] dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <span
+                  className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold text-neutral-500 ring-1 ring-neutral-200 dark:text-neutral-400 dark:ring-neutral-700"
+                  title={isKorean ? "Original in Korean" : "Original in English"}
+                >
+                  {langBadge}
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                &ldquo;{t.review}&rdquo;
               </p>
-              <p className="mt-1">{t.affiliation}</p>
-            </div>
-          </li>
-        ))}
+              <div className="mt-5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
+                <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                  {t.name} <span className="font-normal text-neutral-500">{t.title}</span>
+                </p>
+                <p className="mt-1">{t.affiliation}</p>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

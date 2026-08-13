@@ -11,8 +11,15 @@ import KindBadge from "@/components/KindBadge";
  * 이미지는 두지 않습니다 — FAQ 스타일로 제목·날짜 행을 눌러 본문을 펼치는 방식입니다.
  * dummy fallback을 함께 두어 엔드포인트가 비어 있어도 자리를 지킵니다.
  */
-export default function NoticesBoard({ fallback }: { fallback: readonly Notice[] }) {
+export default function NoticesBoard({
+  fallback,
+  locale = "ko",
+}: {
+  fallback: readonly Notice[];
+  locale?: "ko" | "en";
+}) {
   const endpoint = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
+  const isEn = locale === "en";
 
   const [items, setItems] = useState<readonly Notice[]>(fallback);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
@@ -21,7 +28,7 @@ export default function NoticesBoard({ fallback }: { fallback: readonly Notice[]
     if (!endpoint) return;
     let cancelled = false;
     setState("loading");
-    fetchNotices(endpoint)
+    fetchNotices(endpoint, locale)
       .then((list) => {
         if (cancelled) return;
         if (list.length > 0) setItems(list);
@@ -34,10 +41,14 @@ export default function NoticesBoard({ fallback }: { fallback: readonly Notice[]
     return () => {
       cancelled = true;
     };
-  }, [endpoint]);
+  }, [endpoint, locale]);
 
   if (items.length === 0) {
-    return <p className="mt-4 text-sm text-neutral-500">등록된 공지가 없습니다.</p>;
+    return (
+      <p className="mt-4 text-sm text-neutral-500">
+        {isEn ? "No notices yet." : "등록된 공지가 없습니다."}
+      </p>
+    );
   }
 
   return (
@@ -47,7 +58,7 @@ export default function NoticesBoard({ fallback }: { fallback: readonly Notice[]
       ))}
       {state === "loading" && (
         <li className="sr-only" role="status">
-          공지사항을 불러오는 중입니다.
+          {isEn ? "Loading notices." : "공지사항을 불러오는 중입니다."}
         </li>
       )}
     </ul>

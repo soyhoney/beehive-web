@@ -26,11 +26,15 @@ interface NoticesResponse {
  * `?type=notices` 파라미터를 붙여 GET 합니다.
  * 엔드포인트가 비어 있으면 빈 배열을 돌려주고 UI는 dummy를 유지합니다.
  */
-export async function fetchNotices(endpoint: string): Promise<Notice[]> {
+export async function fetchNotices(
+  endpoint: string,
+  locale: "ko" | "en" = "ko",
+): Promise<Notice[]> {
   if (!endpoint) return [];
 
   const url = new URL(endpoint);
   url.searchParams.set("type", "notices");
+  if (locale === "en") url.searchParams.set("lang", "en");
 
   const res = await fetch(url.toString(), { cache: "no-store" });
   if (!res.ok) throw new Error(`notices fetch failed: ${res.status}`);

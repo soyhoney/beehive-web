@@ -451,14 +451,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 {UI.labelNoticesSub}
               </h3>
-              <NoticesBoard fallback={NOTICE_FALLBACK} />
+              <NoticesBoard fallback={NOTICE_FALLBACK} locale={locale} />
             </div>
 
             <div className="mt-14">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 {UI.labelUpdatesSub}
               </h3>
-              <BlogPosts fallback={POST_FALLBACK} />
+              <BlogPosts fallback={POST_FALLBACK} locale={locale} />
             </div>
             </Reveal>
 

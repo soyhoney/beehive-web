@@ -19,11 +19,15 @@ interface PostsResponse {
   items?: Post[];
 }
 
-export async function fetchPosts(endpoint: string): Promise<Post[]> {
+export async function fetchPosts(
+  endpoint: string,
+  locale: "ko" | "en" = "ko",
+): Promise<Post[]> {
   if (!endpoint) return [];
 
   const url = new URL(endpoint);
   url.searchParams.set("type", "posts");
+  if (locale === "en") url.searchParams.set("lang", "en");
 
   const res = await fetch(url.toString(), { cache: "no-store" });
   if (!res.ok) throw new Error(`posts fetch failed: ${res.status}`);

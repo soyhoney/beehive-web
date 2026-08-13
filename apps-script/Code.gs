@@ -142,10 +142,47 @@ function doPost(e) {
  */
 function doGet(e) {
   const params = (e && e.parameter) || {};
-  if (params.type === "notices") return json_(listNotices_());
-  if (params.type === "posts") return json_(listPosts_());
+  const lang = params.lang === "en" ? "en" : "ko";
+  if (params.type === "notices") return json_(listNotices_(lang));
+  if (params.type === "posts") return json_(listPosts_(lang));
   if (params.type === "testimonials") return json_(listTestimonials_());
   return json_({ ok: true, service: "beehive-quote-intake" });
+}
+
+/**
+ * KO → EN 자동 번역 (LanguageApp).
+ * 시트에 캐싱된 값이 있으면 그걸 우선 쓰고, 없으면 번역 후 시트에 기록합니다.
+ * 빈 문자열은 그대로 반환합니다.
+ */
+function translateText_(text) {
+  const src = String(text || "").trim();
+  if (!src) return "";
+  try {
+    return LanguageApp.translate(src, "ko", "en");
+  } catch (err) {
+    // 번역 실패 시 원문 그대로 (KO) 반환하는 대신 빈 값
+    return src;
+  }
+}
+
+/**
+ * 시트의 특정 셀이 비었으면 번역 후 채워넣고, 이미 값이 있으면 그대로 씁니다.
+ * 이렇게 하면 매 요청마다 API 호출 없이 캐시된 값을 사용할 수 있습니다.
+ * @param sheet - Sheet 객체
+ * @param row - 1-based 시트 행 번호
+ * @param col - 1-based 시트 열 번호
+ * @param sourceText - 번역 원본 (KO)
+ */
+function cachedTranslate_(sheet, row, col, sourceText) {
+  const existing = sheet.getRange(row, col).getValue();
+  if (existing && String(existing).trim().length > 0) {
+    return String(existing);
+  }
+  const translated = translateText_(sourceText);
+  if (translated) {
+    sheet.getRange(row, col).setValue(translated);
+  }
+  return translated;
 }
 
 /**
@@ -157,15 +194,16 @@ function setupContentSheets() {
   const book = book_();
 
   setupSheet_(book, NOTICES_SHEET, {
-    headers: ["번호", "뱃지", "제목", "본문", "등록일"],
-    // B열: "공지" / "안내" 드롭다운. 언니가 직접 텍스트로 골라 넣습니다.
+    // F/G = 자동 EN 번역 캐시 (첫 EN 조회 시 자동 채워짐. 언니가 직접 교정도 가능)
+    headers: ["번호", "뱃지", "제목", "본문", "등록일", "title_en (자동)", "body_en (자동)"],
     dropdownColumns: { 2: ["공지", "안내"] },
-    columnWidths: { 2: 80, 3: 320, 4: 480, 5: 110 },
+    columnWidths: { 2: 80, 3: 320, 4: 480, 5: 110, 6: 320, 7: 480 },
   });
 
   setupSheet_(book, POSTS_SHEET, {
-    headers: ["번호", "제목", "블로그URL", "등록일"],
-    columnWidths: { 2: 320, 3: 400, 4: 110 },
+    // E = 자동 EN 번역 캐시
+    headers: ["번호", "제목", "블로그URL", "등록일", "title_en (자동)"],
+    columnWidths: { 2: 320, 3: 400, 4: 110, 5: 320 },
   });
 
   setupSheet_(book, TESTIMONIALS_SHEET, {
@@ -224,33 +262,47 @@ function json_(object) {
  * B열은 언니가 "공지" 또는 "안내" 텍스트를 직접 입력합니다.
  * 하위호환으로 체크박스(TRUE=공지 / FALSE=안내)도 여전히 인식합니다.
  */
-function listNotices_() {
+function listNotices_(lang) {
   const book = book_();
   const sheet = book.getSheetByName(NOTICES_SHEET);
   if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
 
-  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 5).getValues();
+  const lastRow = sheet.getLastRow();
+  // KO 원본 컬럼(A~E) + EN 캐시 컬럼(F=title_en, G=body_en). 없으면 자동 확장.
+  const rows = sheet.getRange(2, 1, lastRow - 1, 7).getValues();
   const items = rows
-    .filter(function (row) {
-      return String(row[2] || "").trim().length > 0;
-    })
-    .map(function (row) {
+    .map(function (row, i) {
+      const titleKo = String(row[2] || "").trim();
+      if (!titleKo) return null;
+      const bodyKo = String(row[3] || "").trim();
+      const sheetRow = i + 2;
+
+      let title = titleKo;
+      let body = bodyKo;
+      let kind = normalizeKind_(row[1]);
+      if (lang === "en") {
+        title = cachedTranslate_(sheet, sheetRow, 6, titleKo);
+        body = cachedTranslate_(sheet, sheetRow, 7, bodyKo);
+        kind = kind === "공지" ? "Notice" : "Info";
+      }
+
       return {
         id: String(row[0] || "").trim(),
-        kind: normalizeKind_(row[1]),
-        title: String(row[2] || "").trim(),
-        body: String(row[3] || "").trim(),
+        kind: kind,
+        title: title,
+        body: body,
         date: formatNoticeDate_(row[4]),
       };
-    });
+    })
+    .filter(function (x) { return x !== null; });
 
-  // 최신 등록일 우선, "공지"는 다시 위로.
+  // 최신 등록일 우선, "공지/Notice"는 다시 위로.
   items.sort(function (a, b) {
     return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
   });
   items.sort(function (a, b) {
-    const pa = a.kind === "공지" ? 0 : 1;
-    const pb = b.kind === "공지" ? 0 : 1;
+    const pa = (a.kind === "공지" || a.kind === "Notice") ? 0 : 1;
+    const pb = (b.kind === "공지" || b.kind === "Notice") ? 0 : 1;
     return pa - pb;
   });
 
@@ -319,24 +371,33 @@ function formatNoticeDate_(value) {
  * 제목이 비어 있는 행은 무시하며 등록일 최신순으로 정렬한다.
  * 컬럼: A 번호 · B 제목 · C 블로그URL · D 등록일 (이미지는 사용하지 않음)
  */
-function listPosts_() {
+function listPosts_(lang) {
   const book = book_();
   const sheet = book.getSheetByName(POSTS_SHEET);
   if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
 
-  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
+  const lastRow = sheet.getLastRow();
+  // KO 원본(A~D) + EN 캐시(E=title_en)
+  const rows = sheet.getRange(2, 1, lastRow - 1, 5).getValues();
   const items = rows
-    .filter(function (row) {
-      return String(row[1] || "").trim().length > 0;
-    })
-    .map(function (row) {
+    .map(function (row, i) {
+      const titleKo = String(row[1] || "").trim();
+      if (!titleKo) return null;
+      const sheetRow = i + 2;
+
+      let title = titleKo;
+      if (lang === "en") {
+        title = cachedTranslate_(sheet, sheetRow, 5, titleKo);
+      }
+
       return {
         id: String(row[0] || "").trim(),
-        title: String(row[1] || "").trim(),
+        title: title,
         link: String(row[2] || "").trim(),
         date: formatNoticeDate_(row[3]),
       };
-    });
+    })
+    .filter(function (x) { return x !== null; });
 
   items.sort(function (a, b) {
     return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
