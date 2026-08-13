@@ -378,7 +378,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
               )}
             </div>
             <div className="mt-6">
-              <TestimonialsMarquee fallback={TESTIMONIALS} />
+              <TestimonialsMarquee fallback={TESTIMONIALS} lang={locale} />
             </div>
           </div>
         </Reveal>

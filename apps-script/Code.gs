@@ -145,7 +145,7 @@ function doGet(e) {
   const lang = params.lang === "en" ? "en" : "ko";
   if (params.type === "notices") return json_(listNotices_(lang));
   if (params.type === "posts") return json_(listPosts_(lang));
-  if (params.type === "testimonials") return json_(listTestimonials_());
+  if (params.type === "testimonials") return json_(listTestimonials_(lang));
   return json_({ ok: true, service: "beehive-quote-intake" });
 }
 
@@ -207,9 +207,16 @@ function setupContentSheets() {
   });
 
   setupSheet_(book, TESTIMONIALS_SHEET, {
-    headers: ["번호", "공개", "성함", "직함", "소속", "후기", "등록일"],
-    checkboxColumns: [2], // B열: 공개 여부
-    columnWidths: { 3: 110, 4: 140, 5: 180, 6: 480, 7: 110 },
+    // H~K = 자동 EN 번역 캐시 (첫 EN 조회 시 자동 채워짐. 언니가 직접 교정도 가능)
+    headers: [
+      "번호", "공개", "성함", "직함", "소속", "후기", "등록일",
+      "name_en (자동)", "title_en (자동)", "affiliation_en (자동)", "review_en (자동)",
+    ],
+    checkboxColumns: [2],
+    columnWidths: {
+      3: 110, 4: 140, 5: 180, 6: 480, 7: 110,
+      8: 110, 9: 140, 10: 180, 11: 480,
+    },
   });
 }
 
@@ -327,29 +334,51 @@ function normalizeKind_(value) {
  * 고객 후기 목록.
  * 공개 체크박스(B열)가 켜진 행만 노출한다. 후기 본문(F열)이 비어 있으면 무시.
  * 등록일(G열) 최신순으로 정렬.
+ *
+ * EN 요청 시 성함(C)·직함(D)·소속(E)·후기(F)를 시트 H~K 컬럼에 캐싱된
+ * 번역으로 대체한다. 캐시가 비어 있으면 그 자리에서 번역 후 시트에 채워넣는다.
  */
-function listTestimonials_() {
+function listTestimonials_(lang) {
   const book = book_();
   const sheet = book.getSheetByName(TESTIMONIALS_SHEET);
   if (!sheet || sheet.getLastRow() < 2) return { ok: true, items: [] };
 
-  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+  const lastRow = sheet.getLastRow();
+  // KO 원본(A~G) + EN 캐시(H=name_en, I=title_en, J=affiliation_en, K=review_en)
+  const rows = sheet.getRange(2, 1, lastRow - 1, 11).getValues();
   const items = rows
-    .filter(function (row) {
+    .map(function (row, i) {
       const published = row[1] === true || String(row[1]).toLowerCase() === "true";
       const hasReview = String(row[5] || "").trim().length > 0;
-      return published && hasReview;
-    })
-    .map(function (row) {
+      if (!published || !hasReview) return null;
+
+      const sheetRow = i + 2;
+      const nameKo = String(row[2] || "").trim();
+      const titleKo = String(row[3] || "").trim();
+      const affilKo = String(row[4] || "").trim();
+      const reviewKo = String(row[5] || "").trim();
+
+      let name = nameKo;
+      let title = titleKo;
+      let affiliation = affilKo;
+      let review = reviewKo;
+      if (lang === "en") {
+        name = cachedTranslate_(sheet, sheetRow, 8, nameKo);
+        title = cachedTranslate_(sheet, sheetRow, 9, titleKo);
+        affiliation = cachedTranslate_(sheet, sheetRow, 10, affilKo);
+        review = cachedTranslate_(sheet, sheetRow, 11, reviewKo);
+      }
+
       return {
         id: String(row[0] || "").trim(),
-        name: String(row[2] || "").trim(),
-        title: String(row[3] || "").trim(),
-        affiliation: String(row[4] || "").trim(),
-        review: String(row[5] || "").trim(),
+        name: name,
+        title: title,
+        affiliation: affiliation,
+        review: review,
         date: formatNoticeDate_(row[6]),
       };
-    });
+    })
+    .filter(function (x) { return x !== null; });
 
   items.sort(function (a, b) {
     return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;

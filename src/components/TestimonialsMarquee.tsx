@@ -13,14 +13,20 @@ import type { Testimonial } from "@/lib/content/types";
  * fallback은 시트가 비어 있을 때 자리를 지킵니다. 언니가 구글 폼으로 받은
  * 후기를 시트에서 "공개" 체크만 켜면 자동으로 이 배열이 교체됩니다.
  */
-export default function TestimonialsMarquee({ fallback }: { fallback: readonly Testimonial[] }) {
+export default function TestimonialsMarquee({
+  fallback,
+  lang = "ko",
+}: {
+  fallback: readonly Testimonial[];
+  lang?: "ko" | "en";
+}) {
   const endpoint = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
   const [items, setItems] = useState<readonly Testimonial[]>(fallback);
 
   useEffect(() => {
     if (!endpoint) return;
     let cancelled = false;
-    fetchTestimonials(endpoint)
+    fetchTestimonials(endpoint, lang)
       .then((list) => {
         if (cancelled) return;
         if (list.length > 0) setItems(list);
@@ -31,7 +37,7 @@ export default function TestimonialsMarquee({ fallback }: { fallback: readonly T
     return () => {
       cancelled = true;
     };
-  }, [endpoint]);
+  }, [endpoint, lang]);
 
   if (items.length === 0) return null;
 

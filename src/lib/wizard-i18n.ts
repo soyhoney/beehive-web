@@ -21,6 +21,7 @@ export interface WizardStrings {
   tbdLabel: string;
   fileAttach: string;
   fileLimit: (perFile: string, total: string) => string;
+  fileRemove: string;
   errorFileTooLarge: (name: string, limit: string) => string;
   errorTotalTooLarge: (limit: string) => string;
   errorReadFile: string;
@@ -57,6 +58,7 @@ const KO: WizardStrings = {
   tbdLabel: "일정이 아직 미정입니다",
   fileAttach: "파일 첨부",
   fileLimit: (perFile, total) => `파일당 최대 ${perFile} · 합계 ${total}까지`,
+  fileRemove: "삭제",
   errorFileTooLarge: (name, limit) =>
     `'${name}' 파일이 너무 큽니다. 파일 하나당 ${limit}까지 첨부할 수 있습니다.`,
   errorTotalTooLarge: (limit) =>
@@ -97,6 +99,7 @@ const EN: WizardStrings = {
   tbdLabel: "The schedule is not yet decided",
   fileAttach: "Attach files",
   fileLimit: (perFile, total) => `Up to ${perFile} per file · ${total} total`,
+  fileRemove: "Remove",
   errorFileTooLarge: (name, limit) =>
     `'${name}' is too large. Each file can be up to ${limit}.`,
   errorTotalTooLarge: (limit) =>

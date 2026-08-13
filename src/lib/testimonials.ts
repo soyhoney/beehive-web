@@ -13,11 +13,15 @@ interface TestimonialsResponse {
   items?: Testimonial[];
 }
 
-export async function fetchTestimonials(endpoint: string): Promise<Testimonial[]> {
+export async function fetchTestimonials(
+  endpoint: string,
+  lang: "ko" | "en" = "ko",
+): Promise<Testimonial[]> {
   if (!endpoint) return [];
 
   const url = new URL(endpoint);
   url.searchParams.set("type", "testimonials");
+  url.searchParams.set("lang", lang);
 
   const res = await fetch(url.toString(), { cache: "no-store" });
   if (!res.ok) throw new Error(`testimonials fetch failed: ${res.status}`);

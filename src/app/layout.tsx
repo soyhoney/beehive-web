@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.beehivecorp.co.kr"),
+  metadataBase: new URL("https://beehive-web.service-117.workers.dev"),
   title: {
     default: "비하이브코퍼레이션",
     template: "%s · 비하이브코퍼레이션",

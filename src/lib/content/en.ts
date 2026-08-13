@@ -17,7 +17,7 @@ export const en: SiteContent = {
     heroSub:
       "Interpretation & translation, international conference planning, online and on-site event coordination, documentation and audio-visual technical support, and English education & training — select the service you need and complete your quote request in minutes.",
     philosophy:
-      "No one achieves everything alone. Just as bees build a hive through unified movement, Beehive Corporation designs communication toward one goal — across different languages, time zones, cultures, and interests.",
+      "No one achieves everything alone. Just as bees build a hive through unified movement, Beehive Corporation designs communication toward one goal — across different languages, time\u00a0zones, cultures, and interests.",
     address: "#629, 17 Gukjegeumyung-ro 2-gil, Yeongdeungpo-gu, Seoul 07327, Korea",
     tel: "+82-10-6854-2019",
     email: "service@beehivecorp.co.kr",
