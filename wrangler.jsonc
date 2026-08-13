@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers/Pages 배포 설정.
+  // Next.js `output: "export"` 결과물 (out/) 을 정적 자산으로 배포합니다.
+  // 서버리스 함수·API 라우트 없음.
+  "name": "beehive-web",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
