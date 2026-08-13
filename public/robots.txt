@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.beehivecorp.co.kr/sitemap.xml
