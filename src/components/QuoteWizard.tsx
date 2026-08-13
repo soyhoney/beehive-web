@@ -1,18 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  CATEGORIES,
-  CONTACT_FIELDS,
-  ROUTES,
-  ROUTE_ETC,
-  ROUTE_REFERRAL,
-  getFlow,
-  parseOption,
-  type Category,
-  type CategoryId,
-  type Question,
-} from "@/lib/quote-flow";
+import * as KO_FLOW from "@/lib/quote-flow";
+import * as EN_FLOW from "@/lib/quote-flow-en";
+import type { Category, CategoryId, Question } from "@/lib/quote-flow";
 import { calculateEstimate, formatKRW, type Answer, type Answers } from "@/lib/pricing";
 import {
   MAX_FILE_BYTES,
@@ -25,6 +16,8 @@ import {
   type FileUpload,
   type Submission,
 } from "@/lib/submission";
+import { getWizardStrings, type WizardStrings } from "@/lib/wizard-i18n";
+import type { Locale } from "@/lib/i18n";
 
 const ENDPOINT = process.env.NEXT_PUBLIC_QUOTE_ENDPOINT ?? "";
 
@@ -53,9 +46,14 @@ const EMPTY_CONTACT: ContactInfo = { org: "", name: "", email: "", phone: "" };
  */
 export default function QuoteWizard({
   initialCategory,
+  locale = "ko",
 }: {
   initialCategory?: Category;
+  locale?: Locale;
 }) {
+  const M = locale === "en" ? EN_FLOW : KO_FLOW;
+  const { CATEGORIES, CONTACT_FIELDS, ROUTES, ROUTE_ETC, ROUTE_REFERRAL, getFlow, parseOption } = M;
+  const S = getWizardStrings(locale);
   const [category, setCategory] = useState<Category | null>(initialCategory ?? null);
   const [stage, setStage] = useState<Stage>(
     initialCategory ? { kind: "question", index: 0 } : { kind: "category" },
@@ -153,9 +151,7 @@ export default function QuoteWizard({
   function acceptFiles(questionId: string, list: File[]) {
     const oversized = list.find((f) => f.size > MAX_FILE_BYTES);
     if (oversized) {
-      setError(
-        `‘${oversized.name}’ 파일이 너무 큽니다. 파일 하나당 ${formatBytes(MAX_FILE_BYTES)}까지 첨부할 수 있습니다.`,
-      );
+      setError(S.errorFileTooLarge(oversized.name, formatBytes(MAX_FILE_BYTES)));
       return;
     }
 
@@ -165,9 +161,7 @@ export default function QuoteWizard({
     const total = [...others, ...list].reduce((sum, f) => sum + f.size, 0);
 
     if (total > MAX_TOTAL_BYTES) {
-      setError(
-        `첨부파일 합계가 ${formatBytes(MAX_TOTAL_BYTES)}를 넘습니다. 용량을 줄이거나 메일로 따로 보내주세요.`,
-      );
+      setError(S.errorTotalTooLarge(formatBytes(MAX_TOTAL_BYTES)));
       return;
     }
 
@@ -205,7 +199,7 @@ export default function QuoteWizard({
       );
     } catch {
       setSending(false);
-      setError("첨부파일을 읽지 못했습니다. 파일을 다시 선택해 주세요.");
+      setError(S.errorReadFile);
       return;
     }
 
@@ -233,7 +227,7 @@ export default function QuoteWizard({
       setRefNo(result.refNo ?? "");
       setStage({ kind: "done" });
     } else {
-      setError(result.error ?? "전송에 실패했습니다.");
+      setError(result.error ?? S.errorSubmit);
     }
   }
 
@@ -258,7 +252,9 @@ export default function QuoteWizard({
         </div>
       )}
 
-      {stage.kind === "category" && <CategoryPicker onSelect={selectCategory} />}
+      {stage.kind === "category" && (
+        <CategoryPicker onSelect={selectCategory} categories={CATEGORIES} S={S} />
+      )}
 
       {stage.kind === "question" && flow[stage.index] && (
         <QuestionView
@@ -267,6 +263,8 @@ export default function QuoteWizard({
           files={files[flow[stage.index].id] ?? []}
           onChange={(patch) => updateAnswer(flow[stage.index].id, patch)}
           onFiles={(list) => acceptFiles(flow[stage.index].id, list)}
+          parseOption={parseOption}
+          S={S}
         />
       )}
 
@@ -282,10 +280,15 @@ export default function QuoteWizard({
           onRouteEtc={setRouteEtc}
           agreed={agreed}
           onAgreed={setAgreed}
+          contactFields={CONTACT_FIELDS}
+          routesList={ROUTES}
+          routeReferralValue={ROUTE_REFERRAL}
+          routeEtcValue={ROUTE_ETC}
+          S={S}
         />
       )}
 
-      {stage.kind === "done" && <DoneView refNo={refNo} estimate={estimate} />}
+      {stage.kind === "done" && <DoneView refNo={refNo} estimate={estimate} S={S} />}
 
       {error && (
         <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
@@ -300,7 +303,7 @@ export default function QuoteWizard({
             onClick={goBack}
             className="rounded-lg border border-neutral-300 px-5 py-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
           >
-            이전
+            {S.buttonPrev}
           </button>
 
           {stage.kind === "question" ? (
@@ -310,7 +313,7 @@ export default function QuoteWizard({
               disabled={!isAnswered(flow[stage.index])}
               className="flex-1 rounded-lg bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition enabled:hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white dark:text-neutral-900 dark:enabled:hover:bg-neutral-200"
             >
-              다음
+              {S.buttonNext}
             </button>
           ) : (
             <button
@@ -319,7 +322,7 @@ export default function QuoteWizard({
               disabled={!contactValid || sending}
               className="flex-1 rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-neutral-900 transition enabled:hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {sending ? "전송 중…" : "견적 문의 보내기"}
+              {sending ? S.buttonSubmitting : S.buttonSubmit}
             </button>
           )}
         </div>
@@ -330,16 +333,22 @@ export default function QuoteWizard({
 
 // ---------------------------------------------------------------------------
 
-function CategoryPicker({ onSelect }: { onSelect: (c: Category) => void }) {
+function CategoryPicker({
+  onSelect,
+  categories,
+  S,
+}: {
+  onSelect: (c: Category) => void;
+  categories: readonly Category[];
+  S: WizardStrings;
+}) {
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">어떤 도움이 필요하신가요?</h1>
-      <p className="mt-2 text-sm text-neutral-500">
-        유형을 선택하시면 필요한 내용만 여쭤봅니다. 1~2분이면 충분합니다.
-      </p>
+      <h1 className="text-2xl font-bold tracking-tight">{S.categoryPickerTitle}</h1>
+      <p className="mt-2 text-sm text-neutral-500">{S.categoryPickerSub}</p>
 
       <div className="mt-8 grid gap-3">
-        {CATEGORIES.map((category) => (
+        {categories.map((category) => (
           <button
             key={category.id}
             type="button"
@@ -363,9 +372,11 @@ interface QuestionViewProps {
   files: File[];
   onChange: (patch: Partial<Answer>) => void;
   onFiles: (files: File[]) => void;
+  parseOption: (option: string) => { label: string; desc?: string };
+  S: WizardStrings;
 }
 
-function QuestionView({ question, answer, files, onChange, onFiles }: QuestionViewProps) {
+function QuestionView({ question, answer, files, onChange, onFiles, parseOption, S }: QuestionViewProps) {
   const selected = answer?.idx;
   const showHint = question.hint && selected === question.hint.when;
   const showSubChoice = question.subChoice && selected === question.subChoice.when;
@@ -419,7 +430,7 @@ function QuestionView({ question, answer, files, onChange, onFiles }: QuestionVi
         )}
 
         {question.type === "dates" && (
-          <DatesField question={question} answer={answer} onChange={onChange} />
+          <DatesField question={question} answer={answer} onChange={onChange} S={S} />
         )}
       </div>
 
@@ -491,10 +502,10 @@ function QuestionView({ question, answer, files, onChange, onFiles }: QuestionVi
               className="hidden"
               onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
             />
-            파일 첨부
+            {S.fileAttach}
           </label>
           <p className="mt-2 text-xs text-neutral-500">
-            파일당 최대 {formatBytes(MAX_FILE_BYTES)} · 합계 {formatBytes(MAX_TOTAL_BYTES)}까지
+            {S.fileLimit(formatBytes(MAX_FILE_BYTES), formatBytes(MAX_TOTAL_BYTES))}
           </p>
           {files.length > 0 && (
             <ul className="mt-3 space-y-1 text-xs text-neutral-500">
@@ -576,10 +587,12 @@ function DatesField({
   question,
   answer,
   onChange,
+  S,
 }: {
   question: Question;
   answer: Answer | undefined;
   onChange: (patch: Partial<Answer>) => void;
+  S: WizardStrings;
 }) {
   const tbd = Boolean(answer?.tbd);
 
@@ -587,13 +600,13 @@ function DatesField({
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-2">
         <DateInput
-          label="시작일"
+          label={S.dateStart}
           value={answer?.d1 ?? ""}
           disabled={tbd}
           onChange={(d1) => onChange({ d1 })}
         />
         <DateInput
-          label="종료일"
+          label={S.dateEnd}
           value={answer?.d2 ?? ""}
           disabled={tbd}
           onChange={(d2) => onChange({ d2 })}
@@ -632,7 +645,7 @@ function DatesField({
               onChange={(e) => onChange({ tbd: e.target.checked })}
               className="size-4 accent-brand"
             />
-            일정이 아직 미정입니다
+            {S.tbdLabel}
           </label>
 
           {tbd && (
@@ -666,10 +679,27 @@ interface ContactViewProps {
   onRouteEtc: (v: string) => void;
   agreed: boolean;
   onAgreed: (v: boolean) => void;
+  contactFields: readonly { id: string; label: string; ph: string; type: string }[];
+  routesList: readonly string[];
+  routeReferralValue: string;
+  routeEtcValue: string;
+  S: WizardStrings;
 }
 
 function ContactView(props: ContactViewProps) {
-  const { contact, onContact, routes, onRoutes, agreed, onAgreed } = props;
+  const {
+    contact,
+    onContact,
+    routes,
+    onRoutes,
+    agreed,
+    onAgreed,
+    contactFields,
+    routesList,
+    routeReferralValue,
+    routeEtcValue,
+    S,
+  } = props;
 
   function toggleRoute(route: string) {
     onRoutes(routes.includes(route) ? routes.filter((r) => r !== route) : [...routes, route]);
@@ -677,13 +707,11 @@ function ContactView(props: ContactViewProps) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold tracking-tight">연락처를 알려주세요.</h2>
-      <p className="mt-2 text-sm text-neutral-500">
-        견적서를 보내드릴 곳입니다. 영업일 기준 1~2일 내에 회신드립니다.
-      </p>
+      <h2 className="text-xl font-bold tracking-tight">{S.contactTitle}</h2>
+      <p className="mt-2 text-sm text-neutral-500">{S.contactSub}</p>
 
       <div className="mt-7 grid gap-4 sm:grid-cols-2">
-        {CONTACT_FIELDS.map((field) => (
+        {contactFields.map((field) => (
           <label key={field.id} className="block">
             <span className="text-xs font-medium text-neutral-500">{field.label}</span>
             <input
@@ -698,11 +726,9 @@ function ContactView(props: ContactViewProps) {
       </div>
 
       <div className="mt-8">
-        <span className="text-xs font-medium text-neutral-500">
-          비하이브를 어떻게 알게 되셨나요? (복수 선택 가능)
-        </span>
+        <span className="text-xs font-medium text-neutral-500">{S.routesLabel}</span>
         <div className="mt-3 flex flex-wrap gap-2">
-          {ROUTES.map((route) => (
+          {routesList.map((route) => (
             <button
               key={route}
               type="button"
@@ -718,20 +744,20 @@ function ContactView(props: ContactViewProps) {
           ))}
         </div>
 
-        {routes.includes(ROUTE_REFERRAL) && (
+        {routes.includes(routeReferralValue) && (
           <input
             type="text"
             value={props.routeReferral}
-            placeholder="추천인 성함"
+            placeholder={S.routeReferralPh}
             onChange={(e) => props.onRouteReferral(e.target.value)}
             className="mt-3 w-full rounded-lg border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-brand dark:border-neutral-800 dark:bg-neutral-950"
           />
         )}
-        {routes.includes(ROUTE_ETC) && (
+        {routes.includes(routeEtcValue) && (
           <input
             type="text"
             value={props.routeEtc}
-            placeholder="직접 입력"
+            placeholder={S.routeEtcPh}
             onChange={(e) => props.onRouteEtc(e.target.value)}
             className="mt-3 w-full rounded-lg border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-brand dark:border-neutral-800 dark:bg-neutral-950"
           />
@@ -747,15 +773,15 @@ function ContactView(props: ContactViewProps) {
             className="mt-0.5 size-4 shrink-0 accent-brand"
           />
           <span>
-            <strong className="font-semibold">개인정보 수집 · 이용에 동의합니다.</strong> (필수)
+            <strong className="font-semibold">{S.privacyTitle}</strong> {S.privacyRequired}
           </span>
         </label>
 
         <div className="mt-3 space-y-1 text-xs leading-relaxed text-neutral-500">
-          <p>· 수집 항목: 업체·기관명, 담당자명, 이메일, 휴대폰번호, 문의 내용</p>
-          <p>· 수집 목적: 견적 산출 및 회신, 문의 응대, 계약 체결 협의</p>
-          <p>· 보유 기간: 문의 처리 완료 후 3년 (계약 체결 시 관계 법령에 따름)</p>
-          <p>· 동의를 거부하실 수 있으나, 이 경우 견적 회신이 제한됩니다.</p>
+          <p>{S.privacyItem1}</p>
+          <p>{S.privacyItem2}</p>
+          <p>{S.privacyItem3}</p>
+          <p>{S.privacyItem4}</p>
         </div>
       </div>
     </div>
@@ -767,25 +793,27 @@ function ContactView(props: ContactViewProps) {
 function DoneView({
   refNo,
   estimate,
+  S,
 }: {
   refNo: string;
   estimate: ReturnType<typeof calculateEstimate> | null;
+  S: WizardStrings;
 }) {
   return (
     <div className="py-6 text-center">
       <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-brand-soft text-2xl">
         ✓
       </div>
-      <h2 className="mt-6 text-xl font-bold tracking-tight">문의가 접수되었습니다.</h2>
+      <h2 className="mt-6 text-xl font-bold tracking-tight">{S.doneTitle}</h2>
       {refNo && (
         <p className="mt-2 text-sm text-neutral-500">
-          접수번호 <span className="font-mono font-semibold">{refNo}</span>
+          {S.doneRefLabel} <span className="font-mono font-semibold">{refNo}</span>
         </p>
       )}
 
       {estimate?.auto && estimate.lines.length > 0 && (
         <div className="mt-8 rounded-xl border border-neutral-200 p-5 text-left dark:border-neutral-800">
-          <div className="text-xs font-semibold text-neutral-500">예상 견적</div>
+          <div className="text-xs font-semibold text-neutral-500">{S.estimateTitle}</div>
           <ul className="mt-4 space-y-2 text-sm">
             {estimate.lines.map((line) => (
               <li key={line.label} className="flex justify-between gap-4">
@@ -801,15 +829,15 @@ function DoneView({
           </ul>
           <div className="mt-4 space-y-1 border-t border-neutral-200 pt-4 text-sm dark:border-neutral-800">
             <div className="flex justify-between text-neutral-500">
-              <span>공급가액</span>
+              <span>{S.estimateSubtotal}</span>
               <span className="tabular-nums">{formatKRW(estimate.subtotal)}</span>
             </div>
             <div className="flex justify-between text-neutral-500">
-              <span>부가세</span>
+              <span>{S.estimateVat}</span>
               <span className="tabular-nums">{formatKRW(estimate.vat)}</span>
             </div>
             <div className="flex justify-between font-semibold">
-              <span>합계</span>
+              <span>{S.estimateTotal}</span>
               <span className="tabular-nums">{formatKRW(estimate.total)}</span>
             </div>
           </div>
@@ -818,9 +846,7 @@ function DoneView({
 
       <p className="mt-6 text-sm leading-relaxed text-neutral-500">{estimate?.note}</p>
 
-      <p className="mt-8 text-xs text-neutral-400">
-        입력하신 이메일로 접수 확인 메일을 보내드렸습니다.
-      </p>
+      <p className="mt-8 text-xs text-neutral-400">{S.doneEmailNote}</p>
     </div>
   );
 }

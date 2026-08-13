@@ -88,10 +88,8 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const TESTIMONIAL_FORM_URL = SHARED.testimonialFormUrl;
 
   const isEn = locale === "en";
-  // 견적 폼과 개인정보처리방침은 1차엔 KR만 제작되어 있어 EN에서도 KR 경로로 연결합니다.
-  // 폼 자체는 KR 안내이지만 담당자가 EN 응대 가능하므로 실무상 문제 없음.
-  const quoteHref = "/quote/";
-  const privacyHref = "/privacy/";
+  const quoteHref = isEn ? "/en/quote/" : "/quote/";
+  const privacyHref = "/privacy/"; // 개인정보처리방침은 KR 원문만 유지 (법률 문서)
   const NOTICE_FALLBACK = isEn ? NOTICE_FALLBACK_EN : NOTICE_FALLBACK_KO;
   const POST_FALLBACK = isEn ? POST_FALLBACK_EN : POST_FALLBACK_KO;
 
