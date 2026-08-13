@@ -134,6 +134,8 @@ export interface UiStrings {
   sectionAbout: string;
   sectionMilestones: string;
   sectionMilestonesEn: string;
+  sectionNews: string;
+  sectionNewsSub: string;
   sectionSocial: string;
   sectionTestimonials: string;
   sectionTestimonialsSub: string;

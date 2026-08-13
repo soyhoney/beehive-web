@@ -10,7 +10,7 @@ export const ko: SiteContent = {
     name: "주식회사 비하이브코퍼레이션",
     nameEn: "Beehive Corp",
     tagline: "No one achieves anything alone.",
-    serviceLine: "수행·출장 · 프로젝트 · 통역 · 번역 · 교육",
+    serviceLine: "수행 · 출장 · 프로젝트 · 통역 · 번역 · 교육",
     heroSub:
       "통역·번역, 국제회의 기획·운영, 온라인·대면 행사 어레인지, 문서화와 시청각 테크니컬 서포트, 영어 교육 및 트레이닝까지 — 필요한 서비스를 선택하시면 바로 견적 문의가 완료됩니다.",
     philosophy:
@@ -47,6 +47,9 @@ export const ko: SiteContent = {
     sectionAbout: "대표 소개",
     sectionMilestones: "업력",
     sectionMilestonesEn: "When We Started",
+    sectionNews: "공지·소식",
+    sectionNewsSub:
+      "비하이브의 새 소식과 진행 중인 프로젝트 이야기를 이곳에서 안내드립니다.",
     sectionSocial: "우리의 이야기, 들어보실래요?",
     sectionTestimonials: "고객 후기",
     sectionTestimonialsSub:

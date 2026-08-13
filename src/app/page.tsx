@@ -103,7 +103,7 @@ export default function Home() {
             헤드라인은 국문 세리프(명조 계열)로 격상 — 로펌·컨설팅 톤.
             font-serif 폰트 스택은 globals.css `@theme` 의 --font-serif 참조.
           */}
-          <h1 className="mt-4 font-serif text-3xl leading-tight font-bold tracking-tight sm:text-5xl sm:leading-[1.15]">
+          <h1 className="mt-4 font-serif text-3xl leading-tight font-bold tracking-[-0.04em] sm:text-5xl sm:leading-[1.15]">
             {UI.heroHeadline[0]}
             <br />
             {UI.heroHeadline[1]}
@@ -476,15 +476,15 @@ export default function Home() {
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.navNews}</h2>
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+              {UI.sectionNews}
+            </h2>
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              공지사항은 구글 시트에서, 소식은 네이버 블로그에서 관리됩니다.
+              {UI.sectionNewsSub}
             </p>
 
             {/*
-              공지사항: 언니가 시트에 한 줄 추가하면 여기에 카드가 뜹니다.
-              시트 스키마와 반영 흐름은 docs/CONTENT-SHEETS.md 참고.
-              엔드포인트가 응답하지 않을 때는 fallback 카드로 자리를 지킵니다.
+              공지사항: 시트에서 관리. 엔드포인트가 응답하지 않을 때는 fallback 카드로 자리를 지킵니다.
             */}
             <div className="mt-10">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
@@ -494,13 +494,11 @@ export default function Home() {
             </div>
 
             {/*
-              소식: 언니가 시트(posts 탭)에서 관리.
-              행에는 "소식" 뱃지가 상시 붙고, 블로그 URL이 있으면 클릭 시 새 탭으로 이동합니다.
+              소식: 시트(posts 탭)에서 관리. 블로그 URL이 있으면 새 탭으로 이동합니다.
             */}
             <div className="mt-14">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 소식
-                <span className="ml-2 text-xs font-normal text-neutral-400">(네이버 블로그)</span>
               </h3>
               <BlogPosts fallback={POST_FALLBACK} />
             </div>
