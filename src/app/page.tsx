@@ -295,7 +295,7 @@ export default function Home() {
         {/* ── 대표 소개 · 연혁 ─────────────────────────────────── */}
         <section id="about" className="mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
-            <div>
+            <Reveal>
               <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
               <p className="mt-6 text-lg font-semibold">
                 {REPRESENTATIVE.name}
@@ -342,9 +342,9 @@ export default function Home() {
                   />
                 </a>
               </div>
-            </div>
+            </Reveal>
 
-            <div>
+            <Reveal delay={100}>
               <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
                 {UI.sectionMilestones}
               </h2>
@@ -360,7 +360,7 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -409,10 +409,13 @@ export default function Home() {
 
         {/* ── 작업 방식 ────────────────────────────────────────── */}
         <section id="how" className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-            {UI.sectionHow}
-          </h2>
+          <Reveal>
+            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+              {UI.sectionHow}
+            </h2>
+          </Reveal>
 
+          <Reveal delay={100}>
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {PRINCIPLES.map((item) => (
               <div key={item.title}>
@@ -423,6 +426,7 @@ export default function Home() {
               </div>
             ))}
           </div>
+          </Reveal>
 
           {/*
             진행 단계 — 타임라인 스타일.
@@ -430,6 +434,7 @@ export default function Home() {
             모바일: 세로 타임라인 (원 왼쪽, 라벨 오른쪽).
             원과 원 사이 연결선은 각 li 안 span 두 개로 처리 (모바일/데스크톱 각각).
           */}
+          <Reveal delay={200}>
           <ol className="mt-14 sm:grid sm:grid-cols-6 sm:gap-4">
             {PROCESS.map((step, index) => {
               const isLast = index === PROCESS.length - 1;
@@ -464,6 +469,7 @@ export default function Home() {
               );
             })}
           </ol>
+          </Reveal>
         </section>
 
 
@@ -473,16 +479,19 @@ export default function Home() {
           className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
         >
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-              {UI.sectionNews}
-            </h2>
-            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              {UI.sectionNewsSub}
-            </p>
+            <Reveal>
+              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+                {UI.sectionNews}
+              </h2>
+              <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+                {UI.sectionNewsSub}
+              </p>
+            </Reveal>
 
             {/*
               공지사항: 시트에서 관리. 엔드포인트가 응답하지 않을 때는 fallback 카드로 자리를 지킵니다.
             */}
+            <Reveal delay={100}>
             <div className="mt-10">
               <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 공지사항
@@ -499,8 +508,10 @@ export default function Home() {
               </h3>
               <BlogPosts fallback={POST_FALLBACK} />
             </div>
+            </Reveal>
 
             {/* 우리의 이야기, 들어보실래요? — Instagram / Blog / KakaoTalk */}
+            <Reveal delay={200}>
             <div className="mt-16 border-t border-neutral-200 pt-14 dark:border-neutral-800">
               <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
                 {UI.sectionSocial}
@@ -529,6 +540,7 @@ export default function Home() {
                 })}
               </div>
             </div>
+            </Reveal>
           </div>
         </section>
 
@@ -536,18 +548,20 @@ export default function Home() {
         {/* ── 마무리 CTA ───────────────────────────────────────── */}
         <section className="border-t border-neutral-200 py-24 text-center dark:border-neutral-800">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-              {UI.finalCtaTitle}
-            </h2>
-            <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-              {UI.finalCtaSub}
-            </p>
-            <Link
-              href="/quote/"
-              className="mt-8 inline-block rounded-lg bg-brand px-8 py-4 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
-            >
-              {UI.ctaQuote}
-            </Link>
+            <Reveal>
+              <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+                {UI.finalCtaTitle}
+              </h2>
+              <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
+                {UI.finalCtaSub}
+              </p>
+              <Link
+                href="/quote/"
+                className="mt-8 inline-block rounded-lg bg-brand px-8 py-4 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
+              >
+                {UI.ctaQuote}
+              </Link>
+            </Reveal>
           </div>
         </section>
       </main>
