@@ -47,6 +47,7 @@ export const ko: SiteContent = {
     sectionHowEn: "How We Do",
     sectionCases: "대표 사례",
     sectionCasesEn: "Case Study",
+    sectionCasesSub: "실제 수행한 프로젝트의 범위와 진행 방식입니다.",
     sectionAbout: "대표 소개",
     sectionMilestones: "업력",
     sectionMilestonesEn: "When We Started",
@@ -67,7 +68,8 @@ export const ko: SiteContent = {
     businessNumberLabel: "사업자등록번호",
     businessAreasLabel: "사업영역",
     labelFeaturedCase: "대표 사례",
-    labelAlsoMobile: "모바일 앱으로도 만나보세요",
+    // 2026-08-15 회의에서 대표가 직접 지정한 문구입니다.
+    labelAlsoMobile: "더 편리하게 앱으로 사용해 보세요",
     labelNoticesSub: "공지사항",
     labelUpdatesSub: "소식",
     labelVisitLink: "바로가기 →",
@@ -192,11 +194,15 @@ export const ko: SiteContent = {
       url: "https://blog.naver.com/beehivecorp",
       desc: "다양한 클라이언트의 성공 사례가 담긴 생생한 현장을 읽고 싶다면, 블로그를 구독해 주세요.",
     },
-    {
-      name: "카카오톡 채널",
-      url: "https://pf.kakao.com/_TxhuiX",
-      desc: "현재 진행 중인 업무가 있으신가요? 카카오톡 친구추가로 신속한 팔로우업이 가능합니다.",
-    },
+    /*
+     * 카카오톡 채널을 제거했습니다. (2026-08-15 회의, 대표 요청)
+     *
+     * 채널을 열어 두면 문의가 쌓이는데 응대할 사람이 없어 무응답 상태가 됩니다.
+     * 대표 표현으로 "묵묵부답이면 없는 게 낫다" — 채널 자체를 정리하기로 했습니다.
+     * 문의 창구는 견적 문의 폼과 service@beehivecorp.co.kr 로 단일화합니다.
+     *
+     * 나중에 응대 체계가 생기면 다시 추가하면 됩니다.
+     */
   ],
 
   caseStudies: [

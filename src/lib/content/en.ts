@@ -50,6 +50,7 @@ export const en: SiteContent = {
     sectionHowEn: "How We Do",
     sectionCases: "Case Studies",
     sectionCasesEn: "Case Study",
+    sectionCasesSub: "The scope and approach of projects we have actually delivered.",
     sectionAbout: "About the CEO",
     sectionMilestones: "Our History",
     sectionMilestonesEn: "When We Started",
@@ -70,7 +71,7 @@ export const en: SiteContent = {
     businessNumberLabel: "Business Registration No.",
     businessAreasLabel: "Business Areas",
     labelFeaturedCase: "Case Study",
-    labelAlsoMobile: "Also available on mobile",
+    labelAlsoMobile: "Get the app for easier access",
     labelNoticesSub: "Notices",
     labelUpdatesSub: "Updates",
     labelVisitLink: "Visit →",
@@ -195,11 +196,7 @@ export const en: SiteContent = {
       url: "https://blog.naver.com/beehivecorp",
       desc: "Read on-site stories and case studies from a range of clients.",
     },
-    {
-      name: "KakaoTalk Channel",
-      url: "https://pf.kakao.com/_TxhuiX",
-      desc: "Have a project in progress? Add us on KakaoTalk for fast follow-up.",
-    },
+    // 카카오톡 채널 제거 — 사유는 ko.ts 의 같은 위치 주석 참고.
   ],
 
   caseStudies: [

@@ -6,14 +6,16 @@ import Reveal from "@/components/Reveal";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
 import NoticesBoard from "@/components/NoticesBoard";
 import BlogPosts from "@/components/BlogPosts";
-import { InstagramIcon, NaverIcon, KakaoIcon } from "@/components/BrandIcons";
+import { InstagramIcon, NaverIcon } from "@/components/BrandIcons";
 
+/*
+ * 카카오톡 채널 매핑을 지웠습니다. 채널 자체를 정리했기 때문입니다 (ko.ts socials 주석 참고).
+ * KakaoIcon 컴포넌트는 BrandIcons 에 남겨 둡니다 — 나중에 채널을 다시 열면 그대로 씁니다.
+ */
 const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Instagram: InstagramIcon,
   "네이버 블로그": NaverIcon,
   "Naver Blog": NaverIcon,
-  "카카오톡 채널": KakaoIcon,
-  "KakaoTalk Channel": KakaoIcon,
 };
 
 export default function HomePage({ locale }: { locale: Locale }) {
@@ -23,6 +25,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
     highlights: HIGHLIGHTS,
     achievements: ACHIEVEMENTS,
     representative: REPRESENTATIVE,
+    caseStudies: CASE_STUDIES,
     milestones: MILESTONES,
     principles: PRINCIPLES,
     process: PROCESS,
@@ -162,6 +165,87 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </Reveal>
         </section>
 
+        {/* ── 대표 사례 ────────────────────────────────────────── */}
+        {/*
+          클라이언트 로고월 · 성과 리스트 바로 아래에 둡니다. (2026-08-15 회의)
+
+          방문자의 판단 순서를 따라갑니다 —
+            누구와 일했나(로고) → 무엇을 했나(성과) → 어떻게 했나(대표 사례)
+          신뢰의 근거를 여기서 다 쌓은 뒤에 서비스·견적으로 넘깁니다.
+
+          섹션 데이터(caseStudies)는 예전에 작성돼 있었지만, 사례를 서비스 카드 안으로
+          통합한 이후 렌더링되지 않고 콘텐츠에만 남아 있었습니다. 대표가 "대표 사례를
+          더 디벨롭해 달라" 고 요청했으므로 이 데이터를 되살려 씁니다.
+          내용은 대표가 보완 텍스트를 주면 교체합니다.
+        */}
+        {/*
+          배경은 흰색으로 두고 구분선만 넣습니다. 바로 다음 서비스 섹션이 회색이라
+          여기까지 회색이면 두 구역이 한 덩어리로 붙어 버립니다.
+          클라이언트(흰) → 대표 사례(흰) 는 "누구와" 와 "무엇을" 이라 한 묶음으로 읽혀도 됩니다.
+        */}
+        <section
+          id="cases"
+          className="border-t border-neutral-200 py-20 dark:border-neutral-800"
+        >
+          <div className="mx-auto max-w-5xl px-6">
+            <Reveal>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionCases}</h2>
+              <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+                {UI.sectionCasesSub}
+              </p>
+            </Reveal>
+
+            <Reveal delay={100}>
+              <div className="mt-10 grid gap-5 sm:grid-cols-2">
+                {CASE_STUDIES.map((study) => (
+                  <article
+                    key={study.title}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"
+                  >
+                    {study.photo && (
+                      <div className="aspect-[16/9] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={study.photo}
+                          alt={study.title}
+                          loading="lazy"
+                          /* 포스터처럼 세로로 긴 이미지는 잘라내지 않고 전체를 보여줍니다. */
+                          className={`size-full ${
+                            "photoFit" in study && study.photoFit === "contain"
+                              ? "object-contain"
+                              : "object-cover"
+                          }`}
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex flex-1 flex-col p-7">
+                      <h3 className="text-lg leading-snug font-bold tracking-tight">
+                        {study.title}
+                      </h3>
+                      <p className="mt-2 text-xs font-medium text-neutral-500">
+                        {study.client} · {study.period}
+                      </p>
+
+                      <ul className="mt-5 space-y-3">
+                        {study.points.map((point) => (
+                          <li
+                            key={point}
+                            className="flex gap-3 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
+                          >
+                            <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-brand-strong" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── 서비스 카드 → 견적 전환 ──────────────────────────── */}
         <section
           id="services"
@@ -208,23 +292,17 @@ export default function HomePage({ locale }: { locale: Locale }) {
                       <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {card.body}
                       </p>
-                      {card.cases && card.cases.length > 0 && (
-                        <div className="mt-5 border-t border-neutral-200 pt-4 dark:border-neutral-800">
-                          <p className="text-[10px] font-semibold uppercase tracking-widest text-brand-strong">
-                            {UI.labelFeaturedCase}
-                          </p>
-                          <ul className="mt-2.5 space-y-2">
-                            {card.cases.map((c) => (
-                              <li key={c.title} className="text-xs leading-relaxed">
-                                <span className="font-semibold text-neutral-800 dark:text-neutral-200">
-                                  {c.title}
-                                </span>
-                                <span className="mt-0.5 block text-neutral-500">{c.meta}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      {/*
+                        서비스 카드 안에 있던 대표 사례를 뺐습니다. (2026-08-15 회의)
+
+                        카드마다 사례를 작게 붙이면 서비스 설명과 사례가 뒤섞여 둘 다
+                        흐릿해집니다. 회의에서 "서비스는 견적 요청 버튼만 두고, 대표 사례는
+                        위로 올려서 제대로 보여주자" 로 정리했습니다.
+                        사례는 클라이언트 섹션 바로 아래 독립 섹션으로 옮겼습니다.
+
+                        serviceCards[].cases 데이터는 콘텐츠에 남겨 둡니다 — 대표가 사례
+                        텍스트를 보완해 주기로 했고, 그때 어느 쪽에 넣을지 다시 판단합니다.
+                      */}
                       <Link
                         href={`${quoteHref}${card.id}/`}
                         className="mt-6 inline-flex w-fit items-center gap-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
@@ -237,60 +315,77 @@ export default function HomePage({ locale }: { locale: Locale }) {
               })}
             </div>
             </Reveal>
+
+            {/*
+              앱 다운로드 안내 — 2026-08-15 회의에서 대표가 위치까지 지정했습니다.
+              "서비스 소개 하단에 문구 + 앱 다운로드 버튼"
+
+              공식 Google Play 뱃지 대신 텍스트 버튼을 씁니다. 검은 뱃지는 페이지
+              중간에서 시선을 과하게 끌어 바로 위 서비스 카드의 견적 버튼과 경쟁합니다.
+              공식 뱃지는 푸터에 그대로 있어 브랜드 표기 요건도 충족합니다.
+
+              버튼 문구에 "안드로이드" 를 남겨 둡니다. 이 앱은 Google Play 전용이라
+              아이폰 사용자가 눌렀다가 헛걸음하는 것을 막습니다.
+            */}
+            <Reveal delay={200}>
+              <div className="mt-12 flex flex-col items-start gap-4 rounded-2xl border border-neutral-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                <p className="text-sm font-semibold">{UI.labelAlsoMobile}</p>
+                <a
+                  href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-neutral-700 transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:text-neutral-300"
+                >
+                  <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3v12" />
+                    <polyline points="8 11 12 15 16 11" />
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  </svg>
+                  {UI.ctaAndroidApp}
+                </a>
+              </div>
+            </Reveal>
           </div>
         </section>
 
-        {/* ── 대표 소개 · 연혁 ─────────────────────────────────── */}
+        {/* ── 업력(연혁) ───────────────────────────────────────── */}
+        {/*
+          원래 이 자리에 대표 소개(이름 · 직함 · 학력 · 경력)가 함께 있었습니다.
+          2026-08-15 회의에서 대표 요청으로 제거했습니다.
+
+          이유 — ICCR 등 NDA 가 걸린 건이 있어 대표 사례를 드러낼 수 없고,
+          이름과 학력이 그대로 노출되는 것에 부담이 있었습니다. 관심 있는 방문자는
+          회사소개서를 다운로드하므로 그쪽에 남겨 두는 편이 낫다고 판단했습니다.
+          회의에서 "업력만 남기는 것도 나쁘지 않다" 로 합의해 연혁은 유지합니다.
+
+          라이브 후 실제 유입 고객층이 드러나면 무엇을 보여줄지 다시 판단합니다.
+          대표이사 성명은 푸터에 법적 표기로 남아 있습니다.
+
+          앵커 id 는 about 을 유지합니다 — 상단 메뉴 "회사소개" 가 이곳을 가리키고,
+          연혁이 곧 회사 소개 역할을 합니다.
+        */}
         <section id="about" className="mx-auto max-w-5xl px-6 py-20">
-          <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr]">
-            <Reveal>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{UI.sectionAbout}</h2>
-              <p className="mt-6 text-lg font-semibold">
-                {REPRESENTATIVE.name}
-                <span className="ml-2 text-sm font-normal text-neutral-500">
-                  {REPRESENTATIVE.title} · {REPRESENTATIVE.nameEn}
-                </span>
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                {REPRESENTATIVE.intro}
-              </p>
-
-              <ul className="mt-6 space-y-2.5">
-                {REPRESENTATIVE.career.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-2.5 text-sm text-neutral-600 dark:text-neutral-400"
-                  >
-                    <span className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              {/*
-                앱 다운로드 뱃지를 여기서 뺐습니다.
-                대표 소개는 "누가 하는가" 로 신뢰를 주는 자리인데, 검은 스토어 뱃지가
-                이력 아래에 붙으면 흐름이 끊깁니다. 앱 설치는 푸터에 남아 있습니다.
-              */}
-            </Reveal>
-
-            <Reveal delay={100}>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                {UI.sectionMilestones}
-              </h2>
-              <ol className="mt-6 space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
-                {MILESTONES.map((milestone) => (
-                  <li key={milestone.year} className="relative">
-                    <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
-                    <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
-                    <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
-                    <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                      {milestone.desc}
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </Reveal>
-          </div>
+          <Reveal>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {UI.sectionMilestones}
+            </h2>
+            {/*
+              한 칼럼이 되었으므로 연혁 폭을 제한합니다. max-w-5xl 을 꽉 채우면
+              설명 줄이 너무 길어져 읽기 불편합니다.
+            */}
+            <ol className="mt-8 max-w-2xl space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
+              {MILESTONES.map((milestone) => (
+                <li key={milestone.year} className="relative">
+                  <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
+                  <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
+                  <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
+                  <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    {milestone.desc}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
         </section>
 
         {/* ── 고객 후기 ────────────────────────────────────────── */}

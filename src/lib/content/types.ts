@@ -135,6 +135,7 @@ export interface UiStrings {
   sectionHowEn: string;
   sectionCases: string;
   sectionCasesEn: string;
+  sectionCasesSub: string;
   sectionAbout: string;
   sectionMilestones: string;
   sectionMilestonesEn: string;
