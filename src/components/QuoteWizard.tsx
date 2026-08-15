@@ -4,7 +4,14 @@ import { useMemo, useState } from "react";
 import * as KO_FLOW from "@/lib/quote-flow";
 import * as EN_FLOW from "@/lib/quote-flow-en";
 import type { Category, CategoryId, Question } from "@/lib/quote-flow";
-import { calculateEstimate, formatKRW, type Answer, type Answers } from "@/lib/pricing";
+import {
+  calculateEstimate,
+  formatMoney,
+  toDisplayAmount,
+  KRW_PER_USD,
+  type Answer,
+  type Answers,
+} from "@/lib/pricing";
 import {
   MAX_FILE_BYTES,
   MAX_TOTAL_BYTES,
@@ -817,6 +824,14 @@ function DoneView({
   S: WizardStrings;
   locale: Locale;
 }) {
+  /*
+   * 표시 통화로 먼저 환산해 둡니다. 영문은 달러, 국문은 원화 그대로입니다.
+   * 총액은 이 두 값을 더해서 만들어야 반올림 때문에 합이 어긋나지 않습니다.
+   */
+  const displaySubtotal = toDisplayAmount(estimate?.subtotal ?? 0, locale);
+  const displayVat = toDisplayAmount(estimate?.vat ?? 0, locale);
+  const fxNote = S.estimateFxNote(KRW_PER_USD.toLocaleString("en-US"));
+
   return (
     <div className="py-6 text-center">
       <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-brand-soft text-2xl">
@@ -841,25 +856,39 @@ function DoneView({
                     <span className="mt-0.5 block text-xs text-neutral-500">{line.detail}</span>
                   )}
                 </span>
-                <span className="shrink-0 tabular-nums">{formatKRW(line.amount, locale)}</span>
+                <span className="shrink-0 tabular-nums">
+                  {formatMoney(toDisplayAmount(line.amount, locale), locale)}
+                </span>
               </li>
             ))}
           </ul>
           <div className="mt-4 space-y-1 border-t border-neutral-200 pt-4 text-sm dark:border-neutral-800">
+            {/*
+              총액은 estimate.total 을 그대로 환산하지 않고, 환산된 소계 + 부가세로
+              만듭니다. 각각 반올림하면 합이 총액과 어긋나 영수증이 틀린 것처럼 보입니다.
+              (pricing.ts formatMoney 주석 참고)
+            */}
             <div className="flex justify-between text-neutral-500">
               <span>{S.estimateSubtotal}</span>
-              <span className="tabular-nums">{formatKRW(estimate.subtotal, locale)}</span>
+              <span className="tabular-nums">{formatMoney(displaySubtotal, locale)}</span>
             </div>
             <div className="flex justify-between text-neutral-500">
               <span>{S.estimateVat}</span>
-              <span className="tabular-nums">{formatKRW(estimate.vat, locale)}</span>
+              <span className="tabular-nums">{formatMoney(displayVat, locale)}</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span>{S.estimateTotal}</span>
-              <span className="tabular-nums">{formatKRW(estimate.total, locale)}</span>
+              <span className="tabular-nums">
+                {formatMoney(displaySubtotal + displayVat, locale)}
+              </span>
             </div>
           </div>
         </div>
+      )}
+
+      {/* 환율 안내는 자동 산출 금액이 실제로 보일 때만 노출합니다. */}
+      {estimate?.auto && estimate.lines.length > 0 && fxNote && (
+        <p className="mt-3 text-xs leading-relaxed text-neutral-400">{fxNote}</p>
       )}
 
       <p className="mt-6 text-sm leading-relaxed text-neutral-500">{estimate?.note}</p>

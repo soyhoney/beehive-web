@@ -264,9 +264,37 @@ export function calculateEstimate(
  * 국제 통화 코드 KRW 를 앞에 붙입니다. 해외 고객이 금액 단위를 오해하는 것을
  * 막는 쪽이 중요합니다.
  */
-export function formatKRW(amount: number, locale: Locale = "ko"): string {
+/**
+ * 원화 → 달러 환산에 쓰는 참고 환율. (2026-08-15 대표 요청으로 영문은 달러 표기)
+ *
+ * ⚠️ 정적 사이트라 이 값은 빌드 시점에 박힙니다. 환율이 크게 움직이면 여기를
+ *    고치고 다시 빌드해야 합니다. RATES 의 단가표를 갱신할 때 함께 확인하세요.
+ *
+ * 이 화면의 금액은 "예상"이고 정식 견적이 아니므로 근사 환산으로 충분합니다.
+ * 실제 계약·세금계산서는 원화 기준입니다 — 영문 화면에 그 사실을 함께 표시합니다.
+ */
+export const KRW_PER_USD = 1_380;
+
+/**
+ * 원화 금액을 화면에 표시할 통화의 숫자로 바꾼다.
+ *
+ * 영문은 1달러 단위로 반올림합니다. 센트까지 쓰면 근사 환산인데도 정밀해 보여
+ * 오해를 부릅니다.
+ */
+export function toDisplayAmount(krw: number, locale: Locale = "ko"): number {
+  return locale === "en" ? Math.round(krw / KRW_PER_USD) : Math.round(krw);
+}
+
+/**
+ * 표시 통화 기호를 붙인다. 인자는 이미 표시 통화로 환산된 숫자다.
+ *
+ * 주의 — 소계와 부가세를 각각 환산해 반올림하면 합이 총액과 어긋납니다.
+ * (예: 45.65→46, 4.57→5 이면 합 51 인데 총액 환산은 50)
+ * 그래서 총액은 표시 통화로 환산한 뒤 더해서 만들어야 합니다.
+ */
+export function formatMoney(amount: number, locale: Locale = "ko"): string {
   const rounded = Math.round(amount);
   const sign = rounded < 0 ? "-" : "";
   const digits = Math.abs(rounded).toLocaleString("ko-KR");
-  return locale === "en" ? `${sign}KRW ${digits}` : `${sign}${digits}원`;
+  return locale === "en" ? `${sign}USD ${digits}` : `${sign}${digits}원`;
 }

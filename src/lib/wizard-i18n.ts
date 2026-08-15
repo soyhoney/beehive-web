@@ -42,6 +42,11 @@ export interface WizardStrings {
   estimateVat: string;
   estimateTotal: string;
   doneEmailNote: string;
+  /**
+   * 환율 안내. 영문만 노출하고 국문은 빈 문자열을 돌려줍니다.
+   * 환율 값을 여기에 복사하지 않도록 인자로 받습니다 (원본은 pricing.ts KRW_PER_USD).
+   */
+  estimateFxNote: (rate: string) => string;
 }
 
 const KO: WizardStrings = {
@@ -81,6 +86,8 @@ const KO: WizardStrings = {
   estimateVat: "부가세",
   estimateTotal: "합계",
   doneEmailNote: "입력하신 이메일로 접수 확인 메일을 보내드렸습니다.",
+  // 국문은 원화가 기준 통화라 안내가 필요 없습니다.
+  estimateFxNote: () => "",
 };
 
 const EN: WizardStrings = {
@@ -126,6 +133,8 @@ const EN: WizardStrings = {
   estimateVat: "VAT",
   estimateTotal: "Total",
   doneEmailNote: "A confirmation email has been sent to your address.",
+  estimateFxNote: (rate) =>
+    `Amounts are converted from KRW at approx. ${rate} KRW = 1 USD. The final quote and invoice are issued in KRW.`,
 };
 
 export function getWizardStrings(locale: Locale): WizardStrings {

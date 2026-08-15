@@ -172,14 +172,12 @@ export const DURATION_OPTIONS = [
 ] as const;
 
 /** 번역 분량 구간 */
+// 사유는 quote-flow.ts 의 같은 상수 주석 참고.
 export const VOLUME_OPTIONS = [
-  "Up to 10 A4 pages",
-  "10-30 A4 pages",
-  "30-100 A4 pages",
-  "100+ A4 pages",
-  "Up to 30 minutes of video",
-  "30-120 minutes of video",
-  "120+ minutes of video",
+  "Up to 10 pages/slides",
+  "10-30 pages/slides",
+  "30-100 pages/slides",
+  "100+ pages/slides",
   "Not sure yet",
   DIRECT_INPUT,
 ] as const;
@@ -385,12 +383,12 @@ export const FLOW_D: readonly Question[] = [
     ph: "e.g., Exhibition catalogue Korean to English, must be completed within 3 weeks due to print schedule",
   }),
   q("volume", "choice", "Please give us a rough idea of the volume.", {
-    sub: "An approximate figure is fine. If you have a file, please attach it.",
+    sub: "Pages or slides. An approximate figure is fine — attach a file if you have one.",
     options: VOLUME_OPTIONS,
     followInput: {
       when: VOLUME_OPTIONS.indexOf(DIRECT_INPUT),
       label: "Volume",
-      ph: "e.g., 30 A4 pages / 40 minutes of video",
+      ph: "e.g., 30 pages / 50 slides",
     },
     file: true,
   }),
