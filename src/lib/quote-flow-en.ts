@@ -128,7 +128,7 @@ export const FIELDS_SUB = [
 //
 // 자유 입력 대신 구간으로 받습니다. 입력 부담이 줄어 이탈이 적고,
 // 정형화된 값이라 나중에 견적 자동 산출의 근거로 쓸 수 있습니다.
-// 마지막 "Please describe."을 고르면 따로 적을 수 있게 열어둡니다.
+// 마지막 "직접 입력"(Please describe.)을 고르면 따로 적을 수 있게 열어둡니다.
 // ---------------------------------------------------------------------------
 
 export const DIRECT_INPUT = "Please describe.";
@@ -189,7 +189,7 @@ const fieldQ = (): Question =>
     subChoice: {
       when: FIELDS_MAIN.length - 1,
       options: FIELDS_SUB,
-      textLabel: "Enter manually",
+      textLabel: "Please describe.",
       textPh: "Please describe the field",
     },
   });
@@ -422,7 +422,7 @@ export const FLOW_E_PERSONAL: readonly Question[] = [
   }),
   q("period", "choice", "Please select the duration.", {
     sub: "Group and long-term lessons receive discounts.",
-    options: ["Short-term (within 3 months)", "Long-term (3 months or more)", "Undecided"],
+    options: ["Short-term (within 3 months)", "Long-term (3 months or more)", "To be decided"],
   }),
   q("mode", "choice", "Please select the format.", {
     options: ["Online", "Offline", "Hybrid"],
@@ -448,7 +448,7 @@ export const FLOW_E_CORP: readonly Question[] = [
     file: true,
   }),
   q("period", "choice", "Please select the duration.", {
-    options: ["Short-term (within 2 weeks)", "Long-term (1 month or more)", "Undecided"],
+    options: ["Short-term (within 2 weeks)", "Long-term (1 month or more)", "To be decided"],
   }),
   q("mode", "choice", "Please select the format.", {
     sub: "After reviewing the details, we'll confirm the curriculum, format, and duration, and provide a quote.",
