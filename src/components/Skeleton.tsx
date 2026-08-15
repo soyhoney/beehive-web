@@ -66,13 +66,10 @@ export function SkeletonCards({
             <div className="h-3.5 w-11/12 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
             <div className="h-3.5 w-4/5 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
           </div>
-          {/* 이니셜 원 + 이름·소속 두 줄 */}
-          <div className="mt-5 flex items-center gap-2.5 border-t border-neutral-100 pt-4 dark:border-neutral-800">
-            <div className="size-8 shrink-0 animate-pulse rounded-full bg-neutral-200 dark:bg-neutral-800" />
-            <div className="flex-1">
-              <div className="h-3 w-24 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
-              <div className="mt-2 h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
-            </div>
+          {/* 이름 · 소속 두 줄 */}
+          <div className="mt-5 border-t border-neutral-100 pt-4 dark:border-neutral-800">
+            <div className="h-3 w-24 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+            <div className="mt-2 h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
           </div>
         </div>
       ))}

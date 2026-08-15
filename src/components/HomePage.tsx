@@ -262,28 +262,19 @@ export default function HomePage({ locale }: { locale: Locale }) {
             <Reveal delay={100}>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {SERVICE_CARDS.map((card) => {
-                const photo = SHARED.categoryPhotos[card.id];
                 return (
                   <article
                     key={card.id}
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+                    className="flex flex-col rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
                   >
-                    {photo && (
-                      <div className="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={photo.src}
-                          alt={photo.alt}
-                          loading="lazy"
-                          className="size-full object-cover transition duration-500 group-hover:scale-[1.02]"
-                          style={
-                            photo.objectPosition
-                              ? { objectPosition: photo.objectPosition }
-                              : undefined
-                          }
-                        />
-                      </div>
-                    )}
+                    {/*
+                      서비스 카드에서 사진을 뺐습니다. (2026-08-15 대표 요청)
+
+                      바로 위 대표 사례 섹션이 같은 사진들을 이미 크게 쓰고 있어서
+                      한 화면에 같은 이미지가 두 번 나왔습니다. 사진이 빠지면 카드가
+                      "무엇을 해주는가" 라는 설명에 집중되고, 사진은 대표 사례에서
+                      근거로만 쓰이게 됩니다.
+                    */}
                     <div className="flex flex-1 flex-col p-6">
                       <h3 className="text-lg font-bold tracking-tight">{card.title}</h3>
                       <p className="mt-3 text-sm font-semibold leading-relaxed">

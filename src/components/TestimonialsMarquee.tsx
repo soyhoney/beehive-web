@@ -90,23 +90,14 @@ export default function TestimonialsMarquee({ lang = "ko" }: { lang?: "ko" | "en
             </p>
 
             {/*
-              이름 이니셜 원 — 카드마다 글자가 달라지므로 색을 칠하지 않고도 카드가
-              서로 구분됩니다. 후기가 단조로워 보이는 원인은 색이 없어서가 아니라
-              카드들이 서로 똑같아서였습니다.
+              한때 이름 첫 글자를 원 안에 넣었지만 뺐습니다. 사진 대신 자리만 채우는
+              장식이라 실제로 담을 내용이 없었습니다. 이름 · 직함 · 소속으로 충분합니다.
             */}
-            <div className="mt-5 flex items-center gap-2.5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
-              <span
-                aria-hidden="true"
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-soft text-[13px] font-bold text-brand-strong"
-              >
-                {t.name?.trim().charAt(0) || "\u00b7"}
-              </span>
-              <span>
-                <span className="block font-semibold text-neutral-700 dark:text-neutral-300">
-                  {t.name} <span className="font-normal text-neutral-500">{t.title}</span>
-                </span>
-                <span className="mt-0.5 block">{t.affiliation}</span>
-              </span>
+            <div className="mt-5 border-t border-neutral-100 pt-4 text-xs text-neutral-500 dark:border-neutral-800">
+              <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                {t.name} <span className="font-normal text-neutral-500">{t.title}</span>
+              </p>
+              <p className="mt-1">{t.affiliation}</p>
             </div>
           </li>
         ))}
