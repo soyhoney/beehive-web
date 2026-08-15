@@ -10,15 +10,15 @@ import type { SiteContent } from "./types";
 
 export const en: SiteContent = {
   company: {
-    name: "Beehive Corporation",
+    name: "Beehive Corp",
     nameEn: "Beehive Corp",
     tagline: "No one achieves anything alone.",
     serviceLine: "On-site · Field Trip · Project · Interpretation · Translation · Training",
     heroSub:
       "Interpretation & translation, international conference planning, online and on-site event coordination, documentation and audio-visual technical support, and English education & training — select the service you need and complete your quote request in minutes.",
     philosophy:
-      "No one achieves everything alone. Just as bees build a hive through unified movement, Beehive Corporation designs communication toward one goal — across different languages, time\u00a0zones, cultures, and interests.",
-    address: "#629, 17 Gukjegeumyung-ro 2-gil, Yeongdeungpo-gu, Seoul 07327, Korea",
+      "No one achieves anything alone. Like the synchronized movement of bees shaping a hive, Beehive Corp designs communication across different languages, time\u00a0zones, and interests toward a shared goal.",
+    address: "#629, 17, Gukjegeumyung-ro 2-gil, Yeongdeungpo-gu, Seoul (07327), Republic of Korea",
     tel: "+82-10-6854-2019",
     email: "service@beehivecorp.co.kr",
     businessNumber: "430-86-03070",
@@ -43,28 +43,28 @@ export const en: SiteContent = {
     sectionClientsSub: "100+ cumulative clients · 800+ projects delivered",
     sectionServices: "The deeper we think, the further our clients go.",
     sectionServicesSub:
-      "Select a category and we only ask what's relevant. A quote request takes 1–2 minutes.",
+      "Just fill out the simple form, a quote request takes 1-2 minutes.",
     sectionScope: "Work Scope",
     sectionScopeEn: "Work Scope",
     sectionHow: "How We Work",
     sectionHowEn: "How We Do",
-    sectionCases: "Case Studies",
-    sectionCasesEn: "Case Study",
+    sectionCases: "Project Highlights",
+    sectionCasesEn: "Project Highlights",
     sectionCasesSub: "The scope and approach of projects we have actually delivered.",
     sectionAbout: "About the CEO",
     sectionMilestones: "Our History",
     sectionMilestonesEn: "When We Started",
-    sectionNews: "Notices & Updates",
+    sectionNews: "Notices & News",
     sectionNewsSub:
-      "New updates from Beehive and stories from projects in progress.",
-    sectionSocial: "Care to hear our story?",
+      "New updates from Beehive Corp and stories from projects.",
+    sectionSocial: "Get onboard our communication.",
     sectionTestimonials: "Client Reviews",
     sectionTestimonialsSub:
       "Stories from the partners we've worked with.",
     testimonialsFormCta: "Leave a Review",
     finalCtaTitle: "Preparing a project?",
     finalCtaSub:
-      "Answer a few short questions and we'll send you a quote within 1–2 business days.",
+      "Answer a brief questionnaire, we'll send you a quote within 1–2 business days.",
     cardCta: "Request a Quote →",
     privacyLink: "Privacy Policy",
     ceoLabel: "CEO",
@@ -74,7 +74,7 @@ export const en: SiteContent = {
     labelAlsoMobile: "Working with us regularly? The app is easier.",
     labelAlsoMobileSub: "Request a quote straight from your home screen.",
     labelNoticesSub: "Notices",
-    labelUpdatesSub: "Updates",
+    labelUpdatesSub: "News",
     labelVisitLink: "Visit →",
   },
 
@@ -82,7 +82,7 @@ export const en: SiteContent = {
     { value: "10 yrs", label: "in interpretation & translation", note: "2016~" },
     { value: "800+", label: "projects delivered" },
     { value: "100+", label: "cumulative clients" },
-    { value: "6 yrs", label: "MFDS ICCR Secretariat", note: "2021~present" },
+    { value: "6 yrs", label: "Secretariat of the Cosmetic Policy Division in the Ministry of Food and Drug Safety", note: "2021~present" },
   ],
 
   achievements: [
@@ -103,34 +103,34 @@ export const en: SiteContent = {
       "B.A. in German Language & Literature / Economics, Sungkyunkwan University",
       "M.A. in Korean-English Interpretation, Seoul University of Foreign Studies",
       "International Conference Specialist Program, Ewha Womans University",
-      "Head of Korea Office, Registrar Corp (US FDA compliance) — 2023-2025",
+      "Representative of Korea Office, Registrar Corp (US FDA compliance) — 2023-2025",
     ],
   },
 
   milestones: [
     {
       year: "2016",
-      title: "Founding interpretation & translation projects",
+      title: "Embarking on interpretation & translation projects",
       desc: "KOTRA export consultations, MBC broadcast interpretation, official interpreter at Busan International Film Festival, in-house translator for HiDis Technology Legal Team",
     },
     {
       year: "2019",
-      title: "Founded 'Beehive' as a sole proprietorship",
+      title: "Founded 'Beehive' as a private company",
       desc: "Apple–LG U+ · MAC · Tiffany · Chopard global campaigns, Korean Air accessibility audit interpretation",
     },
     {
       year: "2021",
-      title: "Awarded MFDS ICCR International Secretariat",
+      title: "International Secretariat of ICCR",
       desc: "Ministry of Food and Drug Safety · Korea Cosmetic Association — 6 consecutive years to date",
     },
     {
       year: "2023–2025",
-      title: "Head of Korea Office, Registrar Corp (US FDA)",
+      title: "Representative of Korea Office, Registrar Corp (US FDA compliance provider)",
       desc: "US FDA compliance consulting for Korean market, advising Korean food/pharma/cosmetics companies on US market entry",
     },
     {
       year: "2024",
-      title: "Incorporated as Beehive Corporation",
+      title: "Expanded into a legal entity 'Beehive Corp'",
       desc: "Interpretation for the Spanish Minister of Education delegation, Export-Import Bank of Korea ODA projects, international exhibition catalog translation",
     },
   ],
@@ -145,7 +145,7 @@ export const en: SiteContent = {
       desc: "Broadcast · film · events · commercials · interviews — flexible on-site interpretation and live translation that keeps things moving even when the script runs out.",
     },
     {
-      title: "Escort · Delegation Services",
+      title: "Delegation Escort · Business Travel Services",
       desc: "From planning to protocol · transportation · reporting — reliable escort services for state protocol and international business trips.",
     },
     {
@@ -154,11 +154,11 @@ export const en: SiteContent = {
     },
     {
       title: "Industry · Technical Interpretation",
-      desc: "ISO · GMP certification audits, technical exchanges, international consortiums, business meetings, corporate internal reviews, and bids — professional-grade interpretation and network.",
+      desc: "ISO · GMP inspection audits, technical exchanges, international R&D · business consortiums, business meetings, exclusive meetings, and procurements — professional-grade interpretation and network.",
     },
     {
       title: "Training",
-      desc: "We lower the language barrier for English presentations · meetings · training so that content is delivered and learned efficiently.",
+      desc: "Beehive Corp helps overcome language barriers in English presentations, meetings, and moderated discussions through training and lectures, ensuring that content is communicated clearly and understood effectively.",
     },
   ],
 
@@ -178,7 +178,7 @@ export const en: SiteContent = {
   ],
 
   process: [
-    "Quote Request",
+    "Request a Quote",
     "Consultation · Contract · NDA",
     "Pre-briefing",
     "Delivery",
@@ -195,7 +195,7 @@ export const en: SiteContent = {
     {
       name: "Naver Blog",
       url: "https://blog.naver.com/beehivecorp",
-      desc: "Read on-site stories and case studies from a range of clients.",
+      desc: "Read on-site stories and project highlights from our clients.",
     },
     // 카카오톡 채널 제거 — 사유는 ko.ts 의 같은 위치 주석 참고.
   ],
@@ -203,11 +203,11 @@ export const en: SiteContent = {
   caseStudies: [
     {
       title: "ICCR (International Cooperation on Cosmetics Regulation) Secretariat",
-      client: "MFDS · Korea Cosmetic Association",
+      client: "Ministry of Food and Drug Safety · Korea Cosmetic Association",
       period: "2021 ~ present (6 consecutive years)",
       photo: "/photos/public-project.jpg",
       points: [
-        "16th session Secretariat & Co-chair — full operation of the government-international body coordination",
+        "16th cycle Secretariat & Co-chair — full operation of the government-international body coordination",
         "Quarterly, annual, and Working Group meetings with 2-channel EN-KR simultaneous interpretation, minutes drafting and translation",
         "Regulatory clauses, technical documents, safety assessments, SCCS opinions — specialized regulatory translation",
         "37+ seminars and webinars interpreted (2022~2026)",
@@ -297,13 +297,13 @@ export const en: SiteContent = {
     {
       id: "A",
       title: "Escort · Delegation",
-      headline: "Private escort services — without leaning on personal networks each time",
+      headline: "Private escort services - No more relying on personal network.",
       body: "From planning to protocol · transportation · reporting — reliable escort service for state protocol and international business trips.",
     },
     {
       id: "B",
       title: "Projects",
-      headline: "Your project should continue even when the point of contact changes.",
+      headline: "Even when personnel change, the project must move forward.",
       body: "For government and public agencies — interpretation, translation, international conferences, and secretariat operations, including bids · contracts · administrative paperwork. A project partner that stays steady through staff transitions.",
       cases: [
         {
@@ -315,7 +315,7 @@ export const en: SiteContent = {
     {
       id: "C",
       title: "Broadcast · Event · Technical Interpretation",
-      headline: "The field is real-time.",
+      headline: "Because the field is unscripted.",
       body: "Broadcast · film · events · commercials · interviews — flexible on-site interpretation for off-script situations. Plus specialized fields: ISO · GMP audits, technical exchanges, international consortiums, business, corporate internal meetings, and bids.",
       cases: [
         {
@@ -327,7 +327,7 @@ export const en: SiteContent = {
     {
       id: "D",
       title: "Media · Publishing Translation",
-      headline: "Fast delivery, without losing quality.",
+      headline: "Excellence never compromises, even on the tight deadlines.",
       body: "Exhibition texts · catalogs · film subtitles · articles · books — beginning with accurate intent and a clear timeline, refined through client feedback and expert review.",
       cases: [
         {
@@ -343,14 +343,14 @@ export const en: SiteContent = {
     {
       id: "E",
       title: "Training",
-      headline: "Presentations, meetings, communication, and training in English no longer have to be a burden.",
+      headline: "English should empower communication, not become a barrier.",
       body: "Including English education, Beehive Corporation supports the efficient delivery and learning of various training programs.",
     },
     {
       id: "F",
       title: "Other Projects",
       headline: "Preparing a project?",
-      body: "Where there's a procedure, Beehive moves on your behalf. Reach out — we'll reply with a quote within 1–2 business days.",
+      body: "Where the process stalls, Beehive Corp steps in and keeps it moving. Reach out — we'll reply with a quote within 1–2 business days.",
     },
   ],
 };

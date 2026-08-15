@@ -96,7 +96,7 @@ const q = (
 // ---------------------------------------------------------------------------
 
 export const FIELDS_MAIN = [
-  "Humanities / social sciences / history / philosophy / literature",
+  "Human arts / social sciences / history / philosophy / literature",
   "Fine arts / arts",
   "Culture / tourism / sports",
   "Business / trade / marketing",
@@ -128,10 +128,10 @@ export const FIELDS_SUB = [
 //
 // 자유 입력 대신 구간으로 받습니다. 입력 부담이 줄어 이탈이 적고,
 // 정형화된 값이라 나중에 견적 자동 산출의 근거로 쓸 수 있습니다.
-// 마지막 "직접 입력"을 고르면 따로 적을 수 있게 열어둡니다.
+// 마지막 "Please describe."을 고르면 따로 적을 수 있게 열어둡니다.
 // ---------------------------------------------------------------------------
 
-export const DIRECT_INPUT = "Enter manually";
+export const DIRECT_INPUT = "Please describe.";
 
 /** 수행 인원 규모 */
 export const HEADCOUNT_OPTIONS = [
@@ -159,7 +159,7 @@ export const PERIOD_OPTIONS = [
   "3-6 months",
   "6 months - 1 year",
   "1 year or more",
-  "Undecided",
+  "To be decided",
   DIRECT_INPUT,
 ] as const;
 
@@ -218,32 +218,32 @@ export const CATEGORIES: readonly Category[] = [
   {
     id: "A",
     title: "Executive escort & business trips",
-    desc: "Private escort interpretation you can rely on without falling back on personal networks",
+    desc: "Private escort services - No more relying on personal network.",
   },
   {
     id: "B",
     title: "Projects",
-    desc: "Your project should keep moving forward, even when your point of contact changes",
+    desc: "Even when personnel change, the project must move forward.",
   },
   {
     id: "C",
     title: "Broadcast, events & specialist interpretation",
-    desc: "Because the field is where it really counts",
+    desc: "Because the field is unscripted.",
   },
   {
     id: "D",
     title: "Media & publishing translation",
-    desc: "Fast turnaround without compromising on quality",
+    desc: "Excellence never compromises, even on the tight deadlines.",
   },
   {
     id: "E",
     title: "Training & education",
-    desc: "Lowering language barriers in English-language presentations, meetings, communications and training",
+    desc: "English should empower communication, not become a barrier.",
   },
   {
     id: "F",
     title: "Other projects",
-    desc: "Beehive steps in wherever formal procedures are required",
+    desc: "Where the process stalls, Beehive Corp steps in and keeps it moving.",
   },
 ] as const;
 
