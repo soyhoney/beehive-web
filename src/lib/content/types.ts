@@ -80,6 +80,12 @@ export interface ServiceCard {
    * 별도 "대표 사례" 섹션 대신 각 서비스 카드 안에서 신뢰 시그널을 준다는 취지.
    */
   cases?: readonly ServiceCaseRef[];
+  /**
+   * 이 분야에서 실제로 수행하는 업무 범위.
+   * 2026-08-15 대표가 6개 분야별로 직접 작성해 전달한 목록입니다.
+   * 사례처럼 개별 건을 드러내지 않으면서 업무 폭을 보여주는 용도입니다.
+   */
+  scope?: string;
 }
 
 /** 서비스 카드 안에서 짧게 노출되는 대표 사례 한 줄. */
@@ -153,6 +159,8 @@ export interface UiStrings {
   businessNumberLabel: string;
   businessAreasLabel: string;
   labelFeaturedCase: string;
+  /** 서비스 카드의 업무 범위 목록 제목 */
+  labelScope: string;
   labelAlsoMobile: string;
   labelAlsoMobileSub: string;
   labelNoticesSub: string;

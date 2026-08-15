@@ -280,9 +280,30 @@ export default function HomePage({ locale }: { locale: Locale }) {
                       <p className="mt-3 text-sm font-semibold leading-relaxed">
                         {card.headline}
                       </p>
-                      <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {card.body}
                       </p>
+
+                      {/*
+                        업무 범위 — 2026-08-15 대표가 6개 분야별로 직접 작성해 전달한 목록.
+
+                        NDA 때문에 개별 사례를 드러내기 어려운 대신, 실제로 어떤 일까지
+                        하는지를 나열해 업무 폭을 보여줍니다. 설명(body)보다 한 단계 낮은
+                        정보이므로 구분선을 두고 작은 글씨로 둡니다.
+
+                        flex-1 을 여기로 옮겨 목록 길이가 달라도 견적 버튼이 카드 아래쪽에
+                        나란히 정렬되게 합니다. (분야마다 항목 수가 크게 다릅니다)
+                      */}
+                      {card.scope && (
+                        <div className="mt-5 flex-1 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+                          <p className="text-[10px] font-semibold tracking-widest text-brand-strong uppercase">
+                            {UI.labelScope}
+                          </p>
+                          <p className="mt-2 text-xs leading-relaxed text-neutral-500">
+                            {card.scope}
+                          </p>
+                        </div>
+                      )}
                       {/*
                         서비스 카드 안에 있던 대표 사례를 뺐습니다. (2026-08-15 회의)
 

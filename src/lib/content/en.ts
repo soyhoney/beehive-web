@@ -71,6 +71,7 @@ export const en: SiteContent = {
     businessNumberLabel: "Business Registration No.",
     businessAreasLabel: "Business Areas",
     labelFeaturedCase: "Case Study",
+    labelScope: "Scope",
     labelAlsoMobile: "Working with us regularly? The app is easier.",
     labelAlsoMobileSub: "Request a quote straight from your home screen.",
     labelNoticesSub: "Notices",
@@ -299,12 +300,16 @@ export const en: SiteContent = {
       title: "Escort · Delegation",
       headline: "Private escort services - No more relying on personal network.",
       body: "From planning to protocol · transportation · reporting — reliable escort service for state protocol and international business trips.",
+      scope:
+        "Vietnam, Slovenia, Germany, Italy, the United States, Taiwan, Brazil, Japan, Canada, Qatar, India, and more",
     },
     {
       id: "B",
       title: "Projects",
       headline: "Even when personnel change, the project must move forward.",
       body: "For government and public agencies — interpretation, translation, international conferences, and secretariat operations, including bids · contracts · administrative paperwork. A project partner that stays steady through staff transitions.",
+      scope:
+        "International conference secretariat operations, international joint R&D projects, in-house legal team establishment, webinars, seminars, long-term training programs, ODA projects, architectural tenders, and more",
       cases: [
         {
           title: "ICCR (International Cooperation on Cosmetics Regulation) Secretariat",
@@ -317,6 +322,8 @@ export const en: SiteContent = {
       title: "Broadcast · Event · Technical Interpretation",
       headline: "Because the field is unscripted.",
       body: "Broadcast · film · events · commercials · interviews — flexible on-site interpretation for off-script situations. Plus specialized fields: ISO · GMP audits, technical exchanges, international consortiums, business, corporate internal meetings, and bids.",
+      scope:
+        "International events, on-set productions, interviews, broadcasts, commercials, seminars, lectures, corporate and public events, emceeing, audits, inspections, bilateral meetings, government meetings, business meetings, academic conferences, panel discussions, video conferences, working-group meetings, and more",
       cases: [
         {
           title: "Simultaneous Interpretation on Global Campaign Shoots",
@@ -329,6 +336,8 @@ export const en: SiteContent = {
       title: "Media · Publishing Translation",
       headline: "Excellence never compromises, even on the tight deadlines.",
       body: "Exhibition texts · catalogs · film subtitles · articles · books — beginning with accurate intent and a clear timeline, refined through client feedback and expert review.",
+      scope:
+        "Regulations, legal opinions, articles of incorporation, contracts, exhibition materials, exhibition catalogues, PowerPoint presentations, film and video subtitles, scripts, books, brochures, websites, product labels, catalogues, manuals, technical documents, academic papers, certified and notarized translations, and more",
       cases: [
         {
           title: "Groundseesaw Exhibition Text · Catalog Translation",
@@ -345,12 +354,16 @@ export const en: SiteContent = {
       title: "Training",
       headline: "English should empower communication, not become a barrier.",
       body: "Including English education, Beehive Corporation supports the efficient delivery and learning of various training programs.",
+      scope:
+        "Presentation coaching, scriptwriting, voice guides, speaker training, business email writing, conversational English, online English conversation with native speakers, and more",
     },
     {
       id: "F",
       title: "Other Projects",
       headline: "Preparing a project?",
       body: "Where the process stalls, Beehive Corp steps in and keeps it moving. Reach out — we'll reply with a quote within 1–2 business days.",
+      scope:
+        "Compliance Consulting, business mediation, pitching, bidding, negotiations, contracting, speaker recruitment, international conference planning, invitations, transportation, protocol services, receptions, and more",
     },
   ],
 };
