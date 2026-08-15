@@ -355,48 +355,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        {/* ── 업력(연혁) ───────────────────────────────────────── */}
-        {/*
-          원래 이 자리에 대표 소개(이름 · 직함 · 학력 · 경력)가 함께 있었습니다.
-          2026-08-15 회의에서 대표 요청으로 제거했습니다.
-
-          이유 — ICCR 등 NDA 가 걸린 건이 있어 대표 사례를 드러낼 수 없고,
-          이름과 학력이 그대로 노출되는 것에 부담이 있었습니다. 관심 있는 방문자는
-          회사소개서를 다운로드하므로 그쪽에 남겨 두는 편이 낫다고 판단했습니다.
-          회의에서 "업력만 남기는 것도 나쁘지 않다" 로 합의해 연혁은 유지합니다.
-
-          라이브 후 실제 유입 고객층이 드러나면 무엇을 보여줄지 다시 판단합니다.
-          대표이사 성명은 푸터에 법적 표기로 남아 있습니다.
-
-          앵커 id 는 about 을 유지합니다 — 상단 메뉴 "회사소개" 가 이곳을 가리키고,
-          연혁이 곧 회사 소개 역할을 합니다.
-        */}
-        <section id="about" className="mx-auto max-w-5xl px-6 py-20">
-          <Reveal>
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              {UI.sectionMilestones}
-            </h2>
-            {/*
-              한 칼럼이 되었으므로 연혁 폭을 제한합니다. max-w-5xl 을 꽉 채우면
-              설명 줄이 너무 길어져 읽기 불편합니다.
-            */}
-            <ol className="mt-8 max-w-2xl space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
-              {MILESTONES.map((milestone) => (
-                <li key={milestone.year} className="relative">
-                  <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
-                  <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
-                  <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
-                  <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {milestone.desc}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-        </section>
 
         {/* ── 고객 후기 ────────────────────────────────────────── */}
-        <section className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950">
+        {/*
+          연혁을 아래로 옮기면서 서비스(회색)와 후기(회색)가 맞붙게 되어
+          후기를 흰 배경으로 바꿨습니다. 캐러셀 양끝 페이드 색도 함께 맞춰야 합니다
+          (TestimonialsMarquee 의 from-* 클래스).
+        */}
+        <section className="border-t border-neutral-200 py-20 dark:border-neutral-800">
           <div className="mx-auto max-w-5xl px-6">
         <Reveal delay={150}>
           <div>
@@ -429,7 +395,11 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </section>
 
         {/* ── 작업 방식 ────────────────────────────────────────── */}
-        <section id="how" className="mx-auto max-w-5xl px-6 py-20">
+        <section
+          id="how"
+          className="border-t border-neutral-200 bg-neutral-50 py-20 dark:border-neutral-800 dark:bg-neutral-950"
+        >
+          <div className="mx-auto max-w-5xl px-6">
           <Reveal>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {UI.sectionHow}
@@ -482,6 +452,47 @@ export default function HomePage({ locale }: { locale: Locale }) {
               );
             })}
           </ol>
+          </Reveal>
+          </div>
+        </section>
+
+        {/* ── 연혁 ───────────────────────────────────────── */}
+        {/*
+          원래 이 자리에 대표 소개(이름 · 직함 · 학력 · 경력)가 함께 있었습니다.
+          2026-08-15 회의에서 대표 요청으로 제거했습니다.
+
+          이유 — ICCR 등 NDA 가 걸린 건이 있어 대표 사례를 드러낼 수 없고,
+          이름과 학력이 그대로 노출되는 것에 부담이 있었습니다. 관심 있는 방문자는
+          회사소개서를 다운로드하므로 그쪽에 남겨 두는 편이 낫다고 판단했습니다.
+          회의에서 "업력만 남기는 것도 나쁘지 않다" 로 합의해 연혁은 유지합니다.
+
+          라이브 후 실제 유입 고객층이 드러나면 무엇을 보여줄지 다시 판단합니다.
+          대표이사 성명은 푸터에 법적 표기로 남아 있습니다.
+
+          앵커 id 는 about 을 유지합니다 — 상단 메뉴 "회사소개" 가 이곳을 가리키고,
+          연혁이 곧 회사 소개 역할을 합니다.
+        */}
+        <section id="about" className="mx-auto max-w-5xl px-6 py-20">
+          <Reveal>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {UI.sectionMilestones}
+            </h2>
+            {/*
+              한 칼럼이 되었으므로 연혁 폭을 제한합니다. max-w-5xl 을 꽉 채우면
+              설명 줄이 너무 길어져 읽기 불편합니다.
+            */}
+            <ol className="mt-8 max-w-2xl space-y-7 border-l border-neutral-200 pl-6 dark:border-neutral-800">
+              {MILESTONES.map((milestone) => (
+                <li key={milestone.year} className="relative">
+                  <span className="absolute top-1.5 -left-[1.8rem] size-2 rounded-full bg-brand" />
+                  <div className="text-xs font-semibold text-brand-strong">{milestone.year}</div>
+                  <div className="mt-1 text-sm font-semibold">{milestone.title}</div>
+                  <div className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    {milestone.desc}
+                  </div>
+                </li>
+              ))}
+            </ol>
           </Reveal>
         </section>
 

@@ -58,12 +58,12 @@ export default function TestimonialsMarquee({ lang = "ko" }: { lang?: "ko" | "en
     <div className="group relative overflow-hidden">
       {/* 양쪽 페이드 마스크 — 카드가 잘리는 대신 부드럽게 사라지도록 */}
       {/*
-        페이드는 섹션 배경색과 같아야 합니다. 섹션이 bg-neutral-50 인데 여기가
-        from-white 였어서, 양끝에 흰 김이 서린 것처럼 미세하게 어긋나 있었습니다.
-        (다크 모드는 섹션이 neutral-950 이라 원래부터 맞았습니다)
+        페이드는 후기 섹션의 배경색과 같아야 합니다. 다르면 양끝에 김이 서린 것처럼
+        얼룩져 보입니다. 섹션 배경을 바꾸면 여기도 함께 바꿔야 합니다.
+        (현재 흰 배경 — HomePage 의 고객 후기 섹션 주석 참고)
       */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-neutral-50 to-transparent sm:w-24 dark:from-neutral-950" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-neutral-50 to-transparent sm:w-24 dark:from-neutral-950" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white to-transparent sm:w-24 dark:from-neutral-950" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white to-transparent sm:w-24 dark:from-neutral-950" />
 
       <ul
         className="marquee-track flex w-max gap-4 group-hover:[animation-play-state:paused]"
