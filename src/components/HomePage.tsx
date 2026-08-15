@@ -320,12 +320,28 @@ export default function HomePage({ locale }: { locale: Locale }) {
             */}
             <Reveal delay={200}>
               <div className="mt-12 flex flex-col items-start gap-4 rounded-2xl border border-neutral-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
-                <p className="text-sm font-semibold">{UI.labelAlsoMobile}</p>
+                <div>
+                  <p className="text-sm font-semibold">{UI.labelAlsoMobile}</p>
+                  <p className="mt-1 text-xs text-neutral-500">{UI.labelAlsoMobileSub}</p>
+                </div>
+                {/*
+                  채워진 버튼으로 강조합니다. 테두리만 있는 버튼은 바로 위 카드의
+                  노란 견적 버튼들 옆에서 눌러야 할 것으로 읽히지 않았습니다.
+
+                  색은 노랑이 아니라 진한 회색을 씁니다. 이 페이지에서 노란색은
+                  "견적 문의" 하나만 가리키게 두는 편이 낫습니다. 앱 버튼까지 노랗게 하면
+                  카드마다 있는 견적 버튼과 색이 같아져 어느 쪽이 목적인지 흐려집니다.
+                  진한 회색은 흰 배경에서 충분히 강조되면서 노란색과 경쟁하지 않습니다.
+                */}
                 <a
                   href="https://play.google.com/store/apps/details?id=app.netlify.std_beehive.twa"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-neutral-700 transition hover:border-brand hover:text-brand-strong dark:border-neutral-700 dark:text-neutral-300"
+                  /*
+                    좁은 화면에서는 버튼을 가로로 꽉 채웁니다. 왼쪽에만 붙어 있으면
+                    오른쪽이 비어 배너가 미완성처럼 보이고, 버튼도 작아 보입니다.
+                  */
+                  className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700 sm:w-auto dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
                 >
                   <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M12 3v12" />

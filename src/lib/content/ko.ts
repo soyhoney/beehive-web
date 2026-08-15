@@ -49,7 +49,11 @@ export const ko: SiteContent = {
     sectionCasesEn: "Case Study",
     sectionCasesSub: "실제 수행한 프로젝트의 범위와 진행 방식입니다.",
     sectionAbout: "대표 소개",
-    sectionMilestones: "업력",
+    /*
+     * "업력" 은 사업을 해온 기간(년수)을 뜻하는 말이라, 연도별 사건 목록을
+     * 담은 이 섹션의 제목으로는 맞지 않았습니다. "연혁" 으로 바꿉니다.
+     */
+    sectionMilestones: "연혁",
     sectionMilestonesEn: "When We Started",
     sectionNews: "공지·소식",
     sectionNewsSub:
@@ -68,8 +72,13 @@ export const ko: SiteContent = {
     businessNumberLabel: "사업자등록번호",
     businessAreasLabel: "사업영역",
     labelFeaturedCase: "대표 사례",
-    // 2026-08-15 회의에서 대표가 직접 지정한 문구입니다.
-    labelAlsoMobile: "더 편리하게 앱으로 사용해 보세요",
+    /*
+     * 회의에서 대표가 지정한 문구는 "더 편리하게 앱으로 사용해 보세요" 였는데,
+     * 무엇이 편리한지가 없어 다시 잡았습니다. 앱을 깔 이유가 있는 쪽은
+     * 재거래하는 기관 담당자이므로 그분들을 대상으로 씁니다.
+     */
+    labelAlsoMobile: "자주 문의하신다면 앱이 편합니다",
+    labelAlsoMobileSub: "홈 화면에서 바로 견적을 요청하실 수 있어요.",
     labelNoticesSub: "공지사항",
     labelUpdatesSub: "소식",
     labelVisitLink: "바로가기 →",

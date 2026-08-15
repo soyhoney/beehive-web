@@ -154,6 +154,7 @@ export interface UiStrings {
   businessAreasLabel: string;
   labelFeaturedCase: string;
   labelAlsoMobile: string;
+  labelAlsoMobileSub: string;
   labelNoticesSub: string;
   labelUpdatesSub: string;
   labelVisitLink: string;
