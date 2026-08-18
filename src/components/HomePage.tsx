@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n";
 import TopBar from "@/components/TopBar";
 import Reveal from "@/components/Reveal";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
+import ServicesSection from "@/components/ServicesSection";
 import NoticesBoard from "@/components/NoticesBoard";
 import BlogPosts from "@/components/BlogPosts";
 import { InstagramIcon, NaverIcon } from "@/components/BrandIcons";
@@ -259,73 +260,22 @@ export default function HomePage({ locale }: { locale: Locale }) {
               {UI.sectionServicesSub}
             </p>
 
+            {/*
+              6장 그리드 → pill 필터 + 큰 split 카드 하나로 개편. (2026-08-18)
+              카드마다 정보 밀도가 균일하게 높아 스캔이 안 되던 문제를 해결하려는 것.
+              "먼저 라인업 스캔 → 하나만 골라 깊게" 순서로 인지 부하를 낮춥니다.
+
+              왼쪽(브랜드 컬러): 큰 서비스명 + headline + body
+              오른쪽(흰 배경): 주요 수행 범위 배지 + 견적 CTA + 좌우 네비
+              대표 사례는 여전히 위 별도 섹션 (회의 결정 유지). 카드 안엔 안 넣습니다.
+            */}
             <Reveal delay={100}>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {SERVICE_CARDS.map((card) => {
-                return (
-                  <article
-                    key={card.id}
-                    className="flex flex-col rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
-                  >
-                    {/*
-                      서비스 카드에서 사진을 뺐습니다. (2026-08-15 대표 요청)
-
-                      바로 위 대표 사례 섹션이 같은 사진들을 이미 크게 쓰고 있어서
-                      한 화면에 같은 이미지가 두 번 나왔습니다. 사진이 빠지면 카드가
-                      "무엇을 해주는가" 라는 설명에 집중되고, 사진은 대표 사례에서
-                      근거로만 쓰이게 됩니다.
-                    */}
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="text-lg font-bold tracking-tight">{card.title}</h3>
-                      <p className="mt-3 text-sm font-semibold leading-relaxed">
-                        {card.headline}
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                        {card.body}
-                      </p>
-
-                      {/*
-                        업무 범위 — 2026-08-15 대표가 6개 분야별로 직접 작성해 전달한 목록.
-
-                        NDA 때문에 개별 사례를 드러내기 어려운 대신, 실제로 어떤 일까지
-                        하는지를 나열해 업무 폭을 보여줍니다. 설명(body)보다 한 단계 낮은
-                        정보이므로 구분선을 두고 작은 글씨로 둡니다.
-
-                        flex-1 을 여기로 옮겨 목록 길이가 달라도 견적 버튼이 카드 아래쪽에
-                        나란히 정렬되게 합니다. (분야마다 항목 수가 크게 다릅니다)
-                      */}
-                      {card.scope && (
-                        <div className="mt-5 flex-1 border-t border-neutral-200 pt-4 dark:border-neutral-800">
-                          <p className="text-[10px] font-semibold tracking-widest text-brand-strong uppercase">
-                            {UI.labelScope}
-                          </p>
-                          <p className="mt-2 text-xs leading-relaxed text-neutral-500">
-                            {card.scope}
-                          </p>
-                        </div>
-                      )}
-                      {/*
-                        서비스 카드 안에 있던 대표 사례를 뺐습니다. (2026-08-15 회의)
-
-                        카드마다 사례를 작게 붙이면 서비스 설명과 사례가 뒤섞여 둘 다
-                        흐릿해집니다. 회의에서 "서비스는 견적 요청 버튼만 두고, 대표 사례는
-                        위로 올려서 제대로 보여주자" 로 정리했습니다.
-                        사례는 클라이언트 섹션 바로 아래 독립 섹션으로 옮겼습니다.
-
-                        serviceCards[].cases 데이터는 콘텐츠에 남겨 둡니다 — 대표가 사례
-                        텍스트를 보완해 주기로 했고, 그때 어느 쪽에 넣을지 다시 판단합니다.
-                      */}
-                      <Link
-                        href={`${quoteHref}${card.id}/`}
-                        className="mt-6 inline-flex w-fit items-center gap-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-brand-strong"
-                      >
-                        {UI.ctaQuote}
-                      </Link>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+              <ServicesSection
+                cards={SERVICE_CARDS}
+                ctaLabel={UI.ctaQuote}
+                quoteHref={quoteHref}
+                scopeLabel={UI.labelScope}
+              />
             </Reveal>
 
             {/*
